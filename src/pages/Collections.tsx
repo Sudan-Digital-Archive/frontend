@@ -2,7 +2,6 @@ import {
   Box,
   Heading,
   SimpleGrid,
-  Card,
   CardHeader,
   CardBody,
   CardFooter,
@@ -11,6 +10,7 @@ import {
   VStack,
   Text,
 } from '@chakra-ui/react'
+import { ArchiveCard } from '../components/ArchiveCard'
 import Menu from '../components/Menu.tsx'
 import Footer from '../components/Footer.tsx'
 import { useTranslation } from 'react-i18next'
@@ -48,13 +48,7 @@ export default function Collections() {
                 mx={5}
               >
                 {collections.map((collection, index) => (
-                  <Card
-                    border="2px"
-                    borderColor="gray.200"
-                    borderStyle="inset"
-                    key={`collection-card-${index}`}
-                    overflow="auto"
-                  >
+                  <ArchiveCard key={`collection-card-${index}`}>
                     <CardHeader>
                       <Heading size="md">{collection.title}</Heading>
                     </CardHeader>
@@ -68,7 +62,7 @@ export default function Collections() {
                         </Button>
                       </NavLink>
                     </CardFooter>
-                  </Card>
+                  </ArchiveCard>
                 ))}
               </SimpleGrid>
             )}
