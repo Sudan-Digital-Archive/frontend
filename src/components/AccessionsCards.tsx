@@ -1,6 +1,5 @@
 import {
   SimpleGrid,
-  Card,
   CardHeader,
   CardBody,
   Box,
@@ -14,6 +13,7 @@ import {
   ModalCloseButton,
   ModalBody,
 } from '@chakra-ui/react'
+import { ArchiveCard } from './ArchiveCard'
 import {
   DateMetadata,
   Title,
@@ -83,13 +83,7 @@ export function AccessionsCards({
               : accession.subjects_ar
 
           return (
-            <Card
-              border="2px"
-              borderColor="gray.200"
-              borderStyle="inset"
-              key={`accession-card-${index}`}
-              overflow="auto"
-            >
+            <ArchiveCard key={`accession-card-${index}`}>
               <CardHeader>
                 <Title
                   title={title || t('metadata_missing_title')}
@@ -162,7 +156,7 @@ export function AccessionsCards({
                   </Box>
                 )}
               </CardFooter>
-            </Card>
+            </ArchiveCard>
           )
         })}
       </SimpleGrid>
