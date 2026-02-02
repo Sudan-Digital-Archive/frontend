@@ -24,6 +24,29 @@ export const COLLECTIONS_EN = [
       metadata_subjects_inclusive_filter: true,
     },
   },
+  {
+    id: 'tahrir-institute',
+    title: 'Tahrir Institute Articles on Sudan',
+    description:
+      'Reports and analysis from the Tahrir Institute for Middle East Policy (TIMEP) concerning Sudan.',
+    filters: {
+      lang: 'english',
+      metadata_subjects: [1],
+      metadata_subjects_inclusive_filter: true,
+    },
+  },
 ]
 
-export const COLLECTIONS_AR: typeof COLLECTIONS_EN = []
+export const COLLECTIONS_AR: typeof COLLECTIONS_EN = [
+  {
+    id: 'tahrir-institute',
+    title: 'مقالات معهد التحرير عن السودان',
+    description:
+      'تقارير وتحليلات من معهد التحرير لسياسات الشرق الأوسط (TIMEP) المتعلقة بالسودان.',
+    filters: {
+      lang: 'arabic',
+      metadata_subjects: [11],
+      metadata_subjects_inclusive_filter: true,
+    },
+  },
+]
