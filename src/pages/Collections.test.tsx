@@ -38,8 +38,13 @@ describe('Collections Component', () => {
     ).toBeTruthy()
   })
 
-  it('displays empty message in Arabic', () => {
+  it('displays the Tahrir Institute collection in English', () => {
+    renderWithProviders(<Collections />, { language: 'en' })
+    expect(screen.getByText('Tahrir Institute Articles on Sudan')).toBeTruthy()
+  })
+
+  it('displays the Tahrir Institute collection in Arabic', () => {
     renderWithProviders(<Collections />, { language: 'ar' })
-    expect(screen.getByText('لم يتم العثور على مجموعات.')).toBeTruthy()
+    expect(screen.getByText('مقالات معهد التحرير عن السودان')).toBeTruthy()
   })
 })
