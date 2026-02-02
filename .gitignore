@@ -28,3 +28,6 @@ dist-ssr
 dev-dist/
 tsconfig.app.tsbuildinfo
 tsconfig.node.tsbuildinfo
+
+# Gemini
+.gemini/
