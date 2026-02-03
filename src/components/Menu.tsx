@@ -8,6 +8,7 @@ import {
   MenuItem,
   Stack,
   IconButton,
+  Text,
 } from '@chakra-ui/react'
 import { ChevronDown, Menu as MenuIcon } from 'react-feather'
 import { NavLink } from 'react-router'
@@ -58,42 +59,54 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 variant="outline"
               />
               <MenuList>
-                <MenuItem>
+                <MenuItem isDisabled>
+                  <HStack>
+                    <Text fontWeight="bold">{t('nav_the_archive')}</Text>
+                    <ChevronDown size="16" />
+                  </HStack>
+                </MenuItem>
+                <MenuItem pl={6}>
                   <NavLink to="/archive">{t('nav_search')}</NavLink>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem pl={6}>
                   <NavLink to="/collections">{t('nav_collections')}</NavLink>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem isDisabled>
+                  <HStack>
+                    <Text fontWeight="bold">{t('nav_about')}</Text>
+                    <ChevronDown size="16" />
+                  </HStack>
+                </MenuItem>
+                <MenuItem pl={6}>
                   <NavLink to="/who-are-we">{t('nav_who_are_we')}</NavLink>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem pl={6}>
                   <NavLink to="/mission">{t('nav_mission')}</NavLink>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem pl={6}>
                   <NavLink to="/why-another-archive">
                     {t('nav_why_another_archive')}
                   </NavLink>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem pl={6}>
                   <NavLink to="/tech-stack">{t('nav_tech_stack')}</NavLink>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem pl={6}>
                   <NavLink to="/code-of-conduct">{t('nav_coc')}</NavLink>
                 </MenuItem>
                 <MenuItem>
                   <NavLink to="/contact-us">{t('nav_contact')}</NavLink>
-                </MenuItem>
-                <MenuItem
-                  onClick={changeLanguageOverride || handleLanguageChange}
-                >
-                  {i18n.language === 'en' ? 'عربي' : 'English'}
                 </MenuItem>
                 {!isLoggedIn && (
                   <MenuItem>
                     <NavLink to="/login">{t('nav_login')}</NavLink>
                   </MenuItem>
                 )}
+                <MenuItem
+                  onClick={changeLanguageOverride || handleLanguageChange}
+                >
+                  {i18n.language === 'en' ? 'عربي' : 'English'}
+                </MenuItem>
               </MenuList>
             </Menu>
           </>

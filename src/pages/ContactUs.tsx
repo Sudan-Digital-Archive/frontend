@@ -8,8 +8,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import { CopyIcon } from '@chakra-ui/icons'
-import Menu from '../components/Menu.tsx'
-import Footer from '../components/Footer.tsx'
+import Layout from '../components/Layout.tsx'
 import { useTranslation } from 'react-i18next'
 
 export default function ContactUs() {
@@ -29,8 +28,7 @@ export default function ContactUs() {
   }
 
   return (
-    <>
-      <Menu />
+    <Layout>
       <Box
         as="section"
         display="flex"
@@ -60,9 +58,8 @@ export default function ContactUs() {
               {email}
             </Text>
           </Button>
-          <Footer />
         </VStack>
       </Box>
-    </>
+    </Layout>
   )
 }
