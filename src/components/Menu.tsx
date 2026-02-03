@@ -65,11 +65,11 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     <ChevronDown size="16" />
                   </HStack>
                 </MenuItem>
-                <MenuItem pl={6}>
-                  <NavLink to="/archive">{t('nav_search')}</NavLink>
+                <MenuItem pl={6} as={NavLink} to="/archive">
+                  {t('nav_search')}
                 </MenuItem>
-                <MenuItem pl={6}>
-                  <NavLink to="/collections">{t('nav_collections')}</NavLink>
+                <MenuItem pl={6} as={NavLink} to="/collections">
+                  {t('nav_collections')}
                 </MenuItem>
                 <MenuItem isDisabled>
                   <HStack>
@@ -77,29 +77,27 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     <ChevronDown size="16" />
                   </HStack>
                 </MenuItem>
-                <MenuItem pl={6}>
-                  <NavLink to="/who-are-we">{t('nav_who_are_we')}</NavLink>
+                <MenuItem pl={6} as={NavLink} to="/who-are-we">
+                  {t('nav_who_are_we')}
                 </MenuItem>
-                <MenuItem pl={6}>
-                  <NavLink to="/mission">{t('nav_mission')}</NavLink>
+                <MenuItem pl={6} as={NavLink} to="/mission">
+                  {t('nav_mission')}
                 </MenuItem>
-                <MenuItem pl={6}>
-                  <NavLink to="/why-another-archive">
-                    {t('nav_why_another_archive')}
-                  </NavLink>
+                <MenuItem pl={6} as={NavLink} to="/why-another-archive">
+                  {t('nav_why_another_archive')}
                 </MenuItem>
-                <MenuItem pl={6}>
-                  <NavLink to="/tech-stack">{t('nav_tech_stack')}</NavLink>
+                <MenuItem pl={6} as={NavLink} to="/tech-stack">
+                  {t('nav_tech_stack')}
                 </MenuItem>
-                <MenuItem pl={6}>
-                  <NavLink to="/code-of-conduct">{t('nav_coc')}</NavLink>
+                <MenuItem pl={6} as={NavLink} to="/code-of-conduct">
+                  {t('nav_coc')}
                 </MenuItem>
-                <MenuItem>
-                  <NavLink to="/contact-us">{t('nav_contact')}</NavLink>
+                <MenuItem as={NavLink} to="/contact-us">
+                  {t('nav_contact')}
                 </MenuItem>
                 {!isLoggedIn && (
-                  <MenuItem>
-                    <NavLink to="/login">{t('nav_login')}</NavLink>
+                  <MenuItem as={NavLink} to="/login">
+                    {t('nav_login')}
                   </MenuItem>
                 )}
                 <MenuItem
@@ -127,11 +125,11 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 {t('nav_the_archive')}
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <NavLink to="/archive">{t('nav_search')}</NavLink>
+                <MenuItem as={NavLink} to="/archive">
+                  {t('nav_search')}
                 </MenuItem>
-                <MenuItem>
-                  <NavLink to="/collections">{t('nav_collections')}</NavLink>
+                <MenuItem as={NavLink} to="/collections">
+                  {t('nav_collections')}
                 </MenuItem>
               </MenuList>
             </Menu>
@@ -145,22 +143,20 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 {t('nav_about')}
               </MenuButton>
               <MenuList>
-                <MenuItem>
-                  <NavLink to="/who-are-we">{t('nav_who_are_we')}</NavLink>
+                <MenuItem as={NavLink} to="/who-are-we">
+                  {t('nav_who_are_we')}
                 </MenuItem>
-                <MenuItem>
-                  <NavLink to="/mission">{t('nav_mission')}</NavLink>
+                <MenuItem as={NavLink} to="/mission">
+                  {t('nav_mission')}
                 </MenuItem>
-                <MenuItem>
-                  <NavLink to="/why-another-archive">
-                    {t('nav_why_another_archive')}
-                  </NavLink>
+                <MenuItem as={NavLink} to="/why-another-archive">
+                  {t('nav_why_another_archive')}
                 </MenuItem>
-                <MenuItem>
-                  <NavLink to="/tech-stack">{t('nav_tech_stack')}</NavLink>
+                <MenuItem as={NavLink} to="/tech-stack">
+                  {t('nav_tech_stack')}
                 </MenuItem>
-                <MenuItem>
-                  <NavLink to="/code-of-conduct">{t('nav_coc')}</NavLink>
+                <MenuItem as={NavLink} to="/code-of-conduct">
+                  {t('nav_coc')}
                 </MenuItem>
               </MenuList>
             </Menu>
