@@ -8,6 +8,7 @@ import WhyAnotherArchive from './pages/WhyAnotherArchive.tsx'
 import TechnicalStack from './pages/TechnicalStack.tsx'
 import Collections from './pages/Collections.tsx'
 import CollectionView from './pages/CollectionView.tsx'
+import NotFound from './pages/NotFound.tsx'
 import './il18n.ts'
 import './css/styles.css'
 import { Routes, Route } from 'react-router'
@@ -48,7 +49,7 @@ export const App = () => {
       <Route path="archive/:id" element={<ViewAccession />} />
       <Route path="login" element={<Login />} />
       <Route path="jwt-auth" element={<JWTAuth />} />
-      <Route path="*" element={<Home />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   )
 }

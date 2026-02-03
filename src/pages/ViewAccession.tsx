@@ -13,7 +13,6 @@ import type { AccessionOne } from '../apiTypes/apiResponses.ts'
 import { useWindowSize } from '../hooks/useWindowSize.ts'
 import AccessionButtons from '../components/AccessionButtons.tsx'
 import {
-  SlideFade,
   Spinner,
   VStack,
   Box,
@@ -37,8 +36,7 @@ import {
 } from '@chakra-ui/react'
 import { useParsedDate } from '../hooks/useParsedDate.ts'
 import { useUser } from '../hooks/useUser.ts'
-import Menu from '../components/Menu.tsx'
-import Footer from '../components/Footer.tsx'
+import Layout from '../components/Layout.tsx'
 
 interface AccessionInfoProps {
   timestamp: string
@@ -146,8 +144,7 @@ export default function ViewAccession() {
 
   if ((isPrivate && !isLoggedIn) || error) {
     return (
-      <>
-        <Menu />
+      <Layout>
         <Box
           display="flex"
           justifyContent="center"
@@ -167,133 +164,130 @@ export default function ViewAccession() {
             </Alert>
           </Box>
         </Box>
-        <Footer />
-      </>
+      </Layout>
     )
   }
 
   return (
-    <>
-      <SlideFade in>
-        <VStack
-          display="flex"
-          flexDirection="column"
-          h="100vh"
-          alignItems="center"
-          justifyContent="center"
-        >
-          {!accession || !replayerState.source || !replayerState.url ? (
-            <Spinner />
-          ) : (
-            <>
-              <Collapse in={metadataHeaderDisclosure.isOpen} animateOpacity>
-                {isMobile ? (
-                  <VStack
-                    m={2}
-                    spacing={2}
-                    alignItems="center"
-                    display="flex"
-                    flexDirection="column"
-                  >
-                    <AccessionInfo
-                      timestamp={accession.accession.crawl_timestamp}
-                      id={id}
-                      lang={lang}
-                      onOpen={onOpen}
-                      isMobile={true}
-                    />
-                  </VStack>
-                ) : (
-                  <HStack m={2} spacing={2} alignItems="center" display="flex">
-                    <AccessionInfo
-                      timestamp={accession.accession.crawl_timestamp}
-                      id={id}
-                      lang={lang}
-                      onOpen={onOpen}
-                      isMobile={false}
-                    />
-                  </HStack>
-                )}
-
-                <Drawer
-                  placement="right"
-                  onClose={onClose}
-                  isOpen={isOpen}
-                  size="lg"
+    <Layout>
+      <VStack
+        display="flex"
+        flexDirection="column"
+        h="100vh"
+        alignItems="center"
+        justifyContent="center"
+      >
+        {!accession || !replayerState.source || !replayerState.url ? (
+          <Spinner />
+        ) : (
+          <>
+            <Collapse in={metadataHeaderDisclosure.isOpen} animateOpacity>
+              {isMobile ? (
+                <VStack
+                  m={2}
+                  spacing={2}
+                  alignItems="center"
+                  display="flex"
+                  flexDirection="column"
                 >
-                  <DrawerOverlay />
-                  <DrawerContent>
-                    <DrawerCloseButton />
-                    <DrawerHeader borderBottomWidth="1px">
-                      <Title
-                        title={
-                          i18n.language === 'en'
-                            ? accession.accession.title_en ||
-                              t('metadata_missing_title')
-                            : accession.accession.title_ar ||
-                              t('metadata_missing_title')
-                        }
-                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                      />
-                    </DrawerHeader>
-                    <DrawerBody>
-                      <Subject
-                        subjects={
-                          i18n.language === 'en'
-                            ? accession.accession.subjects_en
-                            : accession.accession.subjects_ar
-                        }
-                      />
-                      {((i18n.language === 'en' &&
-                        accession.accession.description_en) ||
-                        (i18n.language === 'ar' &&
-                          accession.accession.description_ar)) && (
-                        <Description
-                          description={
-                            i18n.language === 'en'
-                              ? accession.accession.description_en
-                              : accession.accession.description_ar
-                          }
-                          fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                        />
-                      )}
-                      <Box>
-                        <DateMetadata
-                          date={accession.accession.dublin_metadata_date}
-                          fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                        />
-                      </Box>
-                      <OriginalURL
-                        url={accession.accession.seed_url}
-                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                      />
-                    </DrawerBody>
-                  </DrawerContent>
-                </Drawer>
-              </Collapse>
-              <Button
-                onClick={metadataHeaderDisclosure.onToggle}
-                variant="outline"
-              >
-                {metadataHeaderDisclosure.isOpen &&
-                  t('view_accession_hide_metadata')}
-                {!metadataHeaderDisclosure.isOpen &&
-                  t('view_accession_show_metadata')}
-              </Button>
+                  <AccessionInfo
+                    timestamp={accession.accession.crawl_timestamp}
+                    id={id}
+                    lang={lang}
+                    onOpen={onOpen}
+                    isMobile={true}
+                  />
+                </VStack>
+              ) : (
+                <HStack m={2} spacing={2} alignItems="center" display="flex">
+                  <AccessionInfo
+                    timestamp={accession.accession.crawl_timestamp}
+                    id={id}
+                    lang={lang}
+                    onOpen={onOpen}
+                    isMobile={false}
+                  />
+                </HStack>
+              )}
 
-              <Box flex="1" w="100vw" bg="white">
-                <Box h="4px" bg="teal.500" />
-                <replay-web-page
-                  embed="replayonly"
-                  replayBase="/replay/"
-                  source={replayerState.source}
-                  url={replayerState.url}
-                ></replay-web-page>
-              </Box>
-            </>
-          )}
-        </VStack>
-      </SlideFade>
-    </>
+              <Drawer
+                placement="right"
+                onClose={onClose}
+                isOpen={isOpen}
+                size="lg"
+              >
+                <DrawerOverlay />
+                <DrawerContent>
+                  <DrawerCloseButton />
+                  <DrawerHeader borderBottomWidth="1px">
+                    <Title
+                      title={
+                        i18n.language === 'en'
+                          ? accession.accession.title_en ||
+                            t('metadata_missing_title')
+                          : accession.accession.title_ar ||
+                            t('metadata_missing_title')
+                      }
+                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                    />
+                  </DrawerHeader>
+                  <DrawerBody>
+                    <Subject
+                      subjects={
+                        i18n.language === 'en'
+                          ? accession.accession.subjects_en
+                          : accession.accession.subjects_ar
+                      }
+                    />
+                    {((i18n.language === 'en' &&
+                      accession.accession.description_en) ||
+                      (i18n.language === 'ar' &&
+                        accession.accession.description_ar)) && (
+                      <Description
+                        description={
+                          i18n.language === 'en'
+                            ? accession.accession.description_en
+                            : accession.accession.description_ar
+                        }
+                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      />
+                    )}
+                    <Box>
+                      <DateMetadata
+                        date={accession.accession.dublin_metadata_date}
+                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      />
+                    </Box>
+                    <OriginalURL
+                      url={accession.accession.seed_url}
+                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                    />
+                  </DrawerBody>
+                </DrawerContent>
+              </Drawer>
+            </Collapse>
+            <Button
+              onClick={metadataHeaderDisclosure.onToggle}
+              variant="outline"
+            >
+              {metadataHeaderDisclosure.isOpen &&
+                t('view_accession_hide_metadata')}
+              {!metadataHeaderDisclosure.isOpen &&
+                t('view_accession_show_metadata')}
+            </Button>
+
+            <Box flex="1" w="100vw" bg="white">
+              <Box h="4px" bg="teal.500" />
+              <replay-web-page
+                embed="replayonly"
+                replayBase="/replay/"
+                source={replayerState.source}
+                url={replayerState.url}
+              ></replay-web-page>
+            </Box>
+          </>
+        )}
+      </VStack>
+    </Layout>
   )
 }
