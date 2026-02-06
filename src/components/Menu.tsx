@@ -46,7 +46,8 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
   const MenuBar = () => {
     const width = useWindowSize()
     const isMobile = width <= 768
-    const { isLoggedIn } = useUser()
+    const { isLoggedIn, role } = useUser()
+    const isAdmin = role === 'Admin'
 
     return (
       <>
@@ -98,6 +99,11 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 {!isLoggedIn && (
                   <MenuItem as={NavLink} to="/login">
                     {t('nav_login')}
+                  </MenuItem>
+                )}
+                {isAdmin && (
+                  <MenuItem as={NavLink} to="/user-management">
+                    {t('nav_user_management')}
                   </MenuItem>
                 )}
                 <MenuItem
@@ -172,6 +178,15 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 <NavLink to="/login">
                   <MenuButton as={Button} size="sm" variant="ghost">
                     {t('nav_login')}
+                  </MenuButton>
+                </NavLink>
+              </Menu>
+            )}
+            {isAdmin && (
+              <Menu>
+                <NavLink to="/user-management">
+                  <MenuButton as={Button} size="sm" variant="ghost">
+                    {t('nav_user_management')}
                   </MenuButton>
                 </NavLink>
               </Menu>

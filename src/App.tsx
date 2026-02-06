@@ -9,6 +9,7 @@ import TechnicalStack from './pages/TechnicalStack.tsx'
 import Collections from './pages/Collections.tsx'
 import CollectionView from './pages/CollectionView.tsx'
 import NotFound from './pages/NotFound.tsx'
+import UserManagement from './pages/UserManagement.tsx'
 import './il18n.ts'
 import './css/styles.css'
 import { Routes, Route } from 'react-router'
@@ -49,6 +50,7 @@ export const App = () => {
       <Route path="archive/:id" element={<ViewAccession />} />
       <Route path="login" element={<Login />} />
       <Route path="jwt-auth" element={<JWTAuth />} />
+      <Route path="user-management" element={<UserManagement />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )
