@@ -9,27 +9,68 @@ import {
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { useParams } from 'react-router'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Layout from '../components/Layout.tsx'
 import { AccessionsCards } from '../components/AccessionsCards.tsx'
-import { COLLECTIONS_EN, COLLECTIONS_AR } from '../constants.ts'
 import { useUser } from '../hooks/useUser.ts'
 import { useAccessions } from '../hooks/useAccessions.ts'
+import { appConfig } from '../constants.ts'
+import type { Collection } from '../apiTypes/apiResponses.ts'
 
 export default function CollectionView() {
   const { id } = useParams()
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
 
-  const collections = i18n.language === 'en' ? COLLECTIONS_EN : COLLECTIONS_AR
-  const collection = collections.find((c) => c.id === id)
+  const [collection, setCollection] = useState<Collection | null>(null)
+  const [isLoadingCollection, setIsLoadingCollection] = useState(true)
 
-  // Base filters from collection config (memoized to avoid changing ref every render)
-  const baseFilters = useMemo(
-    () => (collection ? collection.filters : {}),
-    [collection],
-  )
+  // Fetch collection by ID from the API
+  useEffect(() => {
+    const fetchCollection = async () => {
+      if (!id) return
+
+      try {
+        const lang = i18n.language === 'en' ? 'english' : 'arabic'
+        const response = await fetch(
+          `${appConfig.apiURL}collections/${id}?lang=${lang}`,
+          {
+            credentials: 'include',
+            headers: {
+              Accept: 'application/json',
+            },
+          },
+        )
+        if (response.ok) {
+          const data: Collection = await response.json()
+          setCollection(data)
+        } else {
+          setCollection(null)
+        }
+      } catch (error) {
+        console.error('Error fetching collection:', error)
+        setCollection(null)
+      } finally {
+        setIsLoadingCollection(false)
+      }
+    }
+
+    fetchCollection()
+  }, [id, i18n.language])
+
+  // Base filters from collection config
+  // Rule: An accession exists in a given collection iff it has ALL the subject ids
+  // present in that collection. This is an inclusive filter where the accession
+  // must match ALL collection subject_ids.
+  const baseFilters = useMemo(() => {
+    if (!collection) return {}
+    return {
+      lang: i18n.language === 'en' ? 'english' : 'arabic',
+      metadata_subjects: collection.subject_ids,
+      metadata_subjects_inclusive_filter: true,
+    }
+  }, [collection, i18n.language])
 
   const { updateFilters, accessions, isLoading, pagination, handleRefresh } =
     useAccessions({
@@ -38,10 +79,20 @@ export default function CollectionView() {
     })
 
   useEffect(() => {
-    if (collection) {
+    if (collection && baseFilters.metadata_subjects) {
       updateFilters({ ...baseFilters })
     }
   }, [collection, baseFilters, updateFilters])
+
+  if (isLoadingCollection) {
+    return (
+      <Layout>
+        <Box p={10} textAlign="center">
+          <Spinner />
+        </Box>
+      </Layout>
+    )
+  }
 
   if (!collection) {
     return (
@@ -79,20 +130,19 @@ export default function CollectionView() {
           )}
           {accessions && accessions?.items.length > 0 && !isLoading && (
             <HStack mt={3} justifyContent="center">
-              {pagination.currentPage != 0 &&
-                pagination.currentPage != pagination.totalPages && (
-                  <Button
-                    size="xs"
-                    leftIcon={<ArrowLeft />}
-                    colorScheme="purple"
-                    variant="link"
-                    onClick={() =>
-                      updateFilters({
-                        page: pagination.currentPage - 1,
-                      })
-                    }
-                  />
-                )}
+              {pagination.currentPage !== 0 && (
+                <Button
+                  size="xs"
+                  leftIcon={<ArrowLeft />}
+                  colorScheme="purple"
+                  variant="link"
+                  onClick={() =>
+                    updateFilters({
+                      page: pagination.currentPage - 1,
+                    })
+                  }
+                />
+              )}
               <Box>
                 {t('archive_pagination_page')}
                 <b>{pagination.currentPage + 1}</b>
