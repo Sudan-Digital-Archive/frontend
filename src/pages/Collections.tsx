@@ -48,7 +48,14 @@ export default function Collections() {
             {t('collections_title')}
           </Heading>
           {isLoading || !collections ? (
-            <Spinner />
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              py={10}
+            >
+              <Spinner />
+            </Box>
           ) : collections.items.length === 0 ? (
             <Text textAlign="center" fontSize="xl">
               {t('collections_empty')}
