@@ -1,6 +1,6 @@
 import { useState, ReactNode, useEffect } from 'react'
 import { UserContext } from './UserContextDefinition'
-import type { UserRole } from '../apiTypes/userTypes.ts'
+import type { UserRole, User } from '../apiTypes/userTypes.ts'
 import { appConfig } from '../constants.ts'
 
 interface UserProviderProps {
@@ -19,13 +19,8 @@ export function UserProvider({ children }: UserProviderProps) {
             credentials: 'include',
           })
           if (response.ok) {
-            const text = await response.text()
-            // Parse role from text: "Verifying your account... Your data: UserId: <email> Expiry: None Role: Admin"
-            const roleMatch = text.match(/Role:\s*(\w+)/i)
-            if (roleMatch) {
-              const parsedRole = roleMatch[1] as UserRole
-              setRole(parsedRole)
-            }
+            const user: User = await response.json()
+            setRole(user.role)
           }
         } catch (error) {
           console.error('Error fetching user role:', error)
