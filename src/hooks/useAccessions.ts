@@ -7,16 +7,25 @@ import type { ListAccessions } from 'src/apiTypes/apiResponses.ts'
 interface UseAccessionsOptions {
   isLoggedIn: boolean
   baseFilters?: Record<string, unknown>
+  enabled?: boolean
 }
 
 export const useAccessions = (options: UseAccessionsOptions) => {
-  const { isLoggedIn, baseFilters = {} } = options
+  const { isLoggedIn, baseFilters = {}, enabled = true } = options
 
   const [queryFilters, setQueryFilters] = useState<AccessionsQueryFilters>({
     page: 0,
     per_page: 50,
     ...baseFilters,
   })
+
+  // Sync baseFilters changes into queryFilters
+  useEffect(() => {
+    setQueryFilters((prev) => ({
+      ...prev,
+      ...baseFilters,
+    }))
+  }, [baseFilters])
 
   const [accessions, setAccessions] = useState<ListAccessions | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -67,13 +76,16 @@ export const useAccessions = (options: UseAccessionsOptions) => {
   )
 
   useEffect(() => {
+    if (!enabled) {
+      return
+    }
     setIsLoading(true)
     fetchAccessions(queryFilters)
     return () => {
       setAccessions(null)
       setIsLoading(false)
     }
-  }, [fetchAccessions, queryFilters])
+  }, [fetchAccessions, queryFilters, enabled])
 
   const handleRefresh = () => {
     fetchAccessions(queryFilters)

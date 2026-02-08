@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Layout from '../components/Layout.tsx'
 import { AccessionsCards } from '../components/AccessionsCards.tsx'
+import { ArchiveFilters } from '../components/ArchiveFilters.tsx'
 import { useUser } from '../hooks/useUser.ts'
 import { useAccessions } from '../hooks/useAccessions.ts'
 import { appConfig } from '../constants.ts'
@@ -72,17 +73,18 @@ export default function CollectionView() {
     }
   }, [collection, i18n.language])
 
-  const { updateFilters, accessions, isLoading, pagination, handleRefresh } =
-    useAccessions({
-      isLoggedIn,
-      baseFilters,
-    })
-
-  useEffect(() => {
-    if (collection && baseFilters.metadata_subjects) {
-      updateFilters({ ...baseFilters })
-    }
-  }, [collection, baseFilters, updateFilters])
+  const {
+    queryFilters,
+    updateFilters,
+    accessions,
+    isLoading,
+    pagination,
+    handleRefresh,
+  } = useAccessions({
+    isLoggedIn,
+    baseFilters,
+    enabled: !!collection,
+  })
 
   if (isLoadingCollection) {
     return (
@@ -119,6 +121,13 @@ export default function CollectionView() {
           <Text textAlign="center" mb={5} fontSize="lg">
             {collection.description}
           </Text>
+
+          <ArchiveFilters
+            queryFilters={queryFilters}
+            updateFilters={updateFilters}
+            showSubjectFilters={false}
+            isLoggedIn={isLoggedIn}
+          />
 
           {isLoading || !accessions ? (
             <Spinner />
