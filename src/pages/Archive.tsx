@@ -16,6 +16,7 @@ import {
 import { ArrowLeft, ArrowRight, FilePlus } from 'react-feather'
 import { CreateUpdateAccession } from 'src/components/forms/CreateUpdateAccession.tsx'
 import Layout from 'src/components/Layout.tsx'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AccessionsCards } from 'src/components/AccessionsCards.tsx'
 import { ArchiveFilters } from 'src/components/ArchiveFilters.tsx'
@@ -26,6 +27,18 @@ export default function Archive() {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
 
+  const baseFilters = useMemo(
+    () => ({
+      lang: i18n.language === 'en' ? 'english' : 'arabic',
+      query_term: '',
+      metadata_subjects: [],
+      metadata_subjects_inclusive_filter: true,
+      is_private: false,
+      url_filter: '',
+    }),
+    [i18n.language],
+  )
+
   const {
     queryFilters,
     updateFilters,
@@ -35,14 +48,7 @@ export default function Archive() {
     handleRefresh,
   } = useAccessions({
     isLoggedIn,
-    baseFilters: {
-      lang: i18n.language === 'en' ? 'english' : 'arabic',
-      query_term: '',
-      metadata_subjects: [],
-      metadata_subjects_inclusive_filter: true,
-      is_private: false,
-      url_filter: '',
-    },
+    baseFilters,
   })
 
   const { isOpen, onOpen, onClose } = useDisclosure()

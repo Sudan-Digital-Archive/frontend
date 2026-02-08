@@ -83,7 +83,7 @@ export default function CollectionView() {
   } = useAccessions({
     isLoggedIn,
     baseFilters,
-    enabled: !!collection,
+    enabled: !!collection && collection.subject_ids.length > 0,
   })
 
   if (isLoadingCollection) {
