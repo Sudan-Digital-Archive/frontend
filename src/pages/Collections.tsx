@@ -8,16 +8,31 @@ import {
   Button,
   VStack,
   Text,
+  HStack,
+  Spinner,
 } from '@chakra-ui/react'
+import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
 import Layout from '../components/Layout.tsx'
 import { useTranslation } from 'react-i18next'
-import { COLLECTIONS_EN, COLLECTIONS_AR } from '../constants.ts'
 import { NavLink } from 'react-router'
+import { useCollections } from '../hooks/useCollections.ts'
+import { useEffect } from 'react'
 
 export default function Collections() {
   const { t, i18n } = useTranslation()
-  const collections = i18n.language === 'en' ? COLLECTIONS_EN : COLLECTIONS_AR
+  const lang = i18n.language === 'en' ? 'english' : 'arabic'
+
+  const { collections, isLoading, pagination, updateFilters } =
+    useCollections(lang)
+
+  // Update language filter when i18n language changes
+  useEffect(() => {
+    updateFilters({
+      lang: i18n.language === 'en' ? 'english' : 'arabic',
+      page: 0,
+    })
+  }, [i18n.language, updateFilters])
 
   return (
     <Layout>
@@ -32,7 +47,9 @@ export default function Collections() {
           >
             {t('collections_title')}
           </Heading>
-          {collections.length === 0 ? (
+          {isLoading || !collections ? (
+            <Spinner />
+          ) : collections.items.length === 0 ? (
             <Text textAlign="center" fontSize="xl">
               {t('collections_empty')}
             </Text>
@@ -43,8 +60,8 @@ export default function Collections() {
               my={5}
               mx={5}
             >
-              {collections.map((collection, index) => (
-                <ArchiveCard key={`collection-card-${index}`}>
+              {collections.items.map((collection) => (
+                <ArchiveCard key={`collection-card-${collection.id}`}>
                   <CardHeader>
                     <Heading size="md">{collection.title}</Heading>
                   </CardHeader>
@@ -61,6 +78,42 @@ export default function Collections() {
                 </ArchiveCard>
               ))}
             </SimpleGrid>
+          )}
+          {collections && collections.items.length > 0 && !isLoading && (
+            <HStack mt={3} justifyContent="center">
+              {pagination.currentPage !== 0 && (
+                <Button
+                  size="xs"
+                  leftIcon={<ArrowLeft />}
+                  colorScheme="purple"
+                  variant="link"
+                  onClick={() =>
+                    updateFilters({
+                      page: pagination.currentPage - 1,
+                    })
+                  }
+                />
+              )}
+              <Box>
+                {t('archive_pagination_page')}
+                <b>{pagination.currentPage + 1}</b>
+                {t('archive_pagination_page_out_of')}
+                <b>{pagination.totalPages}</b>
+              </Box>
+              {pagination.currentPage + 1 < pagination.totalPages && (
+                <Button
+                  size="xs"
+                  leftIcon={<ArrowRight />}
+                  colorScheme="purple"
+                  variant="link"
+                  onClick={() =>
+                    updateFilters({
+                      page: pagination.currentPage + 1,
+                    })
+                  }
+                />
+              )}
+            </HStack>
           )}
         </Box>
       </VStack>

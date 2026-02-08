@@ -31,3 +31,4 @@ tsconfig.node.tsbuildinfo
 
 # Gemini
 .gemini/
+opencode.json

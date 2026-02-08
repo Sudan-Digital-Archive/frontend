@@ -10,3 +10,9 @@ export type AccessionsQueryFilters = {
   is_private?: boolean
   url_filter?: string
 }
+
+export type CollectionsQueryFilters = {
+  lang?: string
+  page?: number
+  per_page?: number
+}

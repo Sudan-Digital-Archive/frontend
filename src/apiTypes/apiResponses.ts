@@ -42,3 +42,18 @@ export type SubjectsResponse = {
   page: number
   per_page: number
 }
+
+export type Collection = {
+  id: number
+  title: string
+  description: string
+  is_public: boolean
+  subject_ids: number[]
+}
+
+export type ListCollections = {
+  items: Collection[]
+  num_pages: number
+  page: number
+  per_page: number
+}
