@@ -1,7 +1,13 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, useToast, IconButton, HStack } from '@chakra-ui/react'
-import { CreatableSelect, Select, type OptionProps } from 'chakra-react-select'
+import {
+  CreatableSelect,
+  Select,
+  chakraComponents,
+  type OptionProps,
+  type MultiValueRemoveProps,
+} from 'chakra-react-select'
 import { DeleteIcon } from '@chakra-ui/icons'
 import { appConfig } from '../../constants'
 import type { Subject, SubjectsResponse } from '../../apiTypes/apiResponses'
@@ -16,6 +22,7 @@ interface SubjectsAutocompleteProps {
     labels: string[]
   }
   value?: readonly SubjectOption[]
+  lockedValues?: number[]
 }
 
 export const SubjectsAutocomplete = ({
@@ -23,6 +30,7 @@ export const SubjectsAutocomplete = ({
   menuPlacement = 'bottom',
   defaultValues,
   value,
+  lockedValues,
 }: SubjectsAutocompleteProps) => {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
@@ -39,6 +47,26 @@ export const SubjectsAutocomplete = ({
         }))
       : [],
   )
+
+  // Initialize locked values when subjects are loaded
+  useEffect(() => {
+    if (lockedValues && lockedValues.length > 0 && subjects.length > 0) {
+      const lockedOptions = subjects
+        .filter((subject) => lockedValues.includes(subject.id))
+        .map((subject) => ({
+          value: subject.id,
+          label: subject.subject,
+        }))
+
+      setSelectedOptions((prev) => {
+        const existingValues = new Set(prev.map((o) => o.value))
+        const newLockedOptions = lockedOptions.filter(
+          (o) => !existingValues.has(o.value),
+        )
+        return [...prev, ...newLockedOptions]
+      })
+    }
+  }, [lockedValues, subjects])
 
   const apiLang = i18n.language === 'en' ? 'english' : 'arabic'
 
@@ -177,12 +205,47 @@ export const SubjectsAutocomplete = ({
   }, [fetchSubjects, apiLang])
 
   useEffect(() => {
-    if (value !== undefined) {
-      setSelectedOptions(value as SubjectOption[])
+    if (value !== undefined && subjects.length > 0) {
+      // Look up actual subject names from fetched subjects
+      const optionsWithLabels = value.map((v) => {
+        const subject = subjects.find((s) => s.id === v.value)
+        return {
+          value: v.value,
+          label: subject ? subject.subject : v.label,
+        }
+      })
+      setSelectedOptions(optionsWithLabels)
     }
-  }, [value])
+  }, [value, subjects])
 
   const handleChange = (newValue: readonly SubjectOption[]) => {
+    // Prevent removal of locked values
+    if (lockedValues && lockedValues.length > 0) {
+      const lockedSet = new Set(lockedValues)
+      const hasRemovedLocked = selectedOptions.some(
+        (option) =>
+          lockedSet.has(option.value) &&
+          !newValue.some((nv) => nv.value === option.value),
+      )
+
+      if (hasRemovedLocked) {
+        // Re-add locked values that were removed
+        const lockedOptions = selectedOptions.filter((option) =>
+          lockedSet.has(option.value),
+        )
+        const combinedValue = [
+          ...newValue.filter((nv) => !lockedSet.has(nv.value)),
+          ...lockedOptions,
+        ]
+        setSelectedOptions(combinedValue)
+
+        if (onChange) {
+          onChange(combinedValue)
+        }
+        return
+      }
+    }
+
     setSelectedOptions(newValue as SubjectOption[])
 
     if (onChange) {
@@ -238,6 +301,13 @@ export const SubjectsAutocomplete = ({
           )}
         </HStack>
       )
+    },
+    MultiValueRemove: (props: MultiValueRemoveProps<SubjectOption>) => {
+      // Don't show remove button for locked values
+      if (lockedValues?.includes(props.data.value)) {
+        return null
+      }
+      return <chakraComponents.MultiValueRemove {...props} />
     },
   }
 

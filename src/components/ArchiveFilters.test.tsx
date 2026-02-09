@@ -23,7 +23,6 @@ describe('ArchiveFilters Component', () => {
       url_filter: '',
     },
     updateFilters: mockUpdateFilters,
-    showSubjectFilters: true,
     isLoggedIn: false,
   }
 
@@ -70,20 +69,11 @@ describe('ArchiveFilters Component', () => {
     ).toBeTruthy()
   })
 
-  it('shows subject filters when showSubjectFilters is true', async () => {
-    renderWithProviders(
-      <ArchiveFilters {...defaultProps} showSubjectFilters={true} />,
-    )
+  it('shows subject filters', async () => {
+    renderWithProviders(<ArchiveFilters {...defaultProps} />)
     await waitFor(() => {
       expect(screen.getByText('Search subjects')).toBeTruthy()
     })
-  })
-
-  it('hides subject filters when showSubjectFilters is false', () => {
-    renderWithProviders(
-      <ArchiveFilters {...defaultProps} showSubjectFilters={false} />,
-    )
-    expect(screen.queryByText('Search subjects')).not.toBeTruthy()
   })
 
   it('shows private records switch when logged in', () => {
