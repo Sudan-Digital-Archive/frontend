@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { useParams } from 'react-router'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Layout from '../components/Layout.tsx'
 import { AccessionsCards } from '../components/AccessionsCards.tsx'
@@ -26,6 +26,22 @@ export default function CollectionView() {
 
   const [collection, setCollection] = useState<Collection | null>(null)
   const [isLoadingCollection, setIsLoadingCollection] = useState(true)
+  const [accessionsEnabled, setAccessionsEnabled] = useState(false)
+
+  const {
+    queryFilters,
+    updateFilters,
+    accessions,
+    isLoading,
+    pagination,
+    handleRefresh,
+  } = useAccessions({
+    isLoggedIn,
+    baseFilters: {
+      lang: i18n.language === 'en' ? 'english' : 'arabic',
+    },
+    enabled: accessionsEnabled,
+  })
 
   // Fetch collection by ID from the API
   useEffect(() => {
@@ -46,6 +62,10 @@ export default function CollectionView() {
         if (response.ok) {
           const data: Collection = await response.json()
           setCollection(data)
+          updateFilters({
+            metadata_subjects: data.subject_ids,
+            metadata_subjects_inclusive_filter: false,
+          })
         } else {
           setCollection(null)
         }
@@ -54,37 +74,13 @@ export default function CollectionView() {
         setCollection(null)
       } finally {
         setIsLoadingCollection(false)
+
+        setAccessionsEnabled(true)
       }
     }
 
     fetchCollection()
-  }, [id, i18n.language])
-
-  // Base filters from collection config
-  // Rule: An accession exists in a given collection iff it has ALL the subject ids
-  // present in that collection. This is an inclusive filter where the accession
-  // must match ALL collection subject_ids.
-  const baseFilters = useMemo(() => {
-    if (!collection) return {}
-    return {
-      lang: i18n.language === 'en' ? 'english' : 'arabic',
-      metadata_subjects: collection.subject_ids,
-      metadata_subjects_inclusive_filter: true,
-    }
-  }, [collection, i18n.language])
-
-  const {
-    queryFilters,
-    updateFilters,
-    accessions,
-    isLoading,
-    pagination,
-    handleRefresh,
-  } = useAccessions({
-    isLoggedIn,
-    baseFilters,
-    enabled: !!collection,
-  })
+  }, [id, i18n.language, updateFilters])
 
   if (isLoadingCollection) {
     return (
@@ -125,12 +121,14 @@ export default function CollectionView() {
           <ArchiveFilters
             queryFilters={queryFilters}
             updateFilters={updateFilters}
-            showSubjectFilters={false}
+            lockedSubjectIds={collection.subject_ids}
             isLoggedIn={isLoggedIn}
           />
 
           {isLoading || !accessions ? (
-            <Spinner />
+            <Box py={10} display="flex" justifyContent="center">
+              <Spinner />
+            </Box>
           ) : (
             <AccessionsCards
               accessions={accessions.items}

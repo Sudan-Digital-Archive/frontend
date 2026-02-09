@@ -8,18 +8,17 @@ import type { AccessionsQueryFilters } from '../apiTypes/apiRequests.ts'
 interface ArchiveFiltersProps {
   queryFilters: AccessionsQueryFilters
   updateFilters: (filters: Partial<AccessionsQueryFilters>) => void
-  showSubjectFilters?: boolean
   isLoggedIn: boolean
+  lockedSubjectIds?: number[]
 }
 
 export function ArchiveFilters({
   queryFilters,
   updateFilters,
-  showSubjectFilters = true,
   isLoggedIn,
+  lockedSubjectIds,
 }: ArchiveFiltersProps) {
   const { t } = useTranslation()
-
   const [dateFrom, setDateFrom] = useState<null | Date>(null)
   const [dateTo, setDateTo] = useState<null | Date>(null)
   const [queryTerm, setQueryTerm] = useState(queryFilters.query_term || '')
@@ -126,39 +125,54 @@ export function ArchiveFilters({
           </>
         )}
       </Flex>
-      {showSubjectFilters && (
-        <Flex py={5} direction={{ base: 'column', md: 'row' }}>
-          <SubjectsAutocomplete
-            menuPlacement="top"
-            onChange={(subjects) => {
-              updateFilters({
-                metadata_subjects: subjects.map((subject) => subject.value),
-              })
-            }}
-          />
-          {Array.isArray(queryFilters.metadata_subjects) &&
-            queryFilters.metadata_subjects.length > 0 && (
-              <Flex alignItems="center" mt={{ base: 4, md: 0 }}>
-                <Tag size="lg" colorScheme="blue" ml={{ base: 0, md: 4 }}>
-                  {queryFilters.metadata_subjects_inclusive_filter
-                    ? t('exclusive')
-                    : t('inclusive')}
-                </Tag>
-                <Switch
-                  my={2}
-                  mx={2}
-                  size="lg"
-                  isChecked={queryFilters.metadata_subjects_inclusive_filter}
-                  onChange={(e) => {
-                    updateFilters({
-                      metadata_subjects_inclusive_filter: e.target.checked,
-                    })
-                  }}
-                />
-              </Flex>
-            )}
-        </Flex>
-      )}
+      <Flex py={5} direction={{ base: 'column', md: 'row' }}>
+        <SubjectsAutocomplete
+          menuPlacement="top"
+          lockedValues={lockedSubjectIds}
+          value={queryFilters.metadata_subjects?.map((id) => ({
+            value: id,
+            label: String(id),
+          }))}
+          onChange={(subjects) => {
+            const newSubjectIds = subjects.map((subject) => subject.value)
+            // Merge locked subjects with user selections
+            const mergedIds =
+              lockedSubjectIds && lockedSubjectIds.length > 0
+                ? [
+                    ...lockedSubjectIds,
+                    ...newSubjectIds.filter(
+                      (id) => !lockedSubjectIds.includes(id),
+                    ),
+                  ]
+                : newSubjectIds
+            updateFilters({
+              metadata_subjects: mergedIds,
+            })
+          }}
+        />
+        {Array.isArray(queryFilters.metadata_subjects) &&
+          queryFilters.metadata_subjects.length > 0 &&
+          (!lockedSubjectIds || lockedSubjectIds.length === 0) && (
+            <Flex alignItems="center" mt={{ base: 4, md: 0 }}>
+              <Tag size="lg" colorScheme="blue" ml={{ base: 0, md: 4 }}>
+                {queryFilters.metadata_subjects_inclusive_filter
+                  ? t('exclusive')
+                  : t('inclusive')}
+              </Tag>
+              <Switch
+                my={2}
+                mx={2}
+                size="lg"
+                isChecked={queryFilters.metadata_subjects_inclusive_filter}
+                onChange={(e) => {
+                  updateFilters({
+                    metadata_subjects_inclusive_filter: e.target.checked,
+                  })
+                }}
+              />
+            </Flex>
+          )}
+      </Flex>
     </Box>
   )
 }
