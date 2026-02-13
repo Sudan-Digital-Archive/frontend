@@ -10,6 +10,7 @@ interface ArchiveFiltersProps {
   updateFilters: (filters: Partial<AccessionsQueryFilters>) => void
   isLoggedIn: boolean
   lockedSubjectIds?: number[]
+  collectionId?: number
 }
 
 export function ArchiveFilters({
@@ -17,6 +18,7 @@ export function ArchiveFilters({
   updateFilters,
   isLoggedIn,
   lockedSubjectIds,
+  collectionId,
 }: ArchiveFiltersProps) {
   const { t } = useTranslation()
   const [dateFrom, setDateFrom] = useState<null | Date>(null)
@@ -129,6 +131,7 @@ export function ArchiveFilters({
         <SubjectsAutocomplete
           menuPlacement="top"
           lockedValues={lockedSubjectIds}
+          collectionId={collectionId}
           value={queryFilters.metadata_subjects?.map((id) => ({
             value: id,
             label: String(id),
