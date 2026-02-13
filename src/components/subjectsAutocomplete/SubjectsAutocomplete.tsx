@@ -23,6 +23,7 @@ interface SubjectsAutocompleteProps {
   }
   value?: readonly SubjectOption[]
   lockedValues?: number[]
+  collectionId?: number
 }
 
 export const SubjectsAutocomplete = ({
@@ -31,6 +32,7 @@ export const SubjectsAutocomplete = ({
   defaultValues,
   value,
   lockedValues,
+  collectionId,
 }: SubjectsAutocompleteProps) => {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
@@ -78,8 +80,10 @@ export const SubjectsAutocomplete = ({
   const fetchSubjects = useCallback(async () => {
     setIsLoading(true)
     try {
+      const collectionIdParam =
+        collectionId !== undefined ? `&in_collection_id=${collectionId}` : ''
       const response = await fetch(
-        `${appConfig.apiURL}metadata-subjects?page=0&per_page=50&lang=${apiLang}`,
+        `${appConfig.apiURL}metadata-subjects?page=0&per_page=50&lang=${apiLang}${collectionIdParam}`,
         {
           headers: {
             Accept: 'application/json',
@@ -104,7 +108,7 @@ export const SubjectsAutocomplete = ({
     } finally {
       setIsLoading(false)
     }
-  }, [apiLang, toast, t])
+  }, [apiLang, toast, t, collectionId])
 
   const createNewSubject = async (subjectName: string) => {
     setIsCreatingNewSubject(true)

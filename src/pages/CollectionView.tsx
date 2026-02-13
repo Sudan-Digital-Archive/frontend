@@ -123,6 +123,7 @@ export default function CollectionView() {
             updateFilters={updateFilters}
             lockedSubjectIds={collection.subject_ids}
             isLoggedIn={isLoggedIn}
+            collectionId={collection.id}
           />
 
           {isLoading || !accessions ? (
