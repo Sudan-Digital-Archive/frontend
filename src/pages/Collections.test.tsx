@@ -89,7 +89,10 @@ describe('Collections Component', () => {
       ok: true,
       json: async () => mockArabicCollectionsResponse,
     })
-    renderWithProviders(<Collections />, { language: 'ar' })
+    renderWithProviders(<Collections />, {
+      language: 'ar',
+      searchParams: 'lang=ar',
+    })
     await waitFor(() => {
       expect(
         screen.getByRole('heading', { name: /^المجموعات$/i, level: 2 }),
@@ -128,7 +131,10 @@ describe('Collections Component', () => {
       ok: true,
       json: async () => mockArabicCollectionsResponse,
     })
-    renderWithProviders(<Collections />, { language: 'ar' })
+    renderWithProviders(<Collections />, {
+      language: 'ar',
+      searchParams: 'lang=ar',
+    })
     await waitFor(() => {
       expect(screen.getByText('مقالات معهد التحرير عن السودان')).toBeTruthy()
     })

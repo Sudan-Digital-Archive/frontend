@@ -16,6 +16,7 @@ import { Home } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { useWindowSize } from '../hooks/useWindowSize.ts'
 import { useUser } from '../hooks/useUser.ts'
+import { LangNavLink } from './LangNavLink.tsx'
 
 interface NavbarProps {
   // useful if you want to prevent layout shifts
@@ -69,7 +70,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 <MenuItem pl={6} as={NavLink} to="/archive">
                   {t('nav_search')}
                 </MenuItem>
-                <MenuItem pl={6} as={NavLink} to="/collections">
+                <MenuItem pl={6} as={LangNavLink} to="/collections">
                   {t('nav_collections')}
                 </MenuItem>
                 <MenuItem isDisabled>
@@ -134,7 +135,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 <MenuItem as={NavLink} to="/archive">
                   {t('nav_search')}
                 </MenuItem>
-                <MenuItem as={NavLink} to="/collections">
+                <MenuItem as={LangNavLink} to="/collections">
                   {t('nav_collections')}
                 </MenuItem>
               </MenuList>
