@@ -1,6 +1,6 @@
 import { beforeAll } from 'vitest'
 import { render } from '@testing-library/react'
-import { BrowserRouter } from 'react-router'
+import { BrowserRouter, MemoryRouter } from 'react-router'
 import { I18nextProvider } from 'react-i18next'
 import i18n from 'i18next'
 import React, { useState } from 'react'
@@ -79,6 +79,7 @@ interface RenderOptions {
   language?: 'en' | 'ar'
   isLoggedIn?: boolean
   role?: UserRole | null
+  searchParams?: string
 }
 
 export const renderWithProviders = (
@@ -91,8 +92,13 @@ export const renderWithProviders = (
     document.documentElement.dir = options.language === 'ar' ? 'rtl' : 'ltr'
   }
 
+  const Router = options.searchParams ? MemoryRouter : BrowserRouter
+  const routerProps = options.searchParams
+    ? { initialEntries: [`/?${options.searchParams}`] }
+    : {}
+
   return render(
-    <BrowserRouter>
+    <Router {...routerProps}>
       <ChakraProvider>
         <I18nextProvider i18n={i18n}>
           <MockUserProvider isLoggedIn={options.isLoggedIn} role={options.role}>
@@ -100,6 +106,6 @@ export const renderWithProviders = (
           </MockUserProvider>
         </I18nextProvider>
       </ChakraProvider>
-    </BrowserRouter>,
+    </Router>,
   )
 }

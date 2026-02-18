@@ -4,11 +4,18 @@ import { buildFilters } from '../utils/url.ts'
 import type { CollectionsQueryFilters } from '../apiTypes/apiRequests.ts'
 import type { ListCollections } from '../apiTypes/apiResponses.ts'
 
-export const useCollections = (initialLang: string) => {
+interface UseCollectionsOptions {
+  isLoggedIn: boolean
+  baseFilters?: Record<string, unknown>
+}
+
+export const useCollections = (options: UseCollectionsOptions) => {
+  const { isLoggedIn, baseFilters = {} } = options
+
   const [queryFilters, setQueryFilters] = useState<CollectionsQueryFilters>({
-    lang: initialLang,
     page: 0,
     per_page: 50,
+    ...baseFilters,
   })
 
   const [collections, setCollections] = useState<ListCollections | null>(null)
@@ -30,7 +37,11 @@ export const useCollections = (initialLang: string) => {
 
   const fetchCollections = useCallback(async () => {
     try {
-      const url = `${appConfig.apiURL}collections?${buildFilters(queryFilters)}`
+      const endpoint =
+        isLoggedIn && queryFilters.is_private
+          ? `${appConfig.apiURL}collections/private`
+          : `${appConfig.apiURL}collections`
+      const url = `${endpoint}?${buildFilters(queryFilters)}`
       const response = await fetch(url, {
         credentials: 'include',
         headers: {
@@ -48,7 +59,7 @@ export const useCollections = (initialLang: string) => {
     } finally {
       setIsLoading(false)
     }
-  }, [queryFilters])
+  }, [queryFilters, isLoggedIn])
 
   useEffect(() => {
     setIsLoading(true)

@@ -8,7 +8,7 @@ import {
   Button,
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
-import { useParams } from 'react-router'
+import { useParams, useSearchParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Layout from '../components/Layout.tsx'
@@ -23,6 +23,19 @@ export default function CollectionView() {
   const { id } = useParams()
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const lang = searchParams.get('lang') || 'en'
+  const isPrivate = searchParams.get('isPrivate') === 'true'
+
+  // Ensure isPrivate is always explicitly in the URL
+  useEffect(() => {
+    if (searchParams.get('isPrivate') === null) {
+      const newParams = new URLSearchParams(searchParams)
+      newParams.set('isPrivate', 'false')
+      setSearchParams(newParams, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
 
   const [collection, setCollection] = useState<Collection | null>(null)
   const [isLoadingCollection, setIsLoadingCollection] = useState(true)
@@ -38,10 +51,28 @@ export default function CollectionView() {
   } = useAccessions({
     isLoggedIn,
     baseFilters: {
-      lang: i18n.language === 'en' ? 'english' : 'arabic',
+      lang: lang === 'en' ? 'english' : 'arabic',
+      is_private: isPrivate,
     },
     enabled: accessionsEnabled,
   })
+
+  // Sync i18n with URL lang param
+  useEffect(() => {
+    i18n.changeLanguage(lang)
+    switch (lang) {
+      case 'en':
+        document.documentElement.lang = 'en'
+        document.documentElement.dir = 'ltr'
+        break
+      case 'ar':
+        document.documentElement.lang = 'ar'
+        document.documentElement.dir = 'rtl'
+        break
+      default:
+        throw `Language ${lang} is not supported`
+    }
+  }, [lang, i18n])
 
   // Fetch collection by ID from the API
   useEffect(() => {
@@ -49,16 +80,17 @@ export default function CollectionView() {
       if (!id) return
 
       try {
-        const lang = i18n.language === 'en' ? 'english' : 'arabic'
-        const response = await fetch(
-          `${appConfig.apiURL}collections/${id}?lang=${lang}`,
-          {
-            credentials: 'include',
-            headers: {
-              Accept: 'application/json',
-            },
+        const collectionLang = lang === 'en' ? 'english' : 'arabic'
+        const endpoint =
+          isLoggedIn && isPrivate
+            ? `${appConfig.apiURL}collections/private/${id}?lang=${collectionLang}`
+            : `${appConfig.apiURL}collections/${id}?lang=${collectionLang}`
+        const response = await fetch(endpoint, {
+          credentials: 'include',
+          headers: {
+            Accept: 'application/json',
           },
-        )
+        })
         if (response.ok) {
           const data: Collection = await response.json()
           setCollection(data)
@@ -74,13 +106,22 @@ export default function CollectionView() {
         setCollection(null)
       } finally {
         setIsLoadingCollection(false)
-
         setAccessionsEnabled(true)
       }
     }
 
     fetchCollection()
-  }, [id, i18n.language, updateFilters])
+  }, [id, lang, isPrivate, isLoggedIn, updateFilters])
+
+  if (isPrivate && !isLoggedIn) {
+    return (
+      <Layout>
+        <Box p={10} textAlign="center">
+          <Text>{t('login_required')}</Text>
+        </Box>
+      </Layout>
+    )
+  }
 
   if (isLoadingCollection) {
     return (
@@ -103,7 +144,30 @@ export default function CollectionView() {
   }
 
   return (
-    <Layout>
+    <Layout
+      changeLanguageOverride={() => {
+        const newLanguage = i18n.language === 'en' ? 'ar' : 'en'
+        const newParams = new URLSearchParams(searchParams)
+        newParams.set('lang', newLanguage)
+        setSearchParams(newParams, { replace: true })
+        i18n.changeLanguage(newLanguage)
+        switch (newLanguage) {
+          case 'en':
+            document.documentElement.lang = 'en'
+            document.documentElement.dir = 'ltr'
+            break
+          case 'ar':
+            document.documentElement.lang = 'ar'
+            document.documentElement.dir = 'rtl'
+            break
+          default:
+            throw `Language ${newLanguage} is not supported`
+        }
+        updateFilters({
+          lang: newLanguage === 'en' ? 'english' : 'arabic',
+        })
+      }}
+    >
       <VStack alignItems="center" justifyContent="center">
         <Box w="100%" p={10}>
           <Heading

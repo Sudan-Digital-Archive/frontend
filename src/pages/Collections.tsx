@@ -10,32 +10,79 @@ import {
   Text,
   HStack,
   Spinner,
+  Switch,
+  Flex,
+  Tag,
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
 import Layout from '../components/Layout.tsx'
 import { useTranslation } from 'react-i18next'
-import { NavLink } from 'react-router'
+import { LangNavLink } from '../components/LangNavLink.tsx'
+import { useEffect, useMemo } from 'react'
 import { useCollections } from '../hooks/useCollections.ts'
-import { useEffect } from 'react'
+import { useUser } from '../hooks/useUser.ts'
+import { useSearchParams } from 'react-router'
 
 export default function Collections() {
   const { t, i18n } = useTranslation()
-  const lang = i18n.language === 'en' ? 'english' : 'arabic'
+  const { isLoggedIn } = useUser()
+  const [searchParams] = useSearchParams()
 
-  const { collections, isLoading, pagination, updateFilters } =
-    useCollections(lang)
+  const lang = searchParams.get('lang') || 'en'
+  const isPrivate = searchParams.get('isPrivate') === 'true'
 
-  // Update language filter when i18n language changes
+  const baseFilters = useMemo(
+    () => ({
+      lang: lang === 'en' ? 'english' : 'arabic',
+      is_private: isPrivate,
+    }),
+    [lang, isPrivate],
+  )
+
+  const { collections, isLoading, pagination, updateFilters } = useCollections({
+    isLoggedIn,
+    baseFilters,
+  })
+
   useEffect(() => {
-    updateFilters({
-      lang: i18n.language === 'en' ? 'english' : 'arabic',
-      page: 0,
-    })
-  }, [i18n.language, updateFilters])
+    i18n.changeLanguage(lang)
+    switch (lang) {
+      case 'en':
+        document.documentElement.lang = 'en'
+        document.documentElement.dir = 'ltr'
+        break
+      case 'ar':
+        document.documentElement.lang = 'ar'
+        document.documentElement.dir = 'rtl'
+        break
+      default:
+        throw `Language ${lang} is not supported`
+    }
+  }, [lang, i18n])
 
   return (
-    <Layout>
+    <Layout
+      changeLanguageOverride={() => {
+        const newLanguage = i18n.language === 'en' ? 'ar' : 'en'
+        i18n.changeLanguage(newLanguage)
+        switch (newLanguage) {
+          case 'en':
+            document.documentElement.lang = 'en'
+            document.documentElement.dir = 'ltr'
+            break
+          case 'ar':
+            document.documentElement.lang = 'ar'
+            document.documentElement.dir = 'rtl'
+            break
+          default:
+            throw `Language ${newLanguage} is not supported`
+        }
+        updateFilters({
+          lang: newLanguage === 'en' ? 'english' : 'arabic',
+        })
+      }}
+    >
       <VStack alignItems="center" justifyContent="center">
         <Box w="100%" maxW="6xl" p={10} mx="auto">
           <Heading
@@ -47,6 +94,22 @@ export default function Collections() {
           >
             {t('collections_title')}
           </Heading>
+          {isLoggedIn && (
+            <Flex mb={5} alignItems="center" justifyContent="center">
+              <Tag size="lg" colorScheme="cyan">
+                {t('archive_filter_private_records')}
+              </Tag>
+              <Switch
+                my={2}
+                mx={2}
+                size="lg"
+                isChecked={isPrivate}
+                onChange={(e) => {
+                  updateFilters({ is_private: e.target.checked })
+                }}
+              />
+            </Flex>
+          )}
           {isLoading || !collections ? (
             <Box
               display="flex"
@@ -76,11 +139,13 @@ export default function Collections() {
                     <Text>{collection.description}</Text>
                   </CardBody>
                   <CardFooter>
-                    <NavLink to={`/collections/${collection.id}`}>
+                    <LangNavLink
+                      to={`/collections/${collection.id}?isPrivate=${!collection.is_public}`}
+                    >
                       <Button colorScheme="purple" variant="solid">
                         {t('collection_view_button')}
                       </Button>
-                    </NavLink>
+                    </LangNavLink>
                   </CardFooter>
                 </ArchiveCard>
               ))}

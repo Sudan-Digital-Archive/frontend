@@ -15,4 +15,5 @@ export type CollectionsQueryFilters = {
   lang?: string
   page?: number
   per_page?: number
+  is_private?: boolean
 }
