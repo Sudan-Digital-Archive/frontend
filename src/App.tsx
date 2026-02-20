@@ -12,7 +12,7 @@ import NotFound from './pages/NotFound.tsx'
 import UserManagement from './pages/UserManagement.tsx'
 import './il18n.ts'
 import './css/styles.css'
-import { Routes, Route, ScrollRestoration } from 'react-router'
+import { Routes, Route, useLocation } from 'react-router'
 import Home from './pages/Home.tsx'
 import ContactUs from './pages/ContactUs.tsx'
 import Login from './pages/Login.tsx'
@@ -21,6 +21,11 @@ import { useUser } from './hooks/useUser.ts'
 
 export const App = () => {
   const { setIsLoggedIn } = useUser()
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location])
 
   // note this is information only, the actual auth cookie is httpOnly
   // so can't be accessed via JS, this is just to update the UI
@@ -36,25 +41,22 @@ export const App = () => {
   }, [setIsLoggedIn])
 
   return (
-    <>
-      <ScrollRestoration />
-      <Routes>
-        <Route index element={<Home />} />
-        <Route path="mission" element={<Mission />} />
-        <Route path="who-are-we" element={<WhoAreWe />} />
-        <Route path="why-another-archive" element={<WhyAnotherArchive />} />
-        <Route path="tech-stack" element={<TechnicalStack />} />
-        <Route path="code-of-conduct" element={<CodeOfConduct />} />
-        <Route path="archive" element={<Archive />} />
-        <Route path="collections" element={<Collections />} />
-        <Route path="collections/:id" element={<CollectionView />} />
-        <Route path="contact-us" element={<ContactUs />} />
-        <Route path="archive/:id" element={<ViewAccession />} />
-        <Route path="login" element={<Login />} />
-        <Route path="jwt-auth" element={<JWTAuth />} />
-        <Route path="user-management" element={<UserManagement />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route index element={<Home />} />
+      <Route path="mission" element={<Mission />} />
+      <Route path="who-are-we" element={<WhoAreWe />} />
+      <Route path="why-another-archive" element={<WhyAnotherArchive />} />
+      <Route path="tech-stack" element={<TechnicalStack />} />
+      <Route path="code-of-conduct" element={<CodeOfConduct />} />
+      <Route path="archive" element={<Archive />} />
+      <Route path="collections" element={<Collections />} />
+      <Route path="collections/:id" element={<CollectionView />} />
+      <Route path="contact-us" element={<ContactUs />} />
+      <Route path="archive/:id" element={<ViewAccession />} />
+      <Route path="login" element={<Login />} />
+      <Route path="jwt-auth" element={<JWTAuth />} />
+      <Route path="user-management" element={<UserManagement />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   )
 }
