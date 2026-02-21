@@ -249,37 +249,42 @@ export default function UserManagement() {
                     <Tr key={user.id}>
                       <Td>{user.email}</Td>
                       <Td>
-                        <Box mb={1}>
+                        <VStack align="start" spacing={3}>
                           <HStack spacing={2}>
                             <Badge colorScheme="cyan" fontSize="xs">
                               {t('user_management_current_badge')}
                             </Badge>
-                            <Text fontWeight="bold" fontSize="sm">
+                            <Text fontStyle="italic" fontSize="sm">
                               {editState[user.id]?.originalRole}
                             </Text>
                           </HStack>
-                        </Box>
-                        <Select
-                          value={editState[user.id]?.role || user.role}
-                          onChange={(e) =>
-                            handleEditRoleChange(
-                              user.id,
-                              e.target.value as UserRole,
-                            )
-                          }
-                          size="sm"
-                          maxW="150px"
-                        >
-                          <option value="Admin">
-                            {t('user_management_role_admin')}
-                          </option>
-                          <option value="Contributor">
-                            {t('user_management_role_contributor')}
-                          </option>
-                          <option value="Researcher">
-                            {t('user_management_role_researcher')}
-                          </option>
-                        </Select>
+                          <Box>
+                            <Text fontSize="xs" color="gray.500" mb={1}>
+                              {t('user_management_change_role')}
+                            </Text>
+                            <Select
+                              value={editState[user.id]?.role || user.role}
+                              onChange={(e) =>
+                                handleEditRoleChange(
+                                  user.id,
+                                  e.target.value as UserRole,
+                                )
+                              }
+                              size="sm"
+                              maxW="180px"
+                            >
+                              <option value="Admin">
+                                {t('user_management_role_admin')}
+                              </option>
+                              <option value="Contributor">
+                                {t('user_management_role_contributor')}
+                              </option>
+                              <option value="Researcher">
+                                {t('user_management_role_researcher')}
+                              </option>
+                            </Select>
+                          </Box>
+                        </VStack>
                       </Td>
                       <Td>
                         <Switch
