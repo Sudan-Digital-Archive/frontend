@@ -48,7 +48,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
     const width = useWindowSize()
     const isMobile = width <= 768
     const { isLoggedIn, role } = useUser()
-    const isAdmin = role === 'Admin'
+    const isAdmin = role?.toLowerCase() === 'admin'
 
     return (
       <>

@@ -120,7 +120,7 @@ export const useUsers = (): UseUsersReturn => {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, role: payload.role.toLowerCase() }),
       })
       if (!response.ok) {
         throw new Error('Failed to update user')

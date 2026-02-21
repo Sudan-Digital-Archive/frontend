@@ -220,6 +220,7 @@
     "user_management_delete_success": "User deleted successfully",
     "user_management_delete_error": "Error deleting user",
     "user_management_create_success": "User created successfully",
-    "user_management_create_error": "Error creating user"
+    "user_management_create_error": "Error creating user",
+    "user_management_current_badge": "Current"
   }
 }
