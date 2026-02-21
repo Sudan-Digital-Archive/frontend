@@ -221,6 +221,7 @@
     "user_management_delete_error": "خطأ في حذف المستخدم",
     "user_management_create_success": "تم إنشاء المستخدم بنجاح",
     "user_management_create_error": "خطأ في إنشاء المستخدم",
-    "user_management_current_badge": "الحالي"
+    "user_management_current_badge": "الحالي:",
+    "user_management_change_role": "تغيير الدور:"
   }
 }
