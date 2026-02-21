@@ -32,6 +32,8 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   useToast,
+  Badge,
+  Text,
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight, Plus } from 'react-feather'
 import Layout from '../components/Layout.tsx'
@@ -58,7 +60,10 @@ export default function UserManagement() {
 
   // Edit state for each row
   const [editState, setEditState] = useState<
-    Record<string, { role: UserRole; isActive: boolean }>
+    Record<
+      string,
+      { role: UserRole; isActive: boolean; originalRole: UserRole }
+    >
   >({})
 
   // Create user modal state
@@ -94,11 +99,16 @@ export default function UserManagement() {
 
   // Initialize edit state when users change
   useEffect(() => {
-    const newEditState: Record<string, { role: UserRole; isActive: boolean }> =
-      {}
+    const newEditState: Record<
+      string,
+      { role: UserRole; isActive: boolean; originalRole: UserRole }
+    > = {}
     users.forEach((user) => {
+      const capitalizedRole = (user.role.charAt(0).toUpperCase() +
+        user.role.slice(1)) as UserRole
       newEditState[user.id] = {
-        role: user.role,
+        role: capitalizedRole,
+        originalRole: capitalizedRole,
         isActive: user.is_active,
       }
     })
@@ -239,6 +249,16 @@ export default function UserManagement() {
                     <Tr key={user.id}>
                       <Td>{user.email}</Td>
                       <Td>
+                        <Box mb={1}>
+                          <HStack spacing={2}>
+                            <Badge colorScheme="cyan" fontSize="xs">
+                              {t('user_management_current_badge')}
+                            </Badge>
+                            <Text fontWeight="bold" fontSize="sm">
+                              {editState[user.id]?.originalRole}
+                            </Text>
+                          </HStack>
+                        </Box>
                         <Select
                           value={editState[user.id]?.role || user.role}
                           onChange={(e) =>
