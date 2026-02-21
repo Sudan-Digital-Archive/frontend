@@ -1,17 +1,10 @@
-import {
-  Box,
-  Heading,
-  Spinner,
-  VStack,
-  Text,
-  HStack,
-  Button,
-} from '@chakra-ui/react'
+import { Box, Spinner, VStack, Text, HStack, Button } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { useParams, useSearchParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Layout from '../components/Layout.tsx'
+import { CollectionHeader } from '../components/CollectionHeader.tsx'
 import { AccessionsCards } from '../components/AccessionsCards.tsx'
 import { ArchiveFilters } from '../components/ArchiveFilters.tsx'
 import { useUser } from '../hooks/useUser.ts'
@@ -170,17 +163,10 @@ export default function CollectionView() {
     >
       <VStack alignItems="center" justifyContent="center">
         <Box w="100%" p={10}>
-          <Heading
-            textAlign="center"
-            py={2}
-            bgGradient="linear(to-r, cyan.300, pink.600)"
-            bgClip="text"
-          >
-            {collection.title}
-          </Heading>
-          <Text textAlign="center" mb={5} fontSize="lg">
-            {collection.description}
-          </Text>
+          <CollectionHeader
+            title={collection.title}
+            description={collection.description}
+          />
 
           <ArchiveFilters
             queryFilters={queryFilters}

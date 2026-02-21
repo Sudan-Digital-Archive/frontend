@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
+import { Description } from '../components/metadata/Description'
 import Layout from '../components/Layout.tsx'
 import { useTranslation } from 'react-i18next'
 import { LangNavLink } from '../components/LangNavLink.tsx'
@@ -136,7 +137,10 @@ export default function Collections() {
                     <Heading size="md">{collection.title}</Heading>
                   </CardHeader>
                   <CardBody>
-                    <Text>{collection.description}</Text>
+                    <Description
+                      description={collection.description}
+                      truncate
+                    />
                   </CardBody>
                   <CardFooter>
                     <LangNavLink
