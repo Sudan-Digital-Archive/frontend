@@ -12,7 +12,7 @@ import NotFound from './pages/NotFound.tsx'
 import UserManagement from './pages/UserManagement.tsx'
 import './il18n.ts'
 import './css/styles.css'
-import { Routes, Route } from 'react-router'
+import { Routes, Route, useLocation } from 'react-router'
 import Home from './pages/Home.tsx'
 import ContactUs from './pages/ContactUs.tsx'
 import Login from './pages/Login.tsx'
@@ -21,6 +21,11 @@ import { useUser } from './hooks/useUser.ts'
 
 export const App = () => {
   const { setIsLoggedIn } = useUser()
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location])
 
   // note this is information only, the actual auth cookie is httpOnly
   // so can't be accessed via JS, this is just to update the UI
