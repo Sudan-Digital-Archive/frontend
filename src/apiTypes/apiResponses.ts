@@ -47,7 +47,7 @@ export type Collection = {
   id: number
   title: string
   description: string
-  is_public: boolean
+  is_private: boolean
   subject_ids: number[]
 }
 
