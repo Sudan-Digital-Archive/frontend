@@ -144,7 +144,7 @@ export default function Collections() {
                   </CardBody>
                   <CardFooter>
                     <LangNavLink
-                      to={`/collections/${collection.id}?isPrivate=${!collection.is_public}`}
+                      to={`/collections/${collection.id}?isPrivate=${collection.is_private}`}
                     >
                       <Button colorScheme="purple" variant="solid">
                         {t('collection_view_button')}
