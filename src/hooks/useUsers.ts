@@ -5,6 +5,7 @@ import type {
   ListUsers,
   CreateUserPayload,
   UpdateUserPayload,
+  UpdateUserResponse,
   UsersQueryFilters,
 } from '../apiTypes/userTypes.ts'
 
@@ -125,24 +126,34 @@ export const useUsers = (): UseUsersReturn => {
       if (!response.ok) {
         throw new Error('Failed to update user')
       }
-      await fetchUsers(queryFilters)
+      const updatedUserData: UpdateUserResponse = await response.json()
+      const capitalizedRole = (updatedUserData.role.charAt(0).toUpperCase() +
+        updatedUserData.role.slice(1)) as User['role']
+      setUsers((prev) =>
+        prev.map((user) =>
+          user.id === userId
+            ? {
+                ...user,
+                role: capitalizedRole,
+                is_active: updatedUserData.is_active,
+              }
+            : user,
+        ),
+      )
     },
-    [fetchUsers, queryFilters],
+    [],
   )
 
-  const deleteUser = useCallback(
-    async (userId: string) => {
-      const response = await fetch(`${appConfig.apiURL}auth/users/${userId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
-      if (!response.ok) {
-        throw new Error('Failed to delete user')
-      }
-      await fetchUsers(queryFilters)
-    },
-    [fetchUsers, queryFilters],
-  )
+  const deleteUser = useCallback(async (userId: string) => {
+    const response = await fetch(`${appConfig.apiURL}auth/users/${userId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    if (!response.ok) {
+      throw new Error('Failed to delete user')
+    }
+    setUsers((prev) => prev.filter((user) => user.id !== userId))
+  }, [])
 
   const refreshUsers = useCallback(() => {
     fetchUsers(queryFilters)
