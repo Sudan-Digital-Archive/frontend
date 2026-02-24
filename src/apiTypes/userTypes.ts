@@ -25,6 +25,13 @@ export type UpdateUserPayload = {
   role: UserRole
 }
 
+export type UpdateUserResponse = {
+  id: string
+  email: string
+  is_active: boolean
+  role: string
+}
+
 export type UsersQueryFilters = {
   page?: number
   per_page?: number
