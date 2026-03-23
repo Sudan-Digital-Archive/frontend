@@ -1,0 +1,115 @@
+{
+  "accountability_processes": [
+    {
+      "step": "Acknowledge Harm",
+      "description": "Recognize that your actions, regardless of intent, caused harm to another person or relationship. This acknowledgment will be discussed in a mediated session with the affected parties."
+    },
+    {
+      "step": "Recognize Agency",
+      "description": "Accept that your decisions, whether intentional or not, led to the harm. Through guided dialogue with mediators, explore how different choices could have led to different outcomes."
+    },
+    {
+      "step": "Understand Impact",
+      "description": "Work with mediators to gain a clear understanding of how your actions affected others. This involves facilitated communication between parties, either direct or indirect based on the comfort and safety of those involved."
+    },
+    {
+      "step": "Take Reparative Action",
+      "description": "With guidance from mediators, develop and implement concrete steps to repair the harm caused. This demonstrates accountability through action. For example, if you upset someone by being overly critical of their work, you could not only apologize but also publicly praise some other work they've done. Another example could be offering to assist them with a project or task to make up for any setbacks your actions may have caused. The specific actions will be agreed upon by all parties through the mediation process."
+    },
+    {
+      "step": "Identify and Address Patterns",
+      "description": "Through structured reflection sessions with mediators, examine the circumstances that led to the harmful decision. Develop specific strategies and commitments to change your behavior and reduce the likelihood of similar situations in the future."
+    }
+  ],
+  "boundaries_steps": [
+    "Request that the person stop the behavior that goes against the code of conduct. Request the person goes through the accountability process.",
+    "If the behavior continues, temporarily ban the individual from organizational activity and repeat the request for them to work through our accountability process.",
+    "After a specified period, allow the individual to return, contingent upon completion of the accountability process and their commitment to upholding the code of conduct.",
+    "If the individual repeats the behavior upon return, implement a ban from the organization.",
+    "If at any point the banned individual demonstrates genuine remorse, acknowledges their harmful actions and their impact on the organization, and provides convincing evidence of personal growth and change, the community may collectively decide to revoke the ban and allow them to rejoin."
+  ],
+  "unacceptable_behavior_examples": [
+    "Harassment of any participants in any form.",
+    "Deliberate intimidation, stalking, or following.",
+    "Logging or taking screenshots of online activity for harassment purposes.",
+    "Publishing others' private information, such as a physical or electronic address, without explicit permission.",
+    "Violent threats or language directed against another person.",
+    "Incitement of violence or harassment towards any individual, including encouraging a person to commit suicide or to engage in self-harm.",
+    "Creating additional online accounts in order to harass another person or circumvent a ban.",
+    "Sexual language and imagery in online communities or in any conference venue, including talks.",
+    "Insults, put-downs, or jokes that are based upon stereotypes, that are exclusionary, or that hold others up for ridicule.",
+    "Excessive swearing.",
+    "Unwelcome sexual attention or advances.",
+    "Unwelcome physical contact, including simulated physical contact (eg, textual descriptions like 'hug' or 'backrub') without consent or after a request to stop.",
+    "Pattern of inappropriate social contact, such as requesting/assuming inappropriate levels of intimacy with others.",
+    "Sustained disruption of online community discussions, in-person presentations, or other in-person events.",
+    "Continued one-on-one communication after requests to cease.",
+    "Other conduct that is inappropriate for a professional audience including people of many different backgrounds."
+  ],
+  "values": [
+    {
+      "title": "Humanity",
+      "description": "We center the human experience and prioritize empathy and compassion in all our work, recognizing the dignity and worth of every individual."
+    },
+    {
+      "title": "Justice",
+      "description": "We advocate for truth, accountability, and reparations for victims of human rights abuses, while being mindful of potential harm in our documentation processes."
+    },
+    {
+      "title": "Preservation",
+      "description": "We are committed to safeguarding Sudanese digital memory and ensuring its accessibility to future generations through ethical archival practices."
+    },
+    {
+      "title": "Community",
+      "description": "We foster a strong and inclusive community of Sudanese people and allies, welcoming diverse perspectives and experiences."
+    },
+    {
+      "title": "Innovation",
+      "description": "We embrace technology thoughtfully to advance the archive's goals and reach a wider audience, while maintaining ethical standards."
+    },
+    {
+      "title": "Integrity",
+      "description": "We adhere to strict ethical standards and ensure the accuracy and reliability of the archive's content through rigorous verification processes."
+    },
+    {
+      "title": "Do No Harm",
+      "description": "We prioritize the safety and wellbeing of individuals in our archives. We will not release or share content that could cause harm to those documented in our materials."
+    },
+    {
+      "title": "Being open",
+      "description": "We actively encourage collaboration across all aspects of our work, from developing archival catalogues to improving software and fundraising."
+    },
+    {
+      "title": "Focusing on community benefit",
+      "description": "We center the human experience and prioritize empathy and compassion in all our work, recognizing the dignity and worth of every individual."
+    },
+    {
+      "title": "Acknowledging contributions",
+      "description": "We explicitly recognize and value the time, effort, and expertise that community members contribute to the archive."
+    },
+    {
+      "title": "Embracing diverse perspectives",
+      "description": "We actively seek out and respect different viewpoints and experiences, recognizing that our diversity strengthens our work."
+    },
+    {
+      "title": "Practicing empathy",
+      "description": "We communicate thoughtfully and considerately, both online and in person, especially when addressing differences of opinion."
+    },
+    {
+      "title": "Maintaining respectful dialogue",
+      "description": "We honor others' positions, skills, commitments, and contributions through respectful interaction."
+    },
+    {
+      "title": "Learning from feedback",
+      "description": "We welcome and thoughtfully consider constructive criticism, viewing it as an opportunity for growth."
+    },
+    {
+      "title": "Creating inclusive spaces",
+      "description": "We use language and practices that welcome all participants, ensuring everyone can contribute meaningfully to our work."
+    },
+    {
+      "title": "Upholding collective governance",
+      "description": "We work through consensus rather than hierarchy, making decisions collectively and staying true to our shared mandates."
+    }
+  ]
+}

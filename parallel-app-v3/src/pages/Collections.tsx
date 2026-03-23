@@ -12,6 +12,7 @@ import {
   Flex,
   Badge,
 } from '@chakra-ui/react'
+import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
@@ -144,6 +145,7 @@ export default function Collections() {
                   variant="ghost"
                   onClick={handlePreviousPage}
                 >
+                  <ArrowLeft size={14} style={{ marginRight: '4px' }} />
                   Previous
                 </Button>
               )}
@@ -161,6 +163,7 @@ export default function Collections() {
                   onClick={handleNextPage}
                 >
                   Next
+                  <ArrowRight size={14} style={{ marginLeft: '4px' }} />
                 </Button>
               )}
             </HStack>

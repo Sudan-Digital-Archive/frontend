@@ -80,6 +80,8 @@ export function Login() {
                 padding: '8px',
                 borderRadius: '4px',
                 border: '1px solid',
+                backgroundColor: 'transparent',
+                color: 'inherit',
               }}
             />
             <Field.ErrorText>{emailError}</Field.ErrorText>
