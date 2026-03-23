@@ -5,9 +5,10 @@ import { NavLink, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useWindowSize } from '../hooks/useWindowSize'
 import { useUser } from '../hooks/useUser'
+import { useColorMode } from './ui/color-mode'
 import { useState } from 'react'
 import { Menu } from '@chakra-ui/react'
-import { ChevronDown, Home } from 'react-feather'
+import { ChevronDown, Home, Sun, Moon } from 'react-feather'
 
 interface NavbarProps {
   changeLanguageOverride?: () => void
@@ -19,6 +20,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
   const width = useWindowSize()
   const isMobile = width <= 768
   const { isLoggedIn, role } = useUser()
+  const { colorMode, toggleColorMode } = useColorMode()
   const isAdmin = role?.toLowerCase() === 'admin'
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -75,7 +77,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
           gap={[4, 4, 0]}
         >
           <Box display="flex" alignItems="center">
-            <NavLink to="/">
+            <NavLink to="/" style={{ cursor: 'pointer' }}>
               <Home size={20} />
             </NavLink>
           </Box>
@@ -92,28 +94,44 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
               </Menu.Trigger>
               <Portal>
                 <Menu.Positioner>
-                  <Menu.Content>
+                  <Menu.Content bg="colors.dropdownBg">
                     <Menu.Item
                       value="archive"
                       onClick={() => handleMenuItemClick('/archive')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_search')}</Text>
                     </Menu.Item>
                     <Menu.Item
                       value="collections"
                       onClick={() => handleMenuItemClick('/collections')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_collections')}</Text>
                     </Menu.Item>
                     <Menu.Item
                       value="who-are-we"
                       onClick={() => handleMenuItemClick('/who-are-we')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_who_are_we')}</Text>
                     </Menu.Item>
                     <Menu.Item
                       value="mission"
                       onClick={() => handleMenuItemClick('/mission')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_mission')}</Text>
                     </Menu.Item>
@@ -122,24 +140,40 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                       onClick={() =>
                         handleMenuItemClick('/why-another-archive')
                       }
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_why_another_archive')}</Text>
                     </Menu.Item>
                     <Menu.Item
                       value="tech-stack"
                       onClick={() => handleMenuItemClick('/tech-stack')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_tech_stack')}</Text>
                     </Menu.Item>
                     <Menu.Item
                       value="code-of-conduct"
                       onClick={() => handleMenuItemClick('/code-of-conduct')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_coc')}</Text>
                     </Menu.Item>
                     <Menu.Item
                       value="contact-us"
                       onClick={() => handleMenuItemClick('/contact-us')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
                     >
                       <Text>{t('nav_contact')}</Text>
                     </Menu.Item>
@@ -147,6 +181,10 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                       <Menu.Item
                         value="login"
                         onClick={() => handleMenuItemClick('/login')}
+                        cursor="pointer"
+                        px={4}
+                        py={2}
+                        _hover={{ bg: 'colors.dropdownHover' }}
                       >
                         <Text>{t('nav_login')}</Text>
                       </Menu.Item>
@@ -155,6 +193,10 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                       <Menu.Item
                         value="user-management"
                         onClick={() => handleMenuItemClick('/user-management')}
+                        cursor="pointer"
+                        px={4}
+                        py={2}
+                        _hover={{ bg: 'colors.dropdownHover' }}
                       >
                         <Text>{t('nav_user_management')}</Text>
                       </Menu.Item>
@@ -162,8 +204,35 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     <Menu.Item
                       value="language"
                       onClick={changeLanguageOverride || handleLanguageChange}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHoverPink' }}
                     >
-                      <Text>{i18n.language === 'en' ? 'عربي' : 'English'}</Text>
+                      <Text colorPalette="pink">
+                        {i18n.language === 'en' ? 'عربي' : 'English'}
+                      </Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="theme"
+                      onClick={toggleColorMode}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <HStack gap={2}>
+                        {colorMode === 'dark' ? (
+                          <Sun size={16} />
+                        ) : (
+                          <Moon size={16} />
+                        )}
+                        <Text>
+                          {colorMode === 'dark'
+                            ? t('light_mode')
+                            : t('dark_mode')}
+                        </Text>
+                      </HStack>
                     </Menu.Item>
                   </Menu.Content>
                 </Menu.Positioner>
@@ -178,19 +247,28 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
             >
               <Menu.Root>
                 <Menu.Trigger asChild>
-                  <Button size="sm" variant="ghost">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
                     {t('nav_the_archive')}{' '}
                     <ChevronDown size={14} style={{ marginLeft: '4px' }} />
                   </Button>
                 </Menu.Trigger>
                 <Portal>
                   <Menu.Positioner>
-                    <Menu.Content>
+                    <Menu.Content bg="dropdownBg" minWidth="150px">
                       {archiveItems.map((item) => (
                         <Menu.Item
                           key={item.path}
                           value={item.path}
                           onClick={() => navigate(item.path)}
+                          cursor="pointer"
+                          px={4}
+                          py={2}
+                          _hover={{ bg: 'colors.dropdownHover' }}
                         >
                           {item.label}
                         </Menu.Item>
@@ -202,19 +280,28 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
 
               <Menu.Root>
                 <Menu.Trigger asChild>
-                  <Button size="sm" variant="ghost">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
                     {t('nav_about')}{' '}
                     <ChevronDown size={14} style={{ marginLeft: '4px' }} />
                   </Button>
                 </Menu.Trigger>
                 <Portal>
                   <Menu.Positioner>
-                    <Menu.Content>
+                    <Menu.Content bg="dropdownBg" minWidth="180px">
                       {aboutItems.map((item) => (
                         <Menu.Item
                           key={item.path}
                           value={item.path}
                           onClick={() => navigate(item.path)}
+                          cursor="pointer"
+                          px={4}
+                          py={2}
+                          _hover={{ bg: 'colors.dropdownHover' }}
                         >
                           {item.label}
                         </Menu.Item>
@@ -224,37 +311,62 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 </Portal>
               </Menu.Root>
 
-              <NavLink to="/contact-us">
-                <Button size="sm" variant="ghost">
+              <NavLink to="/contact-us" style={{ cursor: 'pointer' }}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  cursor="pointer"
+                  _hover={{ bg: 'colors.dropdownHover' }}
+                >
                   {t('nav_contact')}
                 </Button>
               </NavLink>
 
               {!isLoggedIn && (
-                <NavLink to="/login">
-                  <Button size="sm" variant="ghost">
+                <NavLink to="/login" style={{ cursor: 'pointer' }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
                     {t('nav_login')}
                   </Button>
                 </NavLink>
               )}
 
               {isAdmin && (
-                <NavLink to="/user-management">
-                  <Button size="sm" variant="ghost">
+                <NavLink to="/user-management" style={{ cursor: 'pointer' }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
                     {t('nav_user_management')}
                   </Button>
                 </NavLink>
               )}
 
-              <Box>
-                <Button
-                  colorPalette="pink"
-                  variant="ghost"
-                  onClick={changeLanguageOverride || handleLanguageChange}
-                >
-                  {i18n.language === 'en' ? 'عربي' : 'English'}
-                </Button>
-              </Box>
+              <Button
+                colorPalette="pink"
+                variant="ghost"
+                cursor="pointer"
+                onClick={changeLanguageOverride || handleLanguageChange}
+                _hover={{ bg: 'colors.dropdownHoverPink' }}
+              >
+                {i18n.language === 'en' ? 'عربي' : 'English'}
+              </Button>
+
+              <Button
+                variant="ghost"
+                cursor="pointer"
+                onClick={toggleColorMode}
+                _hover={{ bg: 'colors.dropdownHover' }}
+                p={2}
+              >
+                {colorMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </Button>
             </Stack>
           )}
         </HStack>

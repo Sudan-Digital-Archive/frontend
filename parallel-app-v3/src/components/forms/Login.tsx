@@ -7,7 +7,7 @@ import {
   Spinner,
   Center,
   Text,
-  Field,
+  Input,
 } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
@@ -67,25 +67,24 @@ export function Login() {
     <Flex align="center" justify="center">
       <Box width="100%" maxWidth="500px" padding="4">
         <form onSubmit={handleSubmit} noValidate>
-          <Field.Root invalid={!!emailError}>
-            <Field.Label>{t('login_email_address')}</Field.Label>
-            <input
+          <Box mb={4}>
+            <Text mb={2}>{t('login_email_address')}</Text>
+            <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={() => setEmailError(validateEmail(email))}
               placeholder={t('login_enter_email')}
-              style={{
-                width: '100%',
-                padding: '8px',
-                borderRadius: '4px',
-                border: '1px solid',
-                backgroundColor: 'transparent',
-                color: 'inherit',
-              }}
+              bg="input.bg"
+              borderColor="input.border"
+              _placeholder={{ color: 'fg.muted' }}
             />
-            <Field.ErrorText>{emailError}</Field.ErrorText>
-          </Field.Root>
+            {emailError && (
+              <Text color="red.400" mt={1} fontSize="sm">
+                {emailError}
+              </Text>
+            )}
+          </Box>
 
           <Button
             mt={4}
@@ -98,14 +97,14 @@ export function Login() {
           </Button>
 
           {isSuccess && (
-            <Center mt={4} color="green.500">
+            <Center mt={4} color="green.400">
               <Text mr={2}>✓</Text>
               <Text>{t('login_email_sent')}</Text>
             </Center>
           )}
 
           {isError && (
-            <Center mt={4} color="red.500">
+            <Center mt={4} color="red.400">
               <Text mr={2}>⚠</Text>
               <Text>{isError}</Text>
             </Center>

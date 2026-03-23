@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { Button, Box, Text, VStack, Heading } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { appConfig } from '../../constants'
+import { useToast } from '../../context/ToastContext'
 
 interface DeleteAccessionProps {
   accessionId: string
@@ -19,11 +20,8 @@ export const DeleteAccession: React.FC<DeleteAccessionProps> = ({
   onSuccess,
 }) => {
   const { t } = useTranslation()
+  const { showToast } = useToast()
   const [isDeleting, setIsDeleting] = useState(false)
-  const [showToast, setShowToast] = useState<{
-    type: 'success' | 'error'
-    message: string
-  } | null>(null)
   const cancelRef = useRef<HTMLButtonElement>(null)
 
   const handleDelete = async () => {
@@ -38,24 +36,15 @@ export const DeleteAccession: React.FC<DeleteAccessionProps> = ({
       )
 
       if (response.ok) {
-        setShowToast({
-          type: 'success',
-          message: t('delete_accession_success_toast_description'),
-        })
+        showToast(t('delete_accession_success_toast_description'), 'success')
         onSuccess()
         onClose()
       } else {
-        setShowToast({
-          type: 'error',
-          message: t('delete_accession_error_toast_description'),
-        })
+        showToast(t('delete_accession_error_toast_description'), 'error')
       }
     } catch (error) {
       console.error('Error deleting accession:', error)
-      setShowToast({
-        type: 'error',
-        message: t('delete_accession_error_toast_description'),
-      })
+      showToast(t('delete_accession_error_toast_description'), 'error')
     } finally {
       setIsDeleting(false)
     }
@@ -65,20 +54,6 @@ export const DeleteAccession: React.FC<DeleteAccessionProps> = ({
 
   return (
     <>
-      {showToast && (
-        <Box
-          position="fixed"
-          top={4}
-          right={4}
-          p={3}
-          bg={showToast.type === 'success' ? 'green.500' : 'red.500'}
-          color="white"
-          borderRadius="md"
-          zIndex={9999}
-        >
-          {showToast.message}
-        </Box>
-      )}
       <Box
         position="fixed"
         top={0}
@@ -91,7 +66,15 @@ export const DeleteAccession: React.FC<DeleteAccessionProps> = ({
         alignItems="center"
         justifyContent="center"
       >
-        <Box bg="gray.800" p={6} borderRadius="md" maxW="500px" mx={4}>
+        <Box
+          bg="bg.subtle"
+          p={6}
+          borderRadius="md"
+          maxW="500px"
+          mx={4}
+          border="1px solid"
+          borderColor="border"
+        >
           <VStack gap={4} align="stretch">
             <Heading size="md">{t('delete_accession_alert_header')}</Heading>
             <Text>{t('delete_accession_alert_body')}</Text>

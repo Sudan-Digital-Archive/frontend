@@ -18,7 +18,7 @@ export function CollectionHeader({ collection }: CollectionHeaderProps) {
       >
         {collection.title}
       </Heading>
-      <Text fontSize="lg" color="gray.400">
+      <Text fontSize="lg" color="fg.muted">
         {collection.description}
       </Text>
     </Box>

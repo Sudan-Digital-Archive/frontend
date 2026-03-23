@@ -18,6 +18,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { SubjectsAutocomplete } from '../subjectsAutocomplete/SubjectsAutocomplete'
 import type { SubjectOption } from '../subjectsAutocomplete/types'
 import type { AccessionWithMetadata } from '../../apiTypes/apiResponses'
+import { useToast } from '../../context/ToastContext'
 
 interface CreateUpdateAccessionProps {
   accessionToUpdate?: AccessionWithMetadata
@@ -29,6 +30,7 @@ export function CreateUpdateAccession({
   onSuccess,
 }: CreateUpdateAccessionProps) {
   const { t, i18n } = useTranslation()
+  const { showToast } = useToast()
   const isEditMode = !!accessionToUpdate
 
   const [url, setUrl] = useState(accessionToUpdate?.seed_url || '')
@@ -86,11 +88,6 @@ export function CreateUpdateAccession({
   const [titleError, setTitleError] = useState('')
   const [dateError, setDateError] = useState('')
   const [subjectsError, setSubjectsError] = useState('')
-  const [showToast, setShowToast] = useState<{
-    type: 'success' | 'error'
-    title: string
-    message: string
-  } | null>(null)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -255,15 +252,12 @@ export function CreateUpdateAccession({
       })
 
       if (response.status === 201 || response.status === 200) {
-        setShowToast({
-          type: 'success',
-          title: isEditMode
-            ? t('update_accession_success_title')
-            : t('create_accession_crawling_url_title'),
-          message: isEditMode
+        showToast(
+          isEditMode
             ? t('update_accession_success_description')
             : t('create_accession_success_description'),
-        })
+          'success',
+        )
 
         if (isEditMode && onSuccess) {
           onSuccess()
@@ -279,29 +273,23 @@ export function CreateUpdateAccession({
       } else {
         const errorText = await response.text()
         console.error(errorText)
-        setShowToast({
-          type: 'error',
-          title: isEditMode
-            ? t('update_accession_error_title')
-            : t('create_accession_error_toast_title'),
-          message: `${
+        showToast(
+          `${
             isEditMode
               ? t('update_accession_error_description')
               : t('create_accession_error_toast_description')
           } ${errorText}`,
-        })
+          'error',
+        )
       }
     } catch (error) {
       console.error(error)
-      setShowToast({
-        type: 'error',
-        title: isEditMode
-          ? t('update_accession_error_title')
-          : t('create_accession_error_toast_title'),
-        message: isEditMode
+      showToast(
+        isEditMode
           ? t('update_accession_error_description')
           : t('create_accession_error_toast_description'),
-      })
+        'error',
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -309,21 +297,6 @@ export function CreateUpdateAccession({
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      {showToast && (
-        <Box
-          position="fixed"
-          top={4}
-          right={4}
-          p={3}
-          bg={showToast.type === 'success' ? 'green.500' : 'red.500'}
-          color="white"
-          borderRadius="md"
-          zIndex={9999}
-        >
-          <Heading size="sm">{showToast.title}</Heading>
-          <Text fontSize="sm">{showToast.message}</Text>
-        </Box>
-      )}
       {isEditMode && (
         <Flex alignItems="center" mb={2}>
           <Button
@@ -350,6 +323,9 @@ export function CreateUpdateAccession({
             onBlur={handleUrlBlur}
             placeholder={t('create_accession_url_field_placeholder')}
             disabled={isEditMode}
+            bg="input.bg"
+            borderColor="input.border"
+            _placeholder={{ color: 'fg.muted' }}
           />
           {urlError && (
             <Text color="red.500" fontSize="sm">
@@ -366,6 +342,8 @@ export function CreateUpdateAccession({
             value={title}
             onChange={handleTitleChange}
             onBlur={handleTitleBlur}
+            bg="input.bg"
+            borderColor="input.border"
           />
           {titleError && (
             <Text color="red.500" fontSize="sm">
@@ -407,7 +385,12 @@ export function CreateUpdateAccession({
           <Heading size="sm" mb={1}>
             {t('create_accession_description_field_label')}
           </Heading>
-          <Textarea value={description} onChange={handleDescriptionChange} />
+          <Textarea
+            value={description}
+            onChange={handleDescriptionChange}
+            bg="input.bg"
+            borderColor="input.border"
+          />
         </Box>
 
         <Box>

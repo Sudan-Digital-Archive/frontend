@@ -183,6 +183,9 @@ export default function UserManagement() {
               onChange={(e) => setEmailFilter(e.target.value)}
               placeholder={t('user_management_email_filter_placeholder')}
               maxW="300px"
+              bg="input.bg"
+              borderColor="input.border"
+              _placeholder={{ color: 'fg.muted' }}
             />
             <Button
               colorPalette="cyan"
@@ -229,7 +232,8 @@ export default function UserManagement() {
                             style={{
                               padding: '4px 8px',
                               borderRadius: '4px',
-                              backgroundColor: 'var(--chakra-colors-gray-700)',
+                              backgroundColor:
+                                'var(--chakra-colors-bg-emphasized)',
                             }}
                           >
                             <option value="Admin">
@@ -328,7 +332,15 @@ export default function UserManagement() {
           alignItems="center"
           justifyContent="center"
         >
-          <Box bg="gray.800" p={6} borderRadius="md" maxW="500px" mx={4}>
+          <Box
+            bg="bg.subtle"
+            p={6}
+            borderRadius="md"
+            maxW="500px"
+            mx={4}
+            border="1px solid"
+            borderColor="border"
+          >
             <VStack gap={4} align="stretch">
               <Heading size="md">
                 {t('user_management_create_modal_title')}
@@ -405,7 +417,15 @@ export default function UserManagement() {
           alignItems="center"
           justifyContent="center"
         >
-          <Box bg="gray.800" p={6} borderRadius="md" maxW="500px" mx={4}>
+          <Box
+            bg="bg.subtle"
+            p={6}
+            borderRadius="md"
+            maxW="500px"
+            mx={4}
+            border="1px solid"
+            borderColor="border"
+          >
             <VStack gap={4} align="stretch">
               <Heading size="md">
                 {t('user_management_delete_dialog_title')}

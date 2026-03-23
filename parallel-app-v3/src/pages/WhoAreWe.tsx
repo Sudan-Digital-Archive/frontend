@@ -20,51 +20,66 @@ export default function WhoAreWe() {
         mx="auto"
         px={4}
       >
-        <Box>
-          <VStack gap={2} align="left">
+        <Box width="100%">
+          <VStack gap={4} align="stretch">
             <Heading
               textAlign="center"
-              py={2}
-              bgGradient="linear(to-r, cyan.300, pink.600)"
-              bgClip="text"
+              py={4}
+              className="gradientTextStatic"
+              fontSize={{ base: '3xl', md: '5xl' }}
+              fontWeight="bold"
             >
               {t('who_are_we_title')}
             </Heading>
-            <Heading as="h5" fontSize={fontSize}>
+            <Heading as="h5" fontSize={fontSize} fontWeight="semibold">
               {t('who_are_we_heading')}
             </Heading>
             <Text fontSize={fontSize}>{t('who_are_we_para_1')}</Text>
             <Text fontSize={fontSize}>{t('who_are_we_para_2')}</Text>
-            <ol>
-              <li>
-                <Text fontSize={fontSize} as="b">
+            <ol
+              style={{
+                paddingLeft: '1.5rem',
+                marginTop: '1rem',
+                marginBottom: '1rem',
+              }}
+            >
+              <li style={{ marginBottom: '1rem' }}>
+                <Text fontSize={fontSize} fontWeight="bold">
                   {t('who_are_we_point_one')}
                 </Text>
-                {t('who_are_we_point_one_description')}
+                <Text fontSize={fontSize} as="span">
+                  {t('who_are_we_point_one_description')}
+                </Text>
               </li>
-              <li>
-                <Text fontSize={fontSize} as="b">
+              <li style={{ marginBottom: '1rem' }}>
+                <Text fontSize={fontSize} fontWeight="bold">
                   {t('who_are_we_point_two')}
                 </Text>
-                {t('who_are_we_point_two_description_one')}
+                <Text fontSize={fontSize} as="span">
+                  {t('who_are_we_point_two_description_one')}
+                </Text>
                 <Text
-                  color="cyan"
+                  color="cyan.300"
                   cursor="pointer"
                   textDecoration="underline"
                   onClick={() => navigate('/code-of-conduct')}
+                  display="inline"
                 >
                   {t('who_are_we_point_two_coc_link')}
                 </Text>
-                {t('who_are_we_point_two_description_two')}
+                <Text fontSize={fontSize} as="span">
+                  {t('who_are_we_point_two_description_two')}
+                </Text>
               </li>
-              <li>
-                <Text fontSize={fontSize} as="b">
+              <li style={{ marginBottom: '1rem' }}>
+                <Text fontSize={fontSize} fontWeight="bold">
                   {t('who_are_we_point_three')}
                 </Text>
-                {t('who_are_we_point_three_description')}
+                <Text fontSize={fontSize} as="span">
+                  {t('who_are_we_point_three_description')}
+                </Text>
               </li>
             </ol>
-            <Text fontSize={fontSize}></Text>
           </VStack>
         </Box>
       </Box>
