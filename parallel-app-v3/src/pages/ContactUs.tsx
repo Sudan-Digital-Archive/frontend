@@ -2,6 +2,7 @@
 
 import { Box, Heading, Button, Text, VStack } from '@chakra-ui/react'
 import Layout from '../components/Layout'
+import { Copy } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 
 export default function ContactUs() {
@@ -30,7 +31,7 @@ export default function ContactUs() {
         <VStack gap={8}>
           <Heading
             textAlign="center"
-            className="gradientText"
+            bgGradient="linear(to-r, cyan.300, pink.600)"
             bgClip="text"
             fontSize="4xl"
           >
@@ -42,6 +43,7 @@ export default function ContactUs() {
             variant="ghost"
             onClick={handleCopy}
           >
+            <Copy size={16} style={{ marginRight: '8px' }} />
             <Text as="i" mx={2}>
               {email}
             </Text>

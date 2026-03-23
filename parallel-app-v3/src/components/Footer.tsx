@@ -1,6 +1,7 @@
 'use client'
 
 import { Box, HStack, Link, Text, VStack } from '@chakra-ui/react'
+import { GitHub } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { useWindowSize } from '../hooks/useWindowSize'
 
@@ -27,6 +28,7 @@ const Footer = () => {
             fontWeight="bold"
           >
             <HStack gap={2} alignItems="center">
+              <GitHub size={16} />
               <Text>Github</Text>
             </HStack>
           </Link>

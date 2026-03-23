@@ -7,6 +7,7 @@ import { useWindowSize } from '../hooks/useWindowSize'
 import { useUser } from '../hooks/useUser'
 import { useState } from 'react'
 import { Menu } from '@chakra-ui/react'
+import { ChevronDown, Home } from 'react-feather'
 
 interface NavbarProps {
   changeLanguageOverride?: () => void
@@ -75,9 +76,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
         >
           <Box display="flex" alignItems="center">
             <NavLink to="/">
-              <Text fontWeight="bold" fontSize="xl" className="gradientText">
-                {t('nav_the_archive')}
-              </Text>
+              <Home size={20} />
             </NavLink>
           </Box>
 
@@ -88,7 +87,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
             >
               <Menu.Trigger asChild>
                 <Button variant="outline" size="sm">
-                  Menu
+                  <ChevronDown size={16} />
                 </Button>
               </Menu.Trigger>
               <Portal>
@@ -180,7 +179,8 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
               <Menu.Root>
                 <Menu.Trigger asChild>
                   <Button size="sm" variant="ghost">
-                    {t('nav_the_archive')} ▼
+                    {t('nav_the_archive')}{' '}
+                    <ChevronDown size={14} style={{ marginLeft: '4px' }} />
                   </Button>
                 </Menu.Trigger>
                 <Portal>
@@ -203,7 +203,8 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
               <Menu.Root>
                 <Menu.Trigger asChild>
                   <Button size="sm" variant="ghost">
-                    {t('nav_about')} ▼
+                    {t('nav_about')}{' '}
+                    <ChevronDown size={14} style={{ marginLeft: '4px' }} />
                   </Button>
                 </Menu.Trigger>
                 <Portal>

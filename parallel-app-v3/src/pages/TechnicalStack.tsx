@@ -1,11 +1,12 @@
 'use client'
 
-import { Box, VStack, Heading, Text, Link } from '@chakra-ui/react'
+import { Box, VStack, Heading, Text } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
 
 export default function TechnicalStack() {
   const { t, i18n } = useTranslation()
+  const fontSize = i18n.language === 'en' ? 'lg' : '2xl'
 
   return (
     <Layout>
@@ -28,77 +29,72 @@ export default function TechnicalStack() {
               {t('tech_stack_title')}
             </Heading>
 
-            <Heading as="h6" fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+            <Heading as="h6" fontSize={fontSize}>
               {t('tech_stack_why_build')}
-              <Link
+              <a
                 href="https://archive.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                color="cyan.400"
-                textDecoration="underline"
+                style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 archive.org
-              </Link>
+              </a>
               {t('tech_stack_why_build_2')}
             </Heading>
             <ol>
               <li>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+                <Text fontSize={fontSize}>
                   {t('tech_stack_point_1_part_1')}
-                  <Link
+                  <a
                     href="https://archive.org"
                     target="_blank"
                     rel="noopener noreferrer"
-                    color="cyan.400"
-                    textDecoration="underline"
+                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
                   >
                     archive.org
-                  </Link>
+                  </a>
                   {t('tech_stack_point_1_part_2')}
                 </Text>
               </li>
               <li>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+                <Text fontSize={fontSize}>
                   {t('tech_stack_point_2_part_1')}
-                  <Link
+                  <a
                     href="https://bayanat.org"
                     target="_blank"
                     rel="noopener noreferrer"
-                    color="cyan.400"
-                    textDecoration="underline"
+                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
                   >
                     bayanat.org
-                  </Link>
+                  </a>
                   {t('tech_stack_point_2_part_2')}
                 </Text>
               </li>
               <li>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+                <Text fontSize={fontSize}>
                   {t('tech_stack_point_3_part_1')}
-                  <Link
+                  <a
                     href="https://browsertrix.com/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    color="cyan.400"
-                    textDecoration="underline"
+                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
                   >
                     browsertrix
-                  </Link>
+                  </a>
                   {t('tech_stack_point_3_part_2')}
                 </Text>
               </li>
             </ol>
-            <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+            <Text fontSize={fontSize}>
               {t('tech_stack_final_part_1')}
-              <Link
+              <a
                 href="https://github.com/orgs/Sudan-Digital-Archive/repositories"
                 target="_blank"
                 rel="noopener noreferrer"
-                color="cyan.400"
-                textDecoration="underline"
+                style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 {t('tech_stack_final_link')}
-              </Link>
+              </a>
               {t('tech_stack_final_part_2')}
             </Text>
           </VStack>

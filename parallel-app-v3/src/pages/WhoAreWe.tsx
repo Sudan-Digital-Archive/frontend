@@ -3,9 +3,12 @@
 import { Box, VStack, Heading, Text } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
-import { NavLink } from 'react-router'
+import { useNavigate } from 'react-router'
+
 export default function WhoAreWe() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
+  const fontSize = i18n.language === 'en' ? 'lg' : '2xl'
 
   return (
     <Layout>
@@ -27,42 +30,41 @@ export default function WhoAreWe() {
             >
               {t('who_are_we_title')}
             </Heading>
-            <Heading as="h5" fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+            <Heading as="h5" fontSize={fontSize}>
               {t('who_are_we_heading')}
             </Heading>
-            <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
-              {t('who_are_we_para_1')}
-            </Text>
-            <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
-              {t('who_are_we_para_2')}
-            </Text>
+            <Text fontSize={fontSize}>{t('who_are_we_para_1')}</Text>
+            <Text fontSize={fontSize}>{t('who_are_we_para_2')}</Text>
             <ol>
               <li>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'} as="b">
+                <Text fontSize={fontSize} as="b">
                   {t('who_are_we_point_one')}
                 </Text>
                 {t('who_are_we_point_one_description')}
               </li>
               <li>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'} as="b">
+                <Text fontSize={fontSize} as="b">
                   {t('who_are_we_point_two')}
                 </Text>
                 {t('who_are_we_point_two_description_one')}
-                <NavLink
-                  to="/code-of-conduct"
-                  style={{ color: '#22d3ee', textDecoration: 'underline' }}
+                <Text
+                  color="cyan"
+                  cursor="pointer"
+                  textDecoration="underline"
+                  onClick={() => navigate('/code-of-conduct')}
                 >
                   {t('who_are_we_point_two_coc_link')}
-                </NavLink>
+                </Text>
                 {t('who_are_we_point_two_description_two')}
               </li>
               <li>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'} as="b">
+                <Text fontSize={fontSize} as="b">
                   {t('who_are_we_point_three')}
                 </Text>
                 {t('who_are_we_point_three_description')}
               </li>
             </ol>
+            <Text fontSize={fontSize}></Text>
           </VStack>
         </Box>
       </Box>
