@@ -10,6 +10,7 @@ import { appConfig } from '../../constants'
 import type { Subject, SubjectsResponse } from '../../apiTypes/apiResponses'
 import type { SubjectOption } from './types'
 import { useUser } from '../../hooks/useUser'
+import { useToast } from '../../context/ToastContext'
 
 interface SubjectsAutocompleteProps {
   menuPlacement?: 'top' | 'bottom'
@@ -33,14 +34,11 @@ export const SubjectsAutocomplete = ({
 }: SubjectsAutocompleteProps) => {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
+  const { showToast } = useToast()
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isCreatingNewSubject, setIsCreatingNewSubject] = useState(false)
   const [isDeletingSubject, setIsDeletingSubject] = useState(false)
-  const [toastMessage, setToastMessage] = useState<{
-    type: 'success' | 'error'
-    message: string
-  } | null>(null)
   const [selectedOptions, setSelectedOptions] = useState<SubjectOption[]>(
     defaultValues
       ? defaultValues.values.map((value, index) => ({
@@ -76,11 +74,6 @@ export const SubjectsAutocomplete = ({
     label: subject.subject,
   }))
 
-  const showToast = (type: 'success' | 'error', message: string) => {
-    setToastMessage({ type, message })
-    setTimeout(() => setToastMessage(null), 3000)
-  }
-
   const fetchSubjects = useCallback(async () => {
     setIsLoading(true)
     try {
@@ -103,7 +96,7 @@ export const SubjectsAutocomplete = ({
       setSubjects(data.items || [])
     } catch (error) {
       console.error('Error fetching subjects:', error)
-      showToast('error', t('subjects_autocomplete_error_fetching_subjects'))
+      showToast(t('subjects_autocomplete_error_fetching_subjects'), 'error')
     } finally {
       setIsLoading(false)
     }
@@ -132,16 +125,16 @@ export const SubjectsAutocomplete = ({
       setSubjects((prev) => [...prev, newSubject])
 
       showToast(
-        'success',
         t('subjects_autocomplete_create_success', {
           subject: newSubject.subject,
         }),
+        'success',
       )
 
       return newSubject
     } catch (error) {
       console.error('Error creating subject:', error)
-      showToast('error', t('subjects_autocomplete_error_creating_subject'))
+      showToast(t('subjects_autocomplete_error_creating_subject'), 'error')
       return null
     } finally {
       setIsCreatingNewSubject(false)
@@ -178,7 +171,7 @@ export const SubjectsAutocomplete = ({
       }
     } catch (error) {
       console.error('Error deleting subject:', error)
-      showToast('error', t('subjects_autocomplete_error_fetching_subjects'))
+      showToast(t('subjects_autocomplete_error_fetching_subjects'), 'error')
     } finally {
       setIsDeletingSubject(false)
     }
@@ -257,7 +250,7 @@ export const SubjectsAutocomplete = ({
         {...props.innerProps}
         px={4}
         py={2}
-        bg={props.isFocused ? 'gray.700' : 'transparent'}
+        bg={props.isFocused ? 'bg.emphasized' : 'transparent'}
         justify="space-between"
         width="100%"
         cursor="pointer"
@@ -284,20 +277,6 @@ export const SubjectsAutocomplete = ({
 
   return (
     <Box width="100%" position="relative">
-      {toastMessage && (
-        <Box
-          position="fixed"
-          top={4}
-          right={4}
-          p={3}
-          bg={toastMessage.type === 'success' ? 'green.500' : 'red.500'}
-          color="white"
-          borderRadius="md"
-          zIndex={9999}
-        >
-          {toastMessage.message}
-        </Box>
-      )}
       {isLoggedIn ? (
         <CreatableSelect
           isMulti

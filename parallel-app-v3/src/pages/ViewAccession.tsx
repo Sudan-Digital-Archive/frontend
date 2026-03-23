@@ -47,7 +47,14 @@ function AccessionInfo({
   const { parseDate } = useParsedDate()
   return (
     <>
-      <Box color="white" p={2} borderRadius="md">
+      <Box
+        color="fg"
+        bg="bg.subtle"
+        p={2}
+        borderRadius="md"
+        border="1px solid"
+        borderColor="border"
+      >
         <Text fontWeight="bold" fontSize="sm">
           {t('sda_record')}
         </Text>
@@ -56,9 +63,9 @@ function AccessionInfo({
         </Text>
       </Box>
       {isMobile ? (
-        <Box height="1px" bg="white" my={2} />
+        <Box height="1px" bg="border" my={2} />
       ) : (
-        <Box width="1px" bg="white" height="80px" mx={2} />
+        <Box width="1px" bg="border" height="80px" mx={2} />
       )}
       <AccessionButtons onOpen={onOpen} id={id} lang={lang} />
     </>
@@ -213,7 +220,7 @@ export default function ViewAccession() {
                 right={0}
                 bottom={0}
                 width={{ base: '100%', md: '400px' }}
-                bg="gray.800"
+                bg="bg.subtle"
                 zIndex={1001}
                 p={4}
                 overflowY="auto"
@@ -295,8 +302,8 @@ export default function ViewAccession() {
                 : t('view_accession_show_metadata')}
             </Button>
 
-            <Box flex="1" w="100vw" bg="white">
-              <Box height="4px" bg="teal.500" />
+            <Box flex="1" w="100vw" bg="white" color="black">
+              <Box height="4px" bg="accent.primary" />
               <replay-web-page
                 embed="replayonly"
                 replayBase="/replay/"

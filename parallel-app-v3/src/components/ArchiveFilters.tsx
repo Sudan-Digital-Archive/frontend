@@ -88,6 +88,9 @@ export function ArchiveFilters({
         placeholder={t('archive_url_filter_placeholder')}
         size="lg"
         mb={5}
+        bg="input.bg"
+        borderColor="input.border"
+        _placeholder={{ color: 'fg.muted' }}
       />
       <Input
         value={queryTerm}
@@ -97,6 +100,9 @@ export function ArchiveFilters({
         placeholder={t('archive_text_search_query_placeholder')}
         size="lg"
         mb={5}
+        bg="input.bg"
+        borderColor="input.border"
+        _placeholder={{ color: 'fg.muted' }}
       />
       <Flex flexWrap="wrap" gap={2} alignItems="center">
         <Badge colorPalette="cyan" fontSize="sm" py={1} px={2}>

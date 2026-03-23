@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from 'react'
 
@@ -33,21 +34,39 @@ export function useColorModeValue<T>(light: T, dark: T): T {
   return colorMode === 'dark' ? dark : light
 }
 
-export function ColorModeProvider({ children }: { children: ReactNode }) {
-  const [colorMode, setColorModeState] = useState<ColorMode>('dark')
+const STORAGE_KEY = 'sda-color-mode'
 
-  const setColorMode = useCallback((mode: ColorMode) => {
-    setColorModeState(mode)
-    if (mode === 'dark') {
+function getInitialColorMode(): ColorMode {
+  const stored = localStorage.getItem(STORAGE_KEY)
+  if (stored === 'light' || stored === 'dark') {
+    return stored
+  }
+  if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    return 'light'
+  }
+  return 'dark'
+}
+
+export function ColorModeProvider({ children }: { children: ReactNode }) {
+  const [colorMode, setColorModeState] =
+    useState<ColorMode>(getInitialColorMode)
+
+  useEffect(() => {
+    if (colorMode === 'dark') {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }
+    localStorage.setItem(STORAGE_KEY, colorMode)
+  }, [colorMode])
+
+  const setColorMode = useCallback((mode: ColorMode) => {
+    setColorModeState(mode)
   }, [])
 
   const toggleColorMode = useCallback(() => {
-    setColorMode(colorMode === 'dark' ? 'light' : 'dark')
-  }, [colorMode, setColorMode])
+    setColorModeState((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }, [])
 
   const value = { colorMode, setColorMode, toggleColorMode }
 

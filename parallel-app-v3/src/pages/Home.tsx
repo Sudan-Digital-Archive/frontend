@@ -25,7 +25,6 @@ export default function Home() {
           <Box>
             <Text
               className="gradientText"
-              bgClip="text"
               fontSize="6xl"
               fontWeight="extrabold"
             >
@@ -38,29 +37,29 @@ export default function Home() {
               size={i18n.language === 'en' ? 'lg' : '2xl'}
               lineHeight="tall"
               fontWeight="medium"
-              color="gray.500"
+              color="fg.muted"
             >
               {t('landing_sentence_one_part_one')}
-              <Box as="span" color="gray.200">
+              <Text as="span" color="accent.secondary">
                 {t('landing_sentence_one_part_two_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_one_part_three')}
               {t('landing_sentence_two_part_one')}
-              <Box as="span" color="gray.200">
+              <Text as="span" color="accent.secondary">
                 {t('landing_sentence_two_part_two_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_three')}
-              <Box as="span" color="gray.200">
+              <Text as="span" color="accent.secondary">
                 {t('landing_sentence_two_part_four_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_five')}
-              <Box as="span" color="gray.300">
+              <Text as="span" color="accent.primary">
                 {t('landing_sentence_two_part_six_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_seven')}
-              <Box as="span" color="gray.300">
+              <Text as="span" color="accent.primary">
                 {t('landing_sentence_two_part_eight_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_nine')}
             </Heading>
           </Box>

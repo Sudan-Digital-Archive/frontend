@@ -147,13 +147,15 @@ export function AccessionsCards({
           p={4}
         >
           <Box
-            bg="gray.800"
+            bg="bg.subtle"
             p={6}
             borderRadius="md"
             maxW="600px"
             w="100%"
             maxH="90vh"
             overflowY="auto"
+            border="1px solid"
+            borderColor="border"
           >
             <Flex justifyContent="space-between" alignItems="center" mb={4}>
               <Box as="h2" fontSize="xl" fontWeight="bold">

@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, VStack, Heading, Text } from '@chakra-ui/react'
+import { Box, VStack, Heading, Text, List } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
@@ -39,13 +39,14 @@ export default function CodeOfConduct() {
         mx="auto"
         px={4}
       >
-        <Box>
-          <VStack gap={2} align="left">
+        <Box width="100%">
+          <VStack gap={4} align="stretch">
             <Heading
               textAlign="center"
-              py={2}
-              bgGradient="linear(to-r, cyan.300, pink.600)"
-              bgClip="text"
+              py={4}
+              className="gradientTextStatic"
+              fontSize={{ base: '3xl', md: '5xl' }}
+              fontWeight="bold"
             >
               {t('code_of_conduct_title')}
             </Heading>
@@ -53,81 +54,71 @@ export default function CodeOfConduct() {
               <Heading size="md" py={2} id="toc">
                 {t('code_of_conduct_toc')}
               </Heading>
-              <ol>
-                <li>
-                  <Text fontSize={fontSize}>
-                    <a
-                      href="#our-values"
-                      style={{ color: '#67e8f9', textDecoration: 'underline' }}
-                    >
-                      {t('code_of_conduct_our_values_content_heading')}
-                    </a>
-                  </Text>
-                </li>
-                <li>
-                  <Text fontSize={fontSize}>
-                    <a
-                      href="#standards-and-inappropriate-behavior"
-                      style={{ color: '#67e8f9', textDecoration: 'underline' }}
-                    >
-                      {t(
-                        'code_of_conduct_standards_inappropriate_behavior_heading',
-                      )}
-                    </a>
-                  </Text>
-                </li>
-                <li>
-                  <Text fontSize={fontSize}>
-                    <a
-                      href="#boundaries"
-                      style={{ color: '#67e8f9', textDecoration: 'underline' }}
-                    >
-                      {t('code_of_conduct_boundaries_heading')}
-                    </a>
-                  </Text>
-                </li>
-                <li>
-                  <Text fontSize={fontSize}>
-                    <a
-                      href="#accountability-processes"
-                      style={{ color: '#67e8f9', textDecoration: 'underline' }}
-                    >
-                      {t('code_of_conduct_accountability_processes_heading')}
-                    </a>
-                  </Text>
-                </li>
-              </ol>
+              <List.Root as="ol" listStyle="decimal">
+                <List.Item fontSize={fontSize}>
+                  <a
+                    href="#our-values"
+                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                  >
+                    {t('code_of_conduct_our_values_content_heading')}
+                  </a>
+                </List.Item>
+                <List.Item fontSize={fontSize}>
+                  <a
+                    href="#standards-and-inappropriate-behavior"
+                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                  >
+                    {t(
+                      'code_of_conduct_standards_inappropriate_behavior_heading',
+                    )}
+                  </a>
+                </List.Item>
+                <List.Item fontSize={fontSize}>
+                  <a
+                    href="#boundaries"
+                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                  >
+                    {t('code_of_conduct_boundaries_heading')}
+                  </a>
+                </List.Item>
+                <List.Item fontSize={fontSize}>
+                  <a
+                    href="#accountability-processes"
+                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                  >
+                    {t('code_of_conduct_accountability_processes_heading')}
+                  </a>
+                </List.Item>
+              </List.Root>
             </Box>
             <Heading size="md" id="our-values">
               {t('code_of_conduct_our_values_content_heading')}
             </Heading>
-            <ul>
+            <List.Root as="ul" listStyle="disc">
               {CoCTranslations.values.map(
                 (
                   item: { title: string; description: string },
                   index: number,
                 ) => {
                   return (
-                    <li key={`our-values-${index}`}>
-                      <Text fontSize={fontSize}>
-                        <Text as="u" fontSize={fontSize}>
-                          {item.title}
-                        </Text>
-                        . {item.description}
+                    <List.Item key={`our-values-${index}`} fontSize={fontSize}>
+                      <Text as="u" fontWeight="bold" display="inline">
+                        {item.title}
                       </Text>
-                    </li>
+                      . {item.description}
+                    </List.Item>
                   )
                 },
               )}
-            </ul>
-            <Heading size="sm" mb={2}>
+            </List.Root>
+            <Text fontSize="sm">
               <a
                 href="#toc"
                 style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>
-            </Heading>
+            </Text>
             <Heading size="md" id="standards-and-inappropriate-behavior">
               {t('code_of_conduct_standards_inappropriate_behavior_heading')}
             </Heading>
@@ -137,89 +128,96 @@ export default function CodeOfConduct() {
             <Text fontSize={fontSize}>
               {t('code_of_conduct_standards_inappropriate_behavior_para_two')}
             </Text>
-            <ul>
+            <List.Root as="ul" listStyle="disc">
               {CoCTranslations.unacceptable_behavior_examples.map(
                 (item: string, index: number) => {
                   return (
-                    <li key={`unacceptable-behaviors-example-${index}`}>
-                      <Text fontSize={fontSize}>{item}</Text>
-                    </li>
+                    <List.Item
+                      key={`unacceptable-behaviors-example-${index}`}
+                      fontSize={fontSize}
+                    >
+                      {item}
+                    </List.Item>
                   )
                 },
               )}
-            </ul>
+            </List.Root>
             <Text fontSize={fontSize}>
               {t('code_of_conduct_standards_inappropriate_behavior_para_three')}
             </Text>
-            <Heading size="sm" mb={2}>
+            <Text fontSize="sm">
               <a
                 href="#toc"
                 style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>
-            </Heading>
+            </Text>
             <Heading id="boundaries" size="md">
               {t('code_of_conduct_boundaries_heading')}
             </Heading>
             <Text fontSize={fontSize}>
               {t('code_of_conduct_standards_inappropriate_behavior_para_four')}
             </Text>
-            <ol>
+            <List.Root as="ol" listStyle="decimal">
               {CoCTranslations.boundaries_steps.map(
                 (item: string, index: number) => {
                   return (
-                    <li key={`boundaries-steps-${index}`}>
-                      <Text fontSize={fontSize}>{item}</Text>
-                    </li>
+                    <List.Item
+                      key={`boundaries-steps-${index}`}
+                      fontSize={fontSize}
+                    >
+                      {item}
+                    </List.Item>
                   )
                 },
               )}
-            </ol>
+            </List.Root>
             <Text fontSize={fontSize}>
               {t('code_of_conduct_standards_inappropriate_behavior_para_five')}
             </Text>
-            <Heading size="sm" mb={2}>
+            <Text fontSize="sm">
               <a
                 href="#toc"
                 style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>
-            </Heading>
+            </Text>
             <Heading id="accountability-processes" size="md">
               {t('code_of_conduct_accountability_processes_heading')}
             </Heading>
             <Text fontSize={fontSize}>
               {t('code_of_conduct_standards_inappropriate_behavior_para_six')}
             </Text>
-            <ol>
+            <List.Root as="ol" listStyle="decimal">
               {CoCTranslations.accountability_processes.map(
                 (
                   item: { step: string; description: string },
                   index: number,
                 ) => {
                   return (
-                    <li key={`accountability-${index}`}>
-                      <Text fontSize={fontSize}>
-                        <Text as="u" fontSize={fontSize}>
-                          {item.step}
-                        </Text>
-                        . {item.description}
+                    <List.Item
+                      key={`accountability-${index}`}
+                      fontSize={fontSize}
+                    >
+                      <Text as="u" fontWeight="bold" display="inline">
+                        {item.step}
                       </Text>
-                    </li>
+                      . {item.description}
+                    </List.Item>
                   )
                 },
               )}
-            </ol>
-            <Heading size="sm" mb={2}>
+            </List.Root>
+            <Text fontSize="sm">
               <a
                 href="#toc"
                 style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>
-            </Heading>
+            </Text>
           </VStack>
         </Box>
       </Box>

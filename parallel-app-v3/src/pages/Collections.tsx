@@ -73,9 +73,10 @@ export default function Collections() {
         <Box w="100%" maxW="6xl" p={10} mx="auto">
           <Heading
             textAlign="center"
-            py={2}
-            bgGradient="linear(to-r, cyan.300, pink.600)"
-            bgClip="text"
+            py={4}
+            className="gradientTextStatic"
+            fontSize={{ base: '3xl', md: '5xl' }}
+            fontWeight="bold"
             mb={10}
           >
             {t('collections_title')}
