@@ -326,7 +326,7 @@ export function CreateUpdateAccession({
             placeholder={t('create_accession_url_field_placeholder')}
             disabled={isEditMode}
             bg="input.bg"
-            borderColor="input.border"
+            borderColor="gray"
             _placeholder={{ color: 'fg.muted' }}
           />
           {urlError && (
@@ -345,7 +345,7 @@ export function CreateUpdateAccession({
             onChange={handleTitleChange}
             onBlur={handleTitleBlur}
             bg="input.bg"
-            borderColor="input.border"
+            borderColor="gray"
           />
           {titleError && (
             <Text color="red.500" fontSize="sm">
@@ -391,7 +391,7 @@ export function CreateUpdateAccession({
             value={description}
             onChange={handleDescriptionChange}
             bg="input.bg"
-            borderColor="input.border"
+            borderColor="gray"
           />
         </Box>
 
@@ -460,6 +460,7 @@ export function CreateUpdateAccession({
 
         <Button
           mt={4}
+          variant="ghost"
           colorPalette="cyan"
           type="submit"
           disabled={isSubmitting}

@@ -158,7 +158,9 @@ export function ArchiveFilters({
               mx={2}
             >
               <Switch.HiddenInput />
-              <Switch.Control />
+              <Switch.Control>
+                <Switch.Thumb />
+              </Switch.Control>
             </Switch.Root>
           </>
         )}
@@ -209,7 +211,9 @@ export function ArchiveFilters({
                 size="lg"
               >
                 <Switch.HiddenInput />
-                <Switch.Control />
+                <Switch.Control>
+                  <Switch.Thumb />
+                </Switch.Control>
               </Switch.Root>
             </Flex>
           )}

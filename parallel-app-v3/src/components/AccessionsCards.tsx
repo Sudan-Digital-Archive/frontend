@@ -123,6 +123,7 @@ export function AccessionsCards({
                   {isLoggedIn && (
                     <Flex gap={2}>
                       <Button
+                        variant="ghost"
                         colorPalette="cyan"
                         fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
                         onClick={() => handleEditClick(accession)}
@@ -130,6 +131,7 @@ export function AccessionsCards({
                         {t('accession_card_edit_button')}
                       </Button>
                       <Button
+                        variant="ghost"
                         colorPalette="red"
                         fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
                         onClick={() => setDeleteAccessionId(accession.id)}
