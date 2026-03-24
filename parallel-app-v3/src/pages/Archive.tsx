@@ -9,7 +9,7 @@ import {
   Heading,
   Flex,
 } from '@chakra-ui/react'
-import { ArrowLeft, ArrowRight, Plus } from 'react-feather'
+import { ArrowLeft, ArrowRight, Plus, X } from 'react-feather'
 import { CreateUpdateAccession } from '../components/forms/CreateUpdateAccession'
 import Layout from '../components/Layout'
 import { useMemo, useState } from 'react'
@@ -113,7 +113,7 @@ export default function Archive() {
               <Flex justifyContent="space-between" alignItems="center" mb={4}>
                 <Heading size="md">{t('archive_create_modal_header')}</Heading>
                 <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
-                  ✕
+                  <X size={18} />
                 </Button>
               </Flex>
               {isLoggedIn ? <CreateUpdateAccession /> : null}
@@ -134,7 +134,7 @@ export default function Archive() {
             {pagination.currentPage !== 0 && (
               <Button
                 size="xs"
-                colorPalette="purple"
+                colorPalette="pink"
                 variant="ghost"
                 onClick={() =>
                   updateFilters({
@@ -143,19 +143,13 @@ export default function Archive() {
                 }
               >
                 <ArrowLeft size={14} style={{ marginRight: '4px' }} />
-                Previous
+                {t('archive_pagination_previous')}
               </Button>
             )}
-            <Box>
-              {t('archive_pagination_page')}
-              <b>{pagination.currentPage + 1}</b>
-              {t('archive_pagination_page_out_of')}
-              <b>{pagination.totalPages}</b>
-            </Box>
             {pagination.currentPage + 1 < pagination.totalPages && (
               <Button
                 size="xs"
-                colorPalette="purple"
+                colorPalette="pink"
                 variant="ghost"
                 onClick={() =>
                   updateFilters({
@@ -163,7 +157,7 @@ export default function Archive() {
                   })
                 }
               >
-                Next
+                {t('archive_pagination_next')}
                 <ArrowRight size={14} style={{ marginLeft: '4px' }} />
               </Button>
             )}

@@ -10,6 +10,8 @@ import {
   Heading,
   VStack,
   HStack,
+  Checkbox,
+  RadioGroup,
 } from '@chakra-ui/react'
 import { ArchiveDatePicker } from '../DatePicker'
 import { useTranslation } from 'react-i18next'
@@ -414,36 +416,31 @@ export function CreateUpdateAccession({
             <Heading size="sm" mb={1}>
               {t('create_accession_crawl_type_label')}
             </Heading>
-            <HStack gap={4}>
-              <label>
-                <input
-                  type="radio"
-                  name="crawlType"
+            <RadioGroup.Root
+              value={browserProfile}
+              onValueChange={(e) => setBrowserProfile(e.value ?? '')}
+            >
+              <HStack gap={4}>
+                <RadioGroup.Item
                   value={t('create_accession_crawl_type_default')}
-                  checked={
-                    browserProfile === t('create_accession_crawl_type_default')
-                  }
-                  onChange={() =>
-                    setBrowserProfile(t('create_accession_crawl_type_default'))
-                  }
-                />
-                {t('create_accession_crawl_type_default')}
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="crawlType"
+                >
+                  <RadioGroup.ItemHiddenInput />
+                  <RadioGroup.ItemControl />
+                  <RadioGroup.ItemText>
+                    {t('create_accession_crawl_type_default')}
+                  </RadioGroup.ItemText>
+                </RadioGroup.Item>
+                <RadioGroup.Item
                   value={t('create_accession_crawl_type_facebook')}
-                  checked={
-                    browserProfile === t('create_accession_crawl_type_facebook')
-                  }
-                  onChange={() =>
-                    setBrowserProfile(t('create_accession_crawl_type_facebook'))
-                  }
-                />
-                {t('create_accession_crawl_type_facebook')}
-              </label>
-            </HStack>
+                >
+                  <RadioGroup.ItemHiddenInput />
+                  <RadioGroup.ItemControl />
+                  <RadioGroup.ItemText>
+                    {t('create_accession_crawl_type_facebook')}
+                  </RadioGroup.ItemText>
+                </RadioGroup.Item>
+              </HStack>
+            </RadioGroup.Root>
           </Box>
         )}
 
@@ -451,11 +448,14 @@ export function CreateUpdateAccession({
           <Heading size="sm" mr={2}>
             {t('create_accession_private_label')}
           </Heading>
-          <input
-            type="checkbox"
+          <Checkbox.Root
             checked={isPrivate}
-            onChange={(e) => setIsPrivate(e.target.checked)}
-          />
+            onCheckedChange={(e) => setIsPrivate(e.checked === true)}
+          >
+            <Checkbox.HiddenInput />
+            <Checkbox.Control />
+            <Checkbox.Label />
+          </Checkbox.Root>
         </Flex>
 
         <Button

@@ -1,9 +1,10 @@
 'use client'
 
-import { Button, HStack, Box } from '@chakra-ui/react'
+import { Button, HStack } from '@chakra-ui/react'
 import { Copy, ExternalLink } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
+import { useToast } from '../context/ToastContext'
 
 interface AccessionButtonsProps {
   onOpen: () => void
@@ -17,30 +18,15 @@ const AccessionButtons = ({
   lang: _lang,
 }: AccessionButtonsProps) => {
   const { t } = useTranslation()
-  const [showCopiedToast, setShowCopiedToast] = useState(false)
+  const { showToast } = useToast()
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(window.location.href)
-    setShowCopiedToast(true)
-    setTimeout(() => setShowCopiedToast(false), 2000)
-  }, [])
+    showToast(t('link_copied'), 'success')
+  }, [showToast, t])
 
   return (
     <HStack gap={2}>
-      {showCopiedToast && (
-        <Box
-          position="fixed"
-          top={4}
-          right={4}
-          p={3}
-          bg="green.500"
-          color="white"
-          borderRadius="md"
-          zIndex={9999}
-        >
-          {t('link_copied')}
-        </Box>
-      )}
       <Button size="sm" colorPalette="cyan" onClick={handleCopy}>
         <Copy size={14} style={{ marginRight: '4px' }} />
         {t('copy_record')}

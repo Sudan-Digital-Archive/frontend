@@ -12,8 +12,6 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { appConfig } from '../constants'
 import type { AccessionOne } from '../apiTypes/apiResponses'
-import { useWindowSize } from '../hooks/useWindowSize'
-import AccessionButtons from '../components/AccessionButtons'
 import {
   Spinner,
   VStack,
@@ -21,54 +19,46 @@ import {
   Text,
   HStack,
   Button,
-  Flex,
+  Portal,
 } from '@chakra-ui/react'
 import { useParsedDate } from '../hooks/useParsedDate'
 import { useUser } from '../hooks/useUser'
 import Layout from '../components/Layout'
-import { ExternalLink } from 'react-feather'
+import { X, Copy, ExternalLink } from 'react-feather'
 
 interface AccessionInfoProps {
   timestamp: string
-  id: string | undefined
-  lang: string
   onOpen: () => void
-  isMobile: boolean
 }
 
-function AccessionInfo({
-  id,
-  lang,
-  onOpen,
-  timestamp,
-  isMobile,
-}: Readonly<AccessionInfoProps>) {
+function AccessionInfo({ onOpen, timestamp }: Readonly<AccessionInfoProps>) {
   const { t } = useTranslation()
   const { parseDate } = useParsedDate()
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(window.location.href)
+  }
+
   return (
-    <>
-      <Box
-        color="fg"
-        bg="bg.subtle"
-        p={2}
-        borderRadius="md"
-        border="1px solid"
-        borderColor="border"
-      >
+    <HStack gap={4} align="center">
+      <Box>
         <Text fontWeight="bold" fontSize="sm">
           {t('sda_record')}
         </Text>
-        <Text fontSize="xs">
+        <Text fontSize="xs" color="fg.muted">
           {t('view_accession_captured')} {parseDate(timestamp)}
         </Text>
       </Box>
-      {isMobile ? (
-        <Box height="1px" bg="border" my={2} />
-      ) : (
-        <Box width="1px" bg="border" height="80px" mx={2} />
-      )}
-      <AccessionButtons onOpen={onOpen} id={id} lang={lang} />
-    </>
+      <Box height="30px" width="1px" bg="border" />
+      <Button size="sm" variant="ghost" onClick={handleCopy}>
+        <Copy size={14} style={{ marginRight: '4px' }} />
+        {t('copy_record')}
+      </Button>
+      <Button size="sm" variant="ghost" onClick={onOpen}>
+        <ExternalLink size={14} style={{ marginRight: '4px' }} />
+        {t('view_accession_see_metadata')}
+      </Button>
+    </HStack>
   )
 }
 
@@ -83,8 +73,6 @@ export default function ViewAccession() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [showMetadata, setShowMetadata] = useState(true)
   const { t, i18n } = useTranslation()
-  const width = useWindowSize()
-  const isMobile = width <= 768
   const [searchParams] = useSearchParams()
   const lang = searchParams.get('lang') || 'en'
   const isPrivate = searchParams.get('isPrivate') === 'true'
@@ -181,129 +169,113 @@ export default function ViewAccession() {
           <Spinner />
         ) : (
           <>
-            {showMetadata && (
-              <Box w="100%" p={2}>
-                {isMobile ? (
-                  <VStack
-                    m={2}
-                    gap={2}
-                    alignItems="center"
-                    display="flex"
-                    flexDirection="column"
-                  >
-                    <AccessionInfo
-                      timestamp={accession.accession.crawl_timestamp}
-                      id={id}
-                      lang={lang}
-                      onOpen={() => setIsDrawerOpen(true)}
-                      isMobile={true}
-                    />
-                  </VStack>
-                ) : (
-                  <HStack m={2} gap={2} alignItems="center" display="flex">
-                    <AccessionInfo
-                      timestamp={accession.accession.crawl_timestamp}
-                      id={id}
-                      lang={lang}
-                      onOpen={() => setIsDrawerOpen(true)}
-                      isMobile={false}
-                    />
-                  </HStack>
-                )}
+            <Box w="100%" py={3}>
+              {showMetadata && (
+                <Box w="100%" display="flex" justifyContent="center">
+                  <AccessionInfo
+                    timestamp={accession.accession.crawl_timestamp}
+                    onOpen={() => setIsDrawerOpen(true)}
+                  />
+                </Box>
+              )}
+              <Box display="flex" justifyContent="center" mt={2}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowMetadata(!showMetadata)}
+                >
+                  {showMetadata
+                    ? t('view_accession_hide_metadata')
+                    : t('view_accession_show_metadata')}
+                </Button>
               </Box>
-            )}
+            </Box>
 
             {isDrawerOpen && (
-              <Box
-                position="fixed"
-                top={0}
-                right={0}
-                bottom={0}
-                width={{ base: '100%', md: '400px' }}
-                bg="bg.subtle"
-                zIndex={1001}
-                p={4}
-                overflowY="auto"
-              >
-                <Flex justifyContent="space-between" alignItems="center" mb={4}>
-                  <Title
-                    title={
-                      i18n.language === 'en'
-                        ? accession.accession.title_en ||
-                          t('metadata_missing_title')
-                        : accession.accession.title_ar ||
-                          t('metadata_missing_title')
-                    }
-                    fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                  />
-                  <Button
-                    variant="ghost"
-                    onClick={() => setIsDrawerOpen(false)}
-                  >
-                    ✕
-                  </Button>
-                </Flex>
-                <VStack gap={3} align="stretch">
-                  <Subject
-                    subjects={
-                      i18n.language === 'en'
-                        ? accession.accession.subjects_en
-                        : accession.accession.subjects_ar
-                    }
-                  />
-                  {((i18n.language === 'en' &&
-                    accession.accession.description_en) ||
-                    (i18n.language === 'ar' &&
-                      accession.accession.description_ar)) && (
-                    <Description
-                      description={
-                        i18n.language === 'en'
-                          ? accession.accession.description_en
-                          : accession.accession.description_ar
-                      }
-                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                    />
-                  )}
-                  <DateMetadata
-                    date={accession.accession.dublin_metadata_date}
-                    fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                  />
-                  <HStack>
-                    <ExternalLink size={14} />
-                    <OriginalURL
-                      url={accession.accession.seed_url}
-                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                    />
-                  </HStack>
-                </VStack>
-              </Box>
+              <Portal>
+                <Box
+                  position="fixed"
+                  top={0}
+                  right={0}
+                  bottom={0}
+                  w={{ base: '100%', md: '400px' }}
+                  bg="bg.subtle"
+                  borderLeft="1px solid"
+                  borderColor="border"
+                  zIndex={1000}
+                  overflowY="auto"
+                >
+                  <Box p={4}>
+                    <HStack
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb={4}
+                    >
+                      <Title
+                        title={
+                          i18n.language === 'en'
+                            ? accession.accession.title_en ||
+                              t('metadata_missing_title')
+                            : accession.accession.title_ar ||
+                              t('metadata_missing_title')
+                        }
+                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsDrawerOpen(false)}
+                      >
+                        <X size={18} />
+                      </Button>
+                    </HStack>
+                    <VStack gap={4} align="stretch">
+                      <Subject
+                        subjects={
+                          i18n.language === 'en'
+                            ? accession.accession.subjects_en
+                            : accession.accession.subjects_ar
+                        }
+                      />
+                      {((i18n.language === 'en' &&
+                        accession.accession.description_en) ||
+                        (i18n.language === 'ar' &&
+                          accession.accession.description_ar)) && (
+                        <Description
+                          description={
+                            i18n.language === 'en'
+                              ? accession.accession.description_en
+                              : accession.accession.description_ar
+                          }
+                          fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                        />
+                      )}
+                      <DateMetadata
+                        date={accession.accession.dublin_metadata_date}
+                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      />
+                      <OriginalURL
+                        url={accession.accession.seed_url}
+                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      />
+                    </VStack>
+                  </Box>
+                </Box>
+                <Box
+                  position="fixed"
+                  top={0}
+                  left={0}
+                  right={{ base: '0', md: '400px' }}
+                  bottom={0}
+                  bg="blackAlpha.600"
+                  zIndex={999}
+                  onClick={() => setIsDrawerOpen(false)}
+                />
+              </Portal>
             )}
-
-            {isDrawerOpen && (
-              <Box
-                position="fixed"
-                top={0}
-                left={0}
-                right={0}
-                bottom={0}
-                bg="blackAlpha.700"
-                zIndex={1000}
-                onClick={() => setIsDrawerOpen(false)}
-              />
-            )}
-
-            <Button
-              onClick={() => setShowMetadata(!showMetadata)}
-              variant="outline"
-              mb={2}
-            >
-              {showMetadata
-                ? t('view_accession_hide_metadata')
-                : t('view_accession_show_metadata')}
-            </Button>
 
             <Box flex="1" w="100vw" bg="white" color="black">
-              <Box height="4px" bg="accent.primary" />
+              <Box height="4px" bg="cyan.500" />
               <replay-web-page
                 embed="replayonly"
                 replayBase="/replay/"

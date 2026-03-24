@@ -1,11 +1,12 @@
 'use client'
 
-import { Box, Input, Flex, Badge } from '@chakra-ui/react'
+import { Box, Input, Flex, Badge, Switch } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArchiveDatePicker } from './DatePicker'
 import { SubjectsAutocomplete } from './subjectsAutocomplete/SubjectsAutocomplete'
 import type { AccessionsQueryFilters } from '../apiTypes/apiRequests'
+import { useColorMode } from './ui/color-mode'
 
 interface ArchiveFiltersProps {
   queryFilters: AccessionsQueryFilters
@@ -23,6 +24,7 @@ export function ArchiveFilters({
   collectionId,
 }: ArchiveFiltersProps) {
   const { t } = useTranslation()
+  const { colorMode } = useColorMode()
   const [dateFrom, setDateFrom] = useState<null | Date>(null)
   const [dateTo, setDateTo] = useState<null | Date>(null)
   const [queryTerm, setQueryTerm] = useState(queryFilters.query_term || '')
@@ -31,6 +33,11 @@ export function ArchiveFilters({
     queryFilters.url_filter || '',
   )
   const [debouncedUrlFilter, setDebouncedUrlFilter] = useState('')
+
+  const borderColor = colorMode === 'dark' ? 'gray.600' : 'gray.400'
+  const inputBg = colorMode === 'dark' ? '#252525' : '#ffffff'
+  const inputColor = colorMode === 'dark' ? '#ffffff' : '#1a1a1a'
+  const placeholderColor = colorMode === 'dark' ? '#a0a0a0' : '#666666'
 
   function handleDateChange(
     date: Date | null,
@@ -86,11 +93,13 @@ export function ArchiveFilters({
           setUrlFilterTerm(event.target.value)
         }}
         placeholder={t('archive_url_filter_placeholder')}
-        size="lg"
+        size="md"
         mb={5}
-        bg="input.bg"
-        borderColor="input.border"
-        _placeholder={{ color: 'fg.muted' }}
+        variant="outline"
+        borderColor={borderColor}
+        bg={inputBg}
+        color={inputColor}
+        _placeholder={{ color: placeholderColor }}
       />
       <Input
         value={queryTerm}
@@ -98,21 +107,37 @@ export function ArchiveFilters({
           setQueryTerm(event.target.value)
         }}
         placeholder={t('archive_text_search_query_placeholder')}
-        size="lg"
+        size="md"
         mb={5}
-        bg="input.bg"
-        borderColor="input.border"
-        _placeholder={{ color: 'fg.muted' }}
+        variant="outline"
+        borderColor={borderColor}
+        bg={inputBg}
+        color={inputColor}
+        _placeholder={{ color: placeholderColor }}
       />
       <Flex flexWrap="wrap" gap={2} alignItems="center">
-        <Badge colorPalette="cyan" fontSize="sm" py={1} px={2}>
+        <Badge
+          colorPalette="cyan"
+          fontSize="sm"
+          py={1}
+          px={3}
+          w="110px"
+          textAlign="center"
+        >
           {t('archive_date_from_filter')}
         </Badge>
         <ArchiveDatePicker
           selected={dateFrom}
           onChange={(date) => handleDateChange(date, 'date_from')}
         />
-        <Badge colorPalette="cyan" fontSize="sm" py={1} px={2}>
+        <Badge
+          colorPalette="cyan"
+          fontSize="sm"
+          py={1}
+          px={3}
+          w="110px"
+          textAlign="center"
+        >
           {t('archive_date_to_filter')}
         </Badge>
         <ArchiveDatePicker
@@ -124,13 +149,17 @@ export function ArchiveFilters({
             <Badge colorPalette="cyan" fontSize="sm" py={1} px={2}>
               {t('archive_filter_private_records')}
             </Badge>
-            <input
-              type="checkbox"
+            <Switch.Root
               checked={queryFilters.is_private || false}
-              onChange={(e) => {
-                updateFilters({ is_private: e.target.checked })
+              onCheckedChange={(e) => {
+                updateFilters({ is_private: e.checked === true })
               }}
-            />
+              size="lg"
+              mx={2}
+            >
+              <Switch.HiddenInput />
+              <Switch.Control />
+            </Switch.Root>
           </>
         )}
       </Flex>
@@ -163,22 +192,25 @@ export function ArchiveFilters({
           queryFilters.metadata_subjects.length > 0 &&
           (!lockedSubjectIds || lockedSubjectIds.length === 0) && (
             <Flex alignItems="center" mt={{ base: 4, md: 0 }}>
-              <Badge colorPalette="blue" fontSize="sm" py={1} px={2} mr={2}>
+              <Badge colorPalette="pink" fontSize="sm" py={1} px={2} mr={2}>
                 {queryFilters.metadata_subjects_inclusive_filter
                   ? t('exclusive')
                   : t('inclusive')}
               </Badge>
-              <input
-                type="checkbox"
+              <Switch.Root
                 checked={
                   queryFilters.metadata_subjects_inclusive_filter || false
                 }
-                onChange={(e) => {
+                onCheckedChange={(e) => {
                   updateFilters({
-                    metadata_subjects_inclusive_filter: e.target.checked,
+                    metadata_subjects_inclusive_filter: e.checked === true,
                   })
                 }}
-              />
+                size="lg"
+              >
+                <Switch.HiddenInput />
+                <Switch.Control />
+              </Switch.Root>
             </Flex>
           )}
       </Flex>

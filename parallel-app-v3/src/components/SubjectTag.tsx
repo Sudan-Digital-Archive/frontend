@@ -1,3 +1,5 @@
+'use client'
+
 import { Box } from '@chakra-ui/react'
 
 interface SubjectTagProps {
@@ -12,8 +14,8 @@ export const SubjectTag = ({ label }: SubjectTagProps) => {
       px={2}
       py={0.5}
       fontSize="sm"
-      bg="cyan.700"
-      color="cyan.100"
+      bg="#db2777"
+      color="white"
       borderRadius="full"
       m={0.5}
     >

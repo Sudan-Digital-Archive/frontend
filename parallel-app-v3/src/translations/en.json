@@ -224,6 +224,13 @@
     "user_management_current_badge": "Current:",
     "user_management_change_role": "Change role:",
     "light_mode": "Light Mode",
-    "dark_mode": "Dark Mode"
+    "dark_mode": "Dark Mode",
+    "archive_pagination_previous": "Previous",
+    "archive_pagination_next": "Next",
+    "collections_pagination_previous": "Previous",
+    "collections_pagination_next": "Next",
+    "collection_view_pagination_previous": "Previous",
+    "collection_view_pagination_next": "Next",
+    "view_accession_close": "Close"
   }
 }

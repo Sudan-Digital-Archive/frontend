@@ -19,7 +19,6 @@ export const ArchiveCard = ({ children }: ArchiveCardProps) => {
       _hover={{
         boxShadow: '2xl',
         transform: 'translateY(-5px)',
-        borderColor: 'accent.primary',
       }}
       overflow="hidden"
     >

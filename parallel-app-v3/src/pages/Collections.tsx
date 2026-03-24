@@ -11,6 +11,7 @@ import {
   Spinner,
   Flex,
   Badge,
+  Checkbox,
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
@@ -86,14 +87,17 @@ export default function Collections() {
               <Badge colorPalette="cyan">
                 {t('archive_filter_private_records')}
               </Badge>
-              <input
-                type="checkbox"
+              <Checkbox.Root
                 checked={isPrivate}
-                onChange={(e) =>
-                  updateFilters({ is_private: e.target.checked })
+                onCheckedChange={(e) =>
+                  updateFilters({ is_private: e.checked === true })
                 }
-                style={{ margin: '8px' }}
-              />
+                mx={2}
+              >
+                <Checkbox.HiddenInput />
+                <Checkbox.Control />
+                <Checkbox.Label />
+              </Checkbox.Root>
             </Flex>
           )}
           {isLoading || !collections ? (
@@ -118,21 +122,26 @@ export default function Collections() {
             >
               {collections.items.map((collection) => (
                 <ArchiveCard key={`collection-card-${collection.id}`}>
-                  <Box p={4}>
-                    <Heading size="md" mb={2}>
-                      {collection.title}
-                    </Heading>
-                    <Text mb={4} lineClamp={3}>
-                      {collection.description}
-                    </Text>
+                  <Flex
+                    direction="column"
+                    p={4}
+                    h="100%"
+                    justifyContent="space-between"
+                  >
+                    <Box>
+                      <Heading size="md" mb={2}>
+                        {collection.title}
+                      </Heading>
+                      <Text lineClamp={3}>{collection.description}</Text>
+                    </Box>
                     <NavLink
                       to={`/collections/${collection.id}?isPrivate=${collection.is_private}`}
                     >
-                      <Button colorPalette="purple">
+                      <Button variant="ghost" colorPalette="cyan" mt={4}>
                         {t('collection_view_button')}
                       </Button>
                     </NavLink>
-                  </Box>
+                  </Flex>
                 </ArchiveCard>
               ))}
             </SimpleGrid>
@@ -142,28 +151,22 @@ export default function Collections() {
               {pagination.currentPage !== 0 && (
                 <Button
                   size="xs"
-                  colorPalette="purple"
+                  colorPalette="pink"
                   variant="ghost"
                   onClick={handlePreviousPage}
                 >
                   <ArrowLeft size={14} style={{ marginRight: '4px' }} />
-                  Previous
+                  {t('collections_pagination_previous')}
                 </Button>
               )}
-              <Box>
-                {t('archive_pagination_page')}
-                <b>{pagination.currentPage + 1}</b>
-                {t('archive_pagination_page_out_of')}
-                <b>{pagination.totalPages}</b>
-              </Box>
               {pagination.currentPage + 1 < pagination.totalPages && (
                 <Button
                   size="xs"
-                  colorPalette="purple"
+                  colorPalette="pink"
                   variant="ghost"
                   onClick={handleNextPage}
                 >
-                  Next
+                  {t('collections_pagination_next')}
                   <ArrowRight size={14} style={{ marginLeft: '4px' }} />
                 </Button>
               )}

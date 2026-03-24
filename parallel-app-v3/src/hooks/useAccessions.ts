@@ -75,6 +75,9 @@ export const useAccessions = (options: UseAccessionsOptions) => {
             Accept: 'application/json',
           },
         })
+        if (!response.ok) {
+          throw new Error(`Failed to fetch accessions: ${response.status}`)
+        }
         const data: ListAccessions = await response.json()
         setAccessions(data)
         setPagination({
