@@ -14,8 +14,8 @@ export function Toast() {
       bottom={6}
       left="50%"
       transform="translateX(-50%)"
-      bg={toast.type === 'error' ? 'pink.700' : 'cyan.900'}
-      color="white"
+      bg={toast.type === 'error' ? 'toast.bgError' : 'toast.bg'}
+      color="toast.text"
       px={6}
       py={3}
       borderRadius="lg"

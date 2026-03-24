@@ -11,19 +11,20 @@ import {
   Spinner,
   Text,
   Flex,
+  Table,
+  NativeSelect,
+  Checkbox,
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight, Plus } from 'react-feather'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
 import { useUsers } from '../hooks/useUsers'
+import { useToast } from '../context/ToastContext'
 import type { User, UserRole } from '../apiTypes/userTypes'
 
 export default function UserManagement() {
   const { t } = useTranslation()
-  const [showToast, setShowToast] = useState<{
-    type: 'success' | 'error'
-    message: string
-  } | null>(null)
+  const { showToast } = useToast()
   const {
     users,
     isLoading,
@@ -98,15 +99,9 @@ export default function UserManagement() {
         role: state.role,
         is_active: state.isActive,
       })
-      setShowToast({
-        type: 'success',
-        message: t('user_management_update_success'),
-      })
+      showToast(t('user_management_update_success'), 'success')
     } catch {
-      setShowToast({
-        type: 'error',
-        message: t('user_management_update_error'),
-      })
+      showToast(t('user_management_update_error'), 'error')
     }
   }
 
@@ -117,19 +112,13 @@ export default function UserManagement() {
         role: newUserRole,
         is_active: newUserIsActive,
       })
-      setShowToast({
-        type: 'success',
-        message: t('user_management_create_success'),
-      })
+      showToast(t('user_management_create_success'), 'success')
       setIsCreateModalOpen(false)
       setNewUserEmail('')
       setNewUserRole('Contributor')
       setNewUserIsActive(true)
     } catch {
-      setShowToast({
-        type: 'error',
-        message: t('user_management_create_error'),
-      })
+      showToast(t('user_management_create_error'), 'error')
     }
   }
 
@@ -137,35 +126,15 @@ export default function UserManagement() {
     if (!deleteUserId) return
     try {
       await deleteUser(deleteUserId)
-      setShowToast({
-        type: 'success',
-        message: t('user_management_delete_success'),
-      })
+      showToast(t('user_management_delete_success'), 'success')
       setDeleteUserId(null)
     } catch {
-      setShowToast({
-        type: 'error',
-        message: t('user_management_delete_error'),
-      })
+      showToast(t('user_management_delete_error'), 'error')
     }
   }
 
   return (
     <Layout>
-      {showToast && (
-        <Box
-          position="fixed"
-          top={4}
-          right={4}
-          p={3}
-          bg={showToast.type === 'success' ? 'green.500' : 'red.500'}
-          color="white"
-          borderRadius="md"
-          zIndex={9999}
-        >
-          {showToast.message}
-        </Box>
-      )}
       <VStack alignItems="center" justifyContent="center" p={8}>
         <Heading
           size="xl"
@@ -207,58 +176,65 @@ export default function UserManagement() {
           ) : (
             <>
               <Box overflowX="auto">
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <thead>
-                    <tr>
-                      <th>{t('user_management_email_header')}</th>
-                      <th>{t('user_management_role_header')}</th>
-                      <th>{t('user_management_active_header')}</th>
-                      <th>{t('user_management_actions_header')}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                <Table.Root>
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.ColumnHeader>
+                        {t('user_management_email_header')}
+                      </Table.ColumnHeader>
+                      <Table.ColumnHeader>
+                        {t('user_management_role_header')}
+                      </Table.ColumnHeader>
+                      <Table.ColumnHeader>
+                        {t('user_management_active_header')}
+                      </Table.ColumnHeader>
+                      <Table.ColumnHeader>
+                        {t('user_management_actions_header')}
+                      </Table.ColumnHeader>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
                     {users.map((user: User) => (
-                      <tr key={user.id}>
-                        <td>{user.email}</td>
-                        <td>
-                          <select
-                            value={editState[user.id]?.role || user.role}
-                            onChange={(e) =>
-                              handleRoleChange(
-                                user.id,
-                                e.target.value as UserRole,
-                              )
-                            }
-                            style={{
-                              padding: '4px 8px',
-                              borderRadius: '4px',
-                              backgroundColor:
-                                'var(--chakra-colors-bg-emphasized)',
-                            }}
-                          >
-                            <option value="Admin">
-                              {t('user_management_role_admin')}
-                            </option>
-                            <option value="Contributor">
-                              {t('user_management_role_contributor')}
-                            </option>
-                            <option value="Researcher">
-                              {t('user_management_role_researcher')}
-                            </option>
-                          </select>
-                        </td>
-                        <td>
-                          <input
-                            type="checkbox"
+                      <Table.Row key={user.id}>
+                        <Table.Cell>{user.email}</Table.Cell>
+                        <Table.Cell>
+                          <NativeSelect.Root maxW="150px">
+                            <NativeSelect.Field
+                              value={editState[user.id]?.role || user.role}
+                              onChange={(e) =>
+                                handleRoleChange(
+                                  user.id,
+                                  e.target.value as UserRole,
+                                )
+                              }
+                            >
+                              <option value="Admin">
+                                {t('user_management_role_admin')}
+                              </option>
+                              <option value="Contributor">
+                                {t('user_management_role_contributor')}
+                              </option>
+                              <option value="Researcher">
+                                {t('user_management_role_researcher')}
+                              </option>
+                            </NativeSelect.Field>
+                          </NativeSelect.Root>
+                        </Table.Cell>
+                        <Table.Cell>
+                          <Checkbox.Root
                             checked={
                               editState[user.id]?.isActive ?? user.is_active
                             }
-                            onChange={(e) =>
-                              handleActiveChange(user.id, e.target.checked)
+                            onCheckedChange={(e) =>
+                              handleActiveChange(user.id, e.checked === true)
                             }
-                          />
-                        </td>
-                        <td>
+                          >
+                            <Checkbox.HiddenInput />
+                            <Checkbox.Control />
+                            <Checkbox.Label />
+                          </Checkbox.Root>
+                        </Table.Cell>
+                        <Table.Cell>
                           <HStack gap={2}>
                             <Button
                               size="sm"
@@ -275,11 +251,11 @@ export default function UserManagement() {
                               {t('user_management_delete_button')}
                             </Button>
                           </HStack>
-                        </td>
-                      </tr>
+                        </Table.Cell>
+                      </Table.Row>
                     ))}
-                  </tbody>
-                </table>
+                  </Table.Body>
+                </Table.Root>
               </Box>
 
               <HStack mt={4} justifyContent="center">
@@ -295,12 +271,6 @@ export default function UserManagement() {
                     {t('user_management_previous')}
                   </Button>
                 )}
-                <Text>
-                  {t('user_management_page')}
-                  <b>{pagination.currentPage + 1}</b>
-                  {t('user_management_page_out_of')}
-                  <b>{pagination.totalPages}</b>
-                </Text>
                 {pagination.currentPage + 1 < pagination.totalPages && (
                   <Button
                     size="sm"
@@ -352,39 +322,43 @@ export default function UserManagement() {
                   value={newUserEmail}
                   onChange={(e) => setNewUserEmail(e.target.value)}
                   placeholder={t('user_management_email_placeholder')}
+                  bg="input.bg"
+                  borderColor="input.border"
                 />
               </Box>
 
               <Box>
                 <Text mb={1}>{t('user_management_role_label')}</Text>
-                <select
-                  value={newUserRole}
-                  onChange={(e) => setNewUserRole(e.target.value as UserRole)}
-                  style={{
-                    width: '100%',
-                    padding: '8px',
-                    borderRadius: '4px',
-                    backgroundColor: 'var(--chakra-colors-gray-700)',
-                  }}
-                >
-                  <option value="Admin">
-                    {t('user_management_role_admin')}
-                  </option>
-                  <option value="Contributor">
-                    {t('user_management_role_contributor')}
-                  </option>
-                  <option value="Researcher">
-                    {t('user_management_role_researcher')}
-                  </option>
-                </select>
+                <NativeSelect.Root>
+                  <NativeSelect.Field
+                    value={newUserRole}
+                    onChange={(e) => setNewUserRole(e.target.value as UserRole)}
+                    bg="bg.emphasized"
+                  >
+                    <option value="Admin">
+                      {t('user_management_role_admin')}
+                    </option>
+                    <option value="Contributor">
+                      {t('user_management_role_contributor')}
+                    </option>
+                    <option value="Researcher">
+                      {t('user_management_role_researcher')}
+                    </option>
+                  </NativeSelect.Field>
+                </NativeSelect.Root>
               </Box>
 
               <Flex alignItems="center" gap={2}>
-                <input
-                  type="checkbox"
+                <Checkbox.Root
                   checked={newUserIsActive}
-                  onChange={(e) => setNewUserIsActive(e.target.checked)}
-                />
+                  onCheckedChange={(e) =>
+                    setNewUserIsActive(e.checked === true)
+                  }
+                >
+                  <Checkbox.HiddenInput />
+                  <Checkbox.Control />
+                  <Checkbox.Label />
+                </Checkbox.Root>
                 <Text>{t('user_management_active_label')}</Text>
               </Flex>
 

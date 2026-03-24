@@ -5,16 +5,20 @@ import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
+import { useColorMode } from '../components/ui/color-mode'
 import EnCoCTranslations from '../translations/code_of_conduct_en.json'
 import ArCoCTranslations from '../translations/code_of_conduct_ar.json'
 
 export default function CodeOfConduct() {
   const { i18n, t } = useTranslation()
+  const { colorMode } = useColorMode()
   const { hash, key } = useLocation()
   const [CoCTranslations, setCoCTranslations] = useState(
     i18n.language === 'en' ? EnCoCTranslations : ArCoCTranslations,
   )
   const fontSize = i18n.language === 'en' ? 'lg' : '2xl'
+
+  const linkColor = colorMode === 'dark' ? '#67e8f9' : '#0891b2'
 
   useEffect(() => {
     setCoCTranslations(
@@ -58,7 +62,7 @@ export default function CodeOfConduct() {
                 <List.Item fontSize={fontSize}>
                   <a
                     href="#our-values"
-                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                    style={{ color: linkColor, textDecoration: 'underline' }}
                   >
                     {t('code_of_conduct_our_values_content_heading')}
                   </a>
@@ -66,7 +70,7 @@ export default function CodeOfConduct() {
                 <List.Item fontSize={fontSize}>
                   <a
                     href="#standards-and-inappropriate-behavior"
-                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                    style={{ color: linkColor, textDecoration: 'underline' }}
                   >
                     {t(
                       'code_of_conduct_standards_inappropriate_behavior_heading',
@@ -76,7 +80,7 @@ export default function CodeOfConduct() {
                 <List.Item fontSize={fontSize}>
                   <a
                     href="#boundaries"
-                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                    style={{ color: linkColor, textDecoration: 'underline' }}
                   >
                     {t('code_of_conduct_boundaries_heading')}
                   </a>
@@ -84,7 +88,7 @@ export default function CodeOfConduct() {
                 <List.Item fontSize={fontSize}>
                   <a
                     href="#accountability-processes"
-                    style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                    style={{ color: linkColor, textDecoration: 'underline' }}
                   >
                     {t('code_of_conduct_accountability_processes_heading')}
                   </a>
@@ -114,7 +118,7 @@ export default function CodeOfConduct() {
             <Text fontSize="sm">
               <a
                 href="#toc"
-                style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                style={{ color: linkColor, textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>
@@ -148,7 +152,7 @@ export default function CodeOfConduct() {
             <Text fontSize="sm">
               <a
                 href="#toc"
-                style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                style={{ color: linkColor, textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>
@@ -179,7 +183,7 @@ export default function CodeOfConduct() {
             <Text fontSize="sm">
               <a
                 href="#toc"
-                style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                style={{ color: linkColor, textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>
@@ -213,7 +217,7 @@ export default function CodeOfConduct() {
             <Text fontSize="sm">
               <a
                 href="#toc"
-                style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                style={{ color: linkColor, textDecoration: 'underline' }}
               >
                 {t('code_of_conduct_back_to_top')}
               </a>

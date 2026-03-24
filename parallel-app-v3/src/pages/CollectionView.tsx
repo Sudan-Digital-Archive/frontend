@@ -170,7 +170,7 @@ export default function CollectionView() {
             {pagination.currentPage !== 0 && (
               <Button
                 size="xs"
-                colorPalette="purple"
+                colorPalette="pink"
                 variant="ghost"
                 onClick={() =>
                   updateFilters({
@@ -179,19 +179,13 @@ export default function CollectionView() {
                 }
               >
                 <ArrowLeft size={14} style={{ marginRight: '4px' }} />
-                Previous
+                {t('collection_view_pagination_previous')}
               </Button>
             )}
-            <Box>
-              {t('archive_pagination_page')}
-              <b>{pagination.currentPage + 1}</b>
-              {t('archive_pagination_page_out_of')}
-              <b>{pagination.totalPages}</b>
-            </Box>
             {pagination.currentPage + 1 < pagination.totalPages && (
               <Button
                 size="xs"
-                colorPalette="purple"
+                colorPalette="pink"
                 variant="ghost"
                 onClick={() =>
                   updateFilters({
@@ -199,7 +193,7 @@ export default function CollectionView() {
                   })
                 }
               >
-                Next
+                {t('collection_view_pagination_next')}
                 <ArrowRight size={14} style={{ marginLeft: '4px' }} />
               </Button>
             )}

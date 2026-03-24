@@ -228,6 +228,13 @@
     "user_management_current_badge": "الحالي:",
     "user_management_change_role": "تغيير الدور:",
     "light_mode": "الوضع الفاتح",
-    "dark_mode": "الوضع الداكن"
+    "dark_mode": "الوضع الداكن",
+    "archive_pagination_previous": "السابق",
+    "archive_pagination_next": "التالي",
+    "collections_pagination_previous": "السابق",
+    "collections_pagination_next": "التالي",
+    "collection_view_pagination_previous": "السابق",
+    "collection_view_pagination_next": "التالي",
+    "view_accession_close": "إغلاق"
   }
 }

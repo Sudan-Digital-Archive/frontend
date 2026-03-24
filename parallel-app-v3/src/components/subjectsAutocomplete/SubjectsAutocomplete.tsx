@@ -11,6 +11,7 @@ import type { Subject, SubjectsResponse } from '../../apiTypes/apiResponses'
 import type { SubjectOption } from './types'
 import { useUser } from '../../hooks/useUser'
 import { useToast } from '../../context/ToastContext'
+import { useColorMode } from '../ui/color-mode'
 
 interface SubjectsAutocompleteProps {
   menuPlacement?: 'top' | 'bottom'
@@ -35,6 +36,7 @@ export const SubjectsAutocomplete = ({
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
   const { showToast } = useToast()
+  const { colorMode } = useColorMode()
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isCreatingNewSubject, setIsCreatingNewSubject] = useState(false)
@@ -294,6 +296,12 @@ export const SubjectsAutocomplete = ({
           onChange={handleChange}
           onCreateOption={handleCreateOption}
           chakraStyles={{
+            control: (provided) => ({
+              ...provided,
+              border: `1px solid ${colorMode === 'dark' ? '#4b5563' : '#9ca3af'}`,
+              borderRadius: '6px',
+              backgroundColor: colorMode === 'dark' ? '#252525' : '#ffffff',
+            }),
             loadingIndicator: (provided) => ({
               ...provided,
               mr: 2,
@@ -338,6 +346,12 @@ export const SubjectsAutocomplete = ({
           value={selectedOptions}
           onChange={handleChange}
           chakraStyles={{
+            control: (provided) => ({
+              ...provided,
+              border: `1px solid ${colorMode === 'dark' ? '#4b5563' : '#9ca3af'}`,
+              borderRadius: '6px',
+              backgroundColor: colorMode === 'dark' ? '#252525' : '#ffffff',
+            }),
             loadingIndicator: (provided) => ({
               ...provided,
               mr: 2,

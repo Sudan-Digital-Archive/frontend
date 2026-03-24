@@ -1,6 +1,7 @@
 'use client'
 
-import { BrowserRouter, Routes, Route } from 'react-router'
+import { useEffect } from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
 import { UserProvider } from './context/UserContext'
 import { ToastProvider } from './context/ToastContext'
 import { Provider } from './components/ui/provider'
@@ -12,6 +13,7 @@ import WhyAnotherArchive from './pages/WhyAnotherArchive'
 import TechnicalStack from './pages/TechnicalStack'
 import CodeofConduct from './pages/CodeofConduct'
 import Archive from './pages/Archive'
+import ViewAccession from './pages/ViewAccession'
 import Collections from './pages/Collections'
 import CollectionView from './pages/CollectionView'
 import ContactUs from './pages/ContactUs'
@@ -22,12 +24,23 @@ import NotFound from './pages/NotFound'
 import './i18n'
 import './css/styles.css'
 
+function ScrollToTop() {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location])
+
+  return null
+}
+
 function App() {
   return (
     <UserProvider>
       <Provider>
         <ColorModeProvider>
           <BrowserRouter>
+            <ScrollToTop />
             <ToastProvider>
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -39,10 +52,10 @@ function App() {
                 />
                 <Route path="/tech-stack" element={<TechnicalStack />} />
                 <Route path="/code-of-conduct" element={<CodeofConduct />} />
+                <Route path="/archive/:id" element={<ViewAccession />} />
                 <Route path="/archive" element={<Archive />} />
-                <Route path="/archive/:id" element={<Archive />} />
-                <Route path="/collections" element={<Collections />} />
                 <Route path="/collections/:id" element={<CollectionView />} />
+                <Route path="/collections" element={<Collections />} />
                 <Route path="/contact-us" element={<ContactUs />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/jwt-auth" element={<JWTAuth />} />

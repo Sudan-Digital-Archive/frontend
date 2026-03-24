@@ -11,11 +11,12 @@ import {
 } from './metadata'
 import { useTranslation } from 'react-i18next'
 import type { AccessionWithMetadata } from '../apiTypes/apiResponses'
-import { NavLink } from 'react-router'
 import { DeleteAccession } from './forms/DeleteAccession'
 import { CreateUpdateAccession } from './forms/CreateUpdateAccession'
 import { useUser } from '../hooks/useUser'
 import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { X } from 'react-feather'
 
 interface AccessionsCardsProps {
   accessions: AccessionWithMetadata[]
@@ -28,6 +29,7 @@ export function AccessionsCards({
 }: AccessionsCardsProps) {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
+  const navigate = useNavigate()
   const [deleteAccessionId, setDeleteAccessionId] = useState<string | null>(
     null,
   )
@@ -59,48 +61,69 @@ export function AccessionsCards({
             i18n.language === 'en'
               ? accession.subjects_en
               : accession.subjects_ar
+          const hasDescription = description && description.trim().length > 0
 
           return (
             <ArchiveCard key={`accession-card-${index}`}>
-              <Box p={4}>
-                <Title
-                  title={title || t('metadata_missing_title')}
-                  fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                  truncate
-                />
-                {description && (
-                  <Description
-                    description={description}
-                    fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                    truncate
-                  />
-                )}
-                <Box mt={2}>
-                  <DateMetadata
-                    date={accession.dublin_metadata_date}
-                    fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                  />
+              <Flex
+                direction="column"
+                p={4}
+                h="100%"
+                justifyContent="space-between"
+              >
+                <Box>
+                  <Box mb={3}>
+                    <Title
+                      title={title || t('metadata_missing_title')}
+                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      truncate
+                    />
+                  </Box>
+
+                  <Box mb={2}>
+                    <DateMetadata
+                      date={accession.dublin_metadata_date}
+                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                    />
+                  </Box>
+
+                  <Subject subjects={subjects} />
+
+                  {hasDescription && (
+                    <Box mt={2}>
+                      <Description
+                        description={description}
+                        fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                        truncate
+                      />
+                    </Box>
+                  )}
+
+                  <Box mt={2}>
+                    <OriginalURL
+                      url={accession.seed_url}
+                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                    />
+                  </Box>
                 </Box>
-                <Subject subjects={subjects} />
-                <OriginalURL
-                  url={accession.seed_url}
-                  fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                />
+
                 <Flex mt={4} justifyContent="space-between" gap={2}>
-                  <NavLink
-                    to={`/archive/${accession.id}?isPrivate=${accession.is_private}&lang=${i18n.language}`}
+                  <Button
+                    variant="ghost"
+                    colorPalette="cyan"
+                    fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
+                    onClick={() =>
+                      navigate(
+                        `/archive/${accession.id}?isPrivate=${accession.is_private}&lang=${i18n.language}`,
+                      )
+                    }
                   >
-                    <Button
-                      colorPalette="purple"
-                      fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
-                    >
-                      {t('archive_view_record_button')}
-                    </Button>
-                  </NavLink>
+                    {t('archive_view_record_button')}
+                  </Button>
                   {isLoggedIn && (
                     <Flex gap={2}>
                       <Button
-                        colorPalette="blue"
+                        colorPalette="cyan"
                         fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
                         onClick={() => handleEditClick(accession)}
                       >
@@ -116,7 +139,7 @@ export function AccessionsCards({
                     </Flex>
                   )}
                 </Flex>
-              </Box>
+              </Flex>
             </ArchiveCard>
           )
         })}
@@ -162,7 +185,7 @@ export function AccessionsCards({
                 {t('edit_accession')}
               </Box>
               <Button variant="ghost" onClick={() => setIsEditOpen(false)}>
-                ✕
+                <X size={18} />
               </Button>
             </Flex>
             <CreateUpdateAccession

@@ -23,11 +23,7 @@ export default function Home() {
       >
         <VStack gap={8}>
           <Box>
-            <Text
-              className="gradientText"
-              fontSize="6xl"
-              fontWeight="extrabold"
-            >
+            <Text className="gradientText" fontSize="6xl" fontWeight="black">
               {t('landing_heading')}
             </Text>
           </Box>

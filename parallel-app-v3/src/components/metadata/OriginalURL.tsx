@@ -1,4 +1,7 @@
+'use client'
+
 import { Link, Badge, Text, Box } from '@chakra-ui/react'
+import { ExternalLink } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 
 export function OriginalURL({
@@ -13,7 +16,13 @@ export function OriginalURL({
     <Text fontSize={fontSize}>
       <Box as="span" title={url} cursor="pointer">
         <Link href={url} target="_blank" rel="noopener noreferrer">
-          <Badge colorPalette="cyan">{t('metadata_original_url_label')}</Badge>
+          <Badge colorPalette="cyan">
+            {t('metadata_original_url_label')}{' '}
+            <ExternalLink
+              size={12}
+              style={{ display: 'inline', verticalAlign: 'middle' }}
+            />
+          </Badge>
         </Link>
       </Box>
     </Text>
