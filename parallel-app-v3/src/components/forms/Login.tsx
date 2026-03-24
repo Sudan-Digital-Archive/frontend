@@ -88,6 +88,7 @@ export function Login() {
 
           <Button
             mt={4}
+            variant="ghost"
             colorPalette="cyan"
             type="submit"
             width="100%"

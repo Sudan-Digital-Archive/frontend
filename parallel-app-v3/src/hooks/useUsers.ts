@@ -5,7 +5,6 @@ import type {
   ListUsers,
   CreateUserPayload,
   UpdateUserPayload,
-  UpdateUserResponse,
   UsersQueryFilters,
 } from '../apiTypes/userTypes'
 
@@ -126,22 +125,9 @@ export const useUsers = (): UseUsersReturn => {
       if (!response.ok) {
         throw new Error('Failed to update user')
       }
-      const updatedUserData: UpdateUserResponse = await response.json()
-      const capitalizedRole = (updatedUserData.role.charAt(0).toUpperCase() +
-        updatedUserData.role.slice(1)) as User['role']
-      setUsers((prev) =>
-        prev.map((user) =>
-          user.id === userId
-            ? {
-                ...user,
-                role: capitalizedRole,
-                is_active: updatedUserData.is_active,
-              }
-            : user,
-        ),
-      )
+      await fetchUsers(queryFilters)
     },
-    [],
+    [fetchUsers, queryFilters],
   )
 
   const deleteUser = useCallback(async (userId: string) => {

@@ -157,6 +157,7 @@ export default function UserManagement() {
               _placeholder={{ color: 'fg.muted' }}
             />
             <Button
+              variant="ghost"
               colorPalette="cyan"
               onClick={() => setIsCreateModalOpen(true)}
             >
@@ -198,7 +199,7 @@ export default function UserManagement() {
                       <Table.Row key={user.id}>
                         <Table.Cell>{user.email}</Table.Cell>
                         <Table.Cell>
-                          <NativeSelect.Root maxW="150px">
+                          <NativeSelect.Root maxW="150px" bg="bg.emphasized">
                             <NativeSelect.Field
                               value={editState[user.id]?.role || user.role}
                               onChange={(e) =>
@@ -238,13 +239,15 @@ export default function UserManagement() {
                           <HStack gap={2}>
                             <Button
                               size="sm"
-                              colorPalette="blue"
+                              variant="ghost"
+                              colorPalette="cyan"
                               onClick={() => handleUpdateUser(user.id)}
                             >
                               {t('user_management_update_button')}
                             </Button>
                             <Button
                               size="sm"
+                              variant="ghost"
                               colorPalette="red"
                               onClick={() => setDeleteUserId(user.id)}
                             >
@@ -369,7 +372,11 @@ export default function UserManagement() {
                 >
                   {t('user_management_cancel_button')}
                 </Button>
-                <Button colorPalette="cyan" onClick={handleCreateUser}>
+                <Button
+                  variant="ghost"
+                  colorPalette="cyan"
+                  onClick={handleCreateUser}
+                >
                   {t('user_management_create_button')}
                 </Button>
               </HStack>
@@ -413,7 +420,11 @@ export default function UserManagement() {
                 <Button variant="outline" onClick={() => setDeleteUserId(null)}>
                   {t('delete_accession_cancel_button')}
                 </Button>
-                <Button colorPalette="red" onClick={handleDeleteUser}>
+                <Button
+                  variant="ghost"
+                  colorPalette="red"
+                  onClick={handleDeleteUser}
+                >
                   {t('user_management_delete_confirm_button')}
                 </Button>
               </HStack>
