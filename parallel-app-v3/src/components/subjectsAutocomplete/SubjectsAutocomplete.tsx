@@ -102,7 +102,7 @@ export const SubjectsAutocomplete = ({
     } finally {
       setIsLoading(false)
     }
-  }, [apiLang, t, collectionId])
+  }, [apiLang, t, collectionId, showToast])
 
   const createNewSubject = async (subjectName: string) => {
     setIsCreatingNewSubject(true)

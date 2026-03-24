@@ -8,15 +8,9 @@ import { useToast } from '../context/ToastContext'
 
 interface AccessionButtonsProps {
   onOpen: () => void
-  id?: string
-  lang?: string
 }
 
-const AccessionButtons = ({
-  onOpen,
-  id: _id,
-  lang: _lang,
-}: AccessionButtonsProps) => {
+const AccessionButtons = ({ onOpen }: AccessionButtonsProps) => {
   const { t } = useTranslation()
   const { showToast } = useToast()
 
