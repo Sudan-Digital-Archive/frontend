@@ -1,4 +1,3 @@
-
 import { useState, useRef } from 'react'
 import { Button, Box, Text, VStack, Heading } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'

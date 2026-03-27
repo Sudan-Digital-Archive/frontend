@@ -1,4 +1,3 @@
-
 import { Box, Heading, Text } from '@chakra-ui/react'
 import type { Collection } from '../apiTypes/apiResponses'
 

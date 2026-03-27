@@ -1,4 +1,3 @@
-
 import { Box, VStack } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { Login as LoginForm } from '../components/forms/Login'
