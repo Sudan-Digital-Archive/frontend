@@ -1,4 +1,3 @@
-
 import { Box, VStack, Heading, Text } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
@@ -30,7 +29,7 @@ export default function WhoAreWe() {
             >
               {t('who_are_we_title')}
             </Heading>
-            <Heading as="h5" fontSize={fontSize} fontWeight="semibold">
+            <Heading fontSize={fontSize} fontWeight="semibold">
               {t('who_are_we_heading')}
             </Heading>
             <Text fontSize={fontSize}>{t('who_are_we_para_1')}</Text>

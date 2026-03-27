@@ -1,4 +1,3 @@
-
 import { Box, VStack, Heading, Text, List } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
@@ -29,7 +28,7 @@ export default function TechnicalStack() {
               {t('tech_stack_title')}
             </Heading>
 
-            <Heading as="h6" fontSize={fontSize} fontWeight="semibold">
+            <Heading fontSize={fontSize} fontWeight="semibold">
               {t('tech_stack_why_build')}
               <a
                 href="https://archive.org"

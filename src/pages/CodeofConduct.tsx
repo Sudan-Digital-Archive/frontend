@@ -1,4 +1,3 @@
-
 import { Box, VStack, Heading, Text, List } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
@@ -54,7 +53,7 @@ export default function CodeOfConduct() {
               {t('code_of_conduct_title')}
             </Heading>
             <Box pb={5}>
-              <Heading size="md" py={2} id="toc">
+              <Heading fontSize={fontSize} py={2} id="toc">
                 {t('code_of_conduct_toc')}
               </Heading>
               <List.Root as="ol" listStyle="decimal">
@@ -94,7 +93,7 @@ export default function CodeOfConduct() {
                 </List.Item>
               </List.Root>
             </Box>
-            <Heading size="md" id="our-values">
+            <Heading fontSize={fontSize} id="our-values">
               {t('code_of_conduct_our_values_content_heading')}
             </Heading>
             <List.Root as="ul" listStyle="disc">
@@ -122,7 +121,10 @@ export default function CodeOfConduct() {
                 {t('code_of_conduct_back_to_top')}
               </a>
             </Text>
-            <Heading size="md" id="standards-and-inappropriate-behavior">
+            <Heading
+              fontSize={fontSize}
+              id="standards-and-inappropriate-behavior"
+            >
               {t('code_of_conduct_standards_inappropriate_behavior_heading')}
             </Heading>
             <Text fontSize={fontSize}>
@@ -156,7 +158,7 @@ export default function CodeOfConduct() {
                 {t('code_of_conduct_back_to_top')}
               </a>
             </Text>
-            <Heading id="boundaries" size="md">
+            <Heading id="boundaries" fontSize={fontSize}>
               {t('code_of_conduct_boundaries_heading')}
             </Heading>
             <Text fontSize={fontSize}>
@@ -187,7 +189,7 @@ export default function CodeOfConduct() {
                 {t('code_of_conduct_back_to_top')}
               </a>
             </Text>
-            <Heading id="accountability-processes" size="md">
+            <Heading id="accountability-processes" fontSize={fontSize}>
               {t('code_of_conduct_accountability_processes_heading')}
             </Heading>
             <Text fontSize={fontSize}>

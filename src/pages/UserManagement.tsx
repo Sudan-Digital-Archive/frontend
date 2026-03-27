@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import {
   Box,
@@ -43,7 +42,7 @@ export default function UserManagement() {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [newUserEmail, setNewUserEmail] = useState('')
-  const [newUserRole, setNewUserRole] = useState<UserRole>('Contributor')
+  const [newUserRole, setNewUserRole] = useState<UserRole>('contributor')
   const [newUserIsActive, setNewUserIsActive] = useState(true)
 
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null)
@@ -114,7 +113,7 @@ export default function UserManagement() {
       showToast(t('user_management_create_success'), 'success')
       setIsCreateModalOpen(false)
       setNewUserEmail('')
-      setNewUserRole('Contributor')
+      setNewUserRole('contributor')
       setNewUserIsActive(true)
     } catch {
       showToast(t('user_management_create_error'), 'error')
@@ -200,7 +199,9 @@ export default function UserManagement() {
                         <Table.Cell>
                           <NativeSelect.Root maxW="150px" bg="bg.emphasized">
                             <NativeSelect.Field
-                              value={editState[user.id]?.role || user.role}
+                              value={(
+                                editState[user.id]?.role || user.role
+                              ).toLowerCase()}
                               onChange={(e) =>
                                 handleRoleChange(
                                   user.id,
@@ -208,13 +209,13 @@ export default function UserManagement() {
                                 )
                               }
                             >
-                              <option value="Admin">
+                              <option value="admin">
                                 {t('user_management_role_admin')}
                               </option>
-                              <option value="Contributor">
+                              <option value="contributor">
                                 {t('user_management_role_contributor')}
                               </option>
-                              <option value="Researcher">
+                              <option value="researcher">
                                 {t('user_management_role_researcher')}
                               </option>
                             </NativeSelect.Field>
@@ -333,17 +334,17 @@ export default function UserManagement() {
                 <Text mb={1}>{t('user_management_role_label')}</Text>
                 <NativeSelect.Root>
                   <NativeSelect.Field
-                    value={newUserRole}
+                    value={newUserRole.toLowerCase()}
                     onChange={(e) => setNewUserRole(e.target.value as UserRole)}
                     bg="bg.emphasized"
                   >
-                    <option value="Admin">
+                    <option value="admin">
                       {t('user_management_role_admin')}
                     </option>
-                    <option value="Contributor">
+                    <option value="contributor">
                       {t('user_management_role_contributor')}
                     </option>
-                    <option value="Researcher">
+                    <option value="researcher">
                       {t('user_management_role_researcher')}
                     </option>
                   </NativeSelect.Field>
