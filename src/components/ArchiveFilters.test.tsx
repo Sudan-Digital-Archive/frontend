@@ -4,7 +4,7 @@ import { addi18n, renderWithProviders } from '../../testUtils/testHelpers.tsx'
 import { screen, waitFor, fireEvent } from '@testing-library/react'
 
 const mockFetch = vi.fn()
-global.fetch = mockFetch
+globalThis.fetch = mockFetch
 
 addi18n()
 

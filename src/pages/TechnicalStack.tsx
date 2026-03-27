@@ -1,4 +1,3 @@
-'use client'
 
 import { Box, VStack, Heading, Text, List } from '@chakra-ui/react'
 import Layout from '../components/Layout'

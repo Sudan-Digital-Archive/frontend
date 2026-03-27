@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 
 export function useWindowSize(): number {
   const [width, setWidth] = useState<number>(1200)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
 
   useEffect(() => {
     if (typeof window === 'undefined') return

@@ -1,4 +1,3 @@
-'use client'
 
 import { Button, HStack } from '@chakra-ui/react'
 import { Copy, ExternalLink } from 'react-feather'

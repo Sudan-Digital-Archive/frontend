@@ -1,4 +1,3 @@
-'use client'
 
 import { Box, HStack, Link, Text, Stack } from '@chakra-ui/react'
 import { GitHub } from 'react-feather'

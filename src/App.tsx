@@ -1,4 +1,3 @@
-'use client'
 
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router'

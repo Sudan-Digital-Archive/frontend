@@ -10,7 +10,8 @@ interface ReplayWebPageProps extends React.DetailedHTMLProps<
   url: string
   embed?: 'default' | 'full' | 'replayonly' | 'replay-with-info'
 }
-declare global {
+
+declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
       'replay-web-page': ReplayWebPageProps

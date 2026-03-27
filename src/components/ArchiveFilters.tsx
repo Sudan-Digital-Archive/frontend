@@ -1,4 +1,3 @@
-'use client'
 
 import { Box, Input, Flex, Badge, Switch } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'

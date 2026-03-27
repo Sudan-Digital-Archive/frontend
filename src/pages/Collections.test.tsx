@@ -10,7 +10,7 @@ addi18n()
 
 // Mock fetch for API calls
 const mockFetch = vi.fn()
-global.fetch = mockFetch
+globalThis.fetch = mockFetch
 
 describe('Collections Component', () => {
   beforeEach(() => {
