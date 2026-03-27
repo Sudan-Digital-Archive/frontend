@@ -17,7 +17,7 @@ import {
   Text,
   HStack,
   Button,
-  Portal,
+  Drawer,
 } from '@chakra-ui/react'
 import { useParsedDate } from '../hooks/useParsedDate'
 import { useUser } from '../hooks/useUser'
@@ -38,7 +38,13 @@ function AccessionInfo({ onOpen, timestamp }: Readonly<AccessionInfoProps>) {
   }
 
   return (
-    <HStack gap={4} align="center">
+    <HStack
+      gap={4}
+      align="center"
+      flexDir={{ base: 'column', md: 'row' }}
+      textAlign={{ base: 'center', md: 'left' }}
+      w={{ base: '100%', md: 'auto' }}
+    >
       <Box>
         <Text fontWeight="bold" fontSize="sm">
           {t('sda_record')}
@@ -47,7 +53,18 @@ function AccessionInfo({ onOpen, timestamp }: Readonly<AccessionInfoProps>) {
           {t('view_accession_captured')} {parseDate(timestamp)}
         </Text>
       </Box>
-      <Box height="30px" width="1px" bg="border" />
+      <Box
+        height={{ base: '1px', md: '30px' }}
+        width={{ base: '80%', md: '1px' }}
+        bg="border"
+        display={{ base: 'none', md: 'block' }}
+      />
+      <Box
+        height="1px"
+        width="80%"
+        bg="border"
+        display={{ base: 'block', md: 'none' }}
+      />
       <Button size="sm" variant="ghost" onClick={handleCopy}>
         <Copy size={14} style={{ marginRight: '4px' }} />
         {t('copy_record')}
@@ -167,7 +184,7 @@ export default function ViewAccession() {
           <Spinner />
         ) : (
           <>
-            <Box w="100%" py={3}>
+            <Box w="100%" py={3} px={{ base: 4, md: 0 }}>
               {showMetadata && (
                 <Box w="100%" display="flex" justifyContent="center">
                   <AccessionInfo
@@ -189,26 +206,23 @@ export default function ViewAccession() {
               </Box>
             </Box>
 
-            {isDrawerOpen && (
-              <Portal>
-                <Box
-                  position="fixed"
-                  top={0}
-                  right={0}
-                  bottom={0}
-                  w={{ base: '100%', md: '400px' }}
+            <Drawer.Root
+              open={isDrawerOpen}
+              onOpenChange={(e) => setIsDrawerOpen(e.open)}
+              placement={{ base: 'bottom', md: 'end' }}
+              size={{ base: 'full', md: 'md' }}
+            >
+              <Drawer.Backdrop bg="blackAlpha.600" />
+              <Drawer.Positioner>
+                <Drawer.Content
                   bg="bg.subtle"
-                  borderLeft="1px solid"
+                  borderTop={{ base: '1px solid', md: 'none' }}
+                  borderLeft={{ base: 'none', md: '1px solid' }}
                   borderColor="border"
-                  zIndex={1000}
-                  overflowY="auto"
+                  borderTopRadius={{ base: 'lg', md: 'none' }}
                 >
-                  <Box p={4}>
-                    <HStack
-                      justifyContent="space-between"
-                      alignItems="center"
-                      mb={4}
-                    >
+                  <Drawer.Header position="relative" pb={2}>
+                    <Drawer.Title>
                       <Title
                         title={
                           i18n.language === 'en'
@@ -219,14 +233,20 @@ export default function ViewAccession() {
                         }
                         fontSize={i18n.language === 'en' ? 'md' : 'lg'}
                       />
+                    </Drawer.Title>
+                    <Drawer.CloseTrigger asChild>
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => setIsDrawerOpen(false)}
+                        position="absolute"
+                        top={2}
+                        right={2}
                       >
                         <X size={18} />
                       </Button>
-                    </HStack>
+                    </Drawer.CloseTrigger>
+                  </Drawer.Header>
+                  <Drawer.Body>
                     <VStack gap={4} align="stretch">
                       <Subject
                         subjects={
@@ -257,20 +277,10 @@ export default function ViewAccession() {
                         fontSize={i18n.language === 'en' ? 'md' : 'lg'}
                       />
                     </VStack>
-                  </Box>
-                </Box>
-                <Box
-                  position="fixed"
-                  top={0}
-                  left={0}
-                  right={{ base: '0', md: '400px' }}
-                  bottom={0}
-                  bg="blackAlpha.600"
-                  zIndex={999}
-                  onClick={() => setIsDrawerOpen(false)}
-                />
-              </Portal>
-            )}
+                  </Drawer.Body>
+                </Drawer.Content>
+              </Drawer.Positioner>
+            </Drawer.Root>
 
             <Box flex="1" w="100vw" bg="white" color="black">
               <Box height="4px" bg="cyan.500" />

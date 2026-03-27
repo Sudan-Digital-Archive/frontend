@@ -93,78 +93,58 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
               <Portal>
                 <Menu.Positioner>
                   <Menu.Content bg="colors.dropdownBg">
-                    <Menu.Item
-                      value="archive"
-                      onClick={() => handleMenuItemClick('/archive')}
-                      cursor="pointer"
-                      px={4}
-                      py={2}
-                      _hover={{ bg: 'colors.dropdownHover' }}
-                    >
-                      <Text>{t('nav_search')}</Text>
-                    </Menu.Item>
-                    <Menu.Item
-                      value="collections"
-                      onClick={() => handleMenuItemClick('/collections')}
-                      cursor="pointer"
-                      px={4}
-                      py={2}
-                      _hover={{ bg: 'colors.dropdownHover' }}
-                    >
-                      <Text>{t('nav_collections')}</Text>
-                    </Menu.Item>
-                    <Menu.Item
-                      value="who-are-we"
-                      onClick={() => handleMenuItemClick('/who-are-we')}
-                      cursor="pointer"
-                      px={4}
-                      py={2}
-                      _hover={{ bg: 'colors.dropdownHover' }}
-                    >
-                      <Text>{t('nav_who_are_we')}</Text>
-                    </Menu.Item>
-                    <Menu.Item
-                      value="mission"
-                      onClick={() => handleMenuItemClick('/mission')}
-                      cursor="pointer"
-                      px={4}
-                      py={2}
-                      _hover={{ bg: 'colors.dropdownHover' }}
-                    >
-                      <Text>{t('nav_mission')}</Text>
-                    </Menu.Item>
-                    <Menu.Item
-                      value="why-another-archive"
-                      onClick={() =>
-                        handleMenuItemClick('/why-another-archive')
-                      }
-                      cursor="pointer"
-                      px={4}
-                      py={2}
-                      _hover={{ bg: 'colors.dropdownHover' }}
-                    >
-                      <Text>{t('nav_why_another_archive')}</Text>
-                    </Menu.Item>
-                    <Menu.Item
-                      value="tech-stack"
-                      onClick={() => handleMenuItemClick('/tech-stack')}
-                      cursor="pointer"
-                      px={4}
-                      py={2}
-                      _hover={{ bg: 'colors.dropdownHover' }}
-                    >
-                      <Text>{t('nav_tech_stack')}</Text>
-                    </Menu.Item>
-                    <Menu.Item
-                      value="code-of-conduct"
-                      onClick={() => handleMenuItemClick('/code-of-conduct')}
-                      cursor="pointer"
-                      px={4}
-                      py={2}
-                      _hover={{ bg: 'colors.dropdownHover' }}
-                    >
-                      <Text>{t('nav_coc')}</Text>
-                    </Menu.Item>
+                    <Menu.ItemGroup>
+                      <Menu.ItemGroupLabel
+                        px={4}
+                        py={2}
+                        color="fg.muted"
+                        fontWeight="semibold"
+                      >
+                        {t('nav_the_archive')}
+                      </Menu.ItemGroupLabel>
+                      {archiveItems.map((item) => (
+                        <Menu.Item
+                          key={item.path}
+                          value={item.path}
+                          onClick={() => handleMenuItemClick(item.path)}
+                          cursor="pointer"
+                          px={4}
+                          py={2}
+                          _hover={{ bg: 'colors.dropdownHover' }}
+                        >
+                          {item.label}
+                        </Menu.Item>
+                      ))}
+                    </Menu.ItemGroup>
+
+                    <Menu.Separator />
+
+                    <Menu.ItemGroup>
+                      <Menu.ItemGroupLabel
+                        px={4}
+                        py={2}
+                        color="fg.muted"
+                        fontWeight="semibold"
+                      >
+                        {t('nav_about')}
+                      </Menu.ItemGroupLabel>
+                      {aboutItems.map((item) => (
+                        <Menu.Item
+                          key={item.path}
+                          value={item.path}
+                          onClick={() => handleMenuItemClick(item.path)}
+                          cursor="pointer"
+                          px={4}
+                          py={2}
+                          _hover={{ bg: 'colors.dropdownHover' }}
+                        >
+                          {item.label}
+                        </Menu.Item>
+                      ))}
+                    </Menu.ItemGroup>
+
+                    <Menu.Separator />
+
                     <Menu.Item
                       value="contact-us"
                       onClick={() => handleMenuItemClick('/contact-us')}
@@ -175,6 +155,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     >
                       <Text>{t('nav_contact')}</Text>
                     </Menu.Item>
+
                     {!isLoggedIn && (
                       <Menu.Item
                         value="login"
@@ -187,6 +168,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                         <Text>{t('nav_login')}</Text>
                       </Menu.Item>
                     )}
+
                     {isAdmin && (
                       <Menu.Item
                         value="user-management"
@@ -199,6 +181,9 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                         <Text>{t('nav_user_management')}</Text>
                       </Menu.Item>
                     )}
+
+                    <Menu.Separator />
+
                     <Menu.Item
                       value="language"
                       onClick={changeLanguageOverride || handleLanguageChange}
@@ -211,6 +196,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                         {i18n.language === 'en' ? 'عربي' : 'English'}
                       </Text>
                     </Menu.Item>
+
                     <Menu.Item
                       value="theme"
                       onClick={toggleColorMode}
@@ -225,7 +211,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                         ) : (
                           <Moon size={16} />
                         )}
-                        <Text>
+                        <Text display={{ base: 'none', md: 'block' }}>
                           {colorMode === 'dark'
                             ? t('light_mode')
                             : t('dark_mode')}
