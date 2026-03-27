@@ -5,6 +5,14 @@ export const cleanUpAfterEach = afterEach(async () => {
   await cleanup()
 })
 
+const localStorageMock = {
+  getItem: vi.fn(() => null),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+}
+Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({
