@@ -1,31 +1,28 @@
+'use client'
+
 import {
   Box,
   Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Spinner,
-  useDisclosure,
-  HStack,
   VStack,
+  HStack,
+  Spinner,
+  Heading,
+  Flex,
 } from '@chakra-ui/react'
-import { ArrowLeft, ArrowRight, FilePlus } from 'react-feather'
-import { CreateUpdateAccession } from 'src/components/forms/CreateUpdateAccession.tsx'
-import Layout from 'src/components/Layout.tsx'
-import { useMemo } from 'react'
+import { ArrowLeft, ArrowRight, Plus, X } from 'react-feather'
+import { CreateUpdateAccession } from '../components/forms/CreateUpdateAccession'
+import Layout from '../components/Layout'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AccessionsCards } from 'src/components/AccessionsCards.tsx'
-import { ArchiveFilters } from 'src/components/ArchiveFilters.tsx'
-import { useUser } from 'src/hooks/useUser.ts'
-import { useAccessions } from 'src/hooks/useAccessions.ts'
+import { AccessionsCards } from '../components/AccessionsCards'
+import { ArchiveFilters } from '../components/ArchiveFilters'
+import { useUser } from '../hooks/useUser'
+import { useAccessions } from '../hooks/useAccessions'
 
 export default function Archive() {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const baseFilters = useMemo(
     () => ({
@@ -51,8 +48,6 @@ export default function Archive() {
     baseFilters,
   })
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
   return (
     <Layout
       changeLanguageOverride={() => {
@@ -67,23 +62,21 @@ export default function Archive() {
             document.documentElement.lang = 'ar'
             document.documentElement.dir = 'rtl'
             break
-          default:
-            throw `Language ${newLanguage} is not supported`
         }
         updateFilters({ lang: newLanguage === 'en' ? 'english' : 'arabic' })
       }}
     >
       <VStack alignItems="center" justifyContent="center">
-        {isLoggedIn ? (
+        {isLoggedIn && (
           <Button
-            colorScheme="pink"
-            rightIcon={<FilePlus />}
-            variant="solid"
-            onClick={onOpen}
+            colorPalette="pink"
+            onClick={() => setIsModalOpen(true)}
+            my={4}
           >
+            <Plus size={16} style={{ marginRight: '4px' }} />
             {t('archive_add_record')}
           </Button>
-        ) : null}
+        )}
         <Box w="100%" p={10}>
           <ArchiveFilters
             queryFilters={queryFilters}
@@ -92,19 +85,42 @@ export default function Archive() {
           />
         </Box>
 
-        <Modal onClose={onClose} isOpen={isOpen} isCentered size="xl">
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader textAlign="center">
-              {t('archive_create_modal_header')}
-            </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
+        {isModalOpen && (
+          <Box
+            position="fixed"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="blackAlpha.700"
+            zIndex={1000}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            p={4}
+          >
+            <Box
+              bg="bg.subtle"
+              p={6}
+              borderRadius="md"
+              maxW="600px"
+              w="100%"
+              maxH="90vh"
+              overflowY="auto"
+              border="1px solid"
+              borderColor="border"
+            >
+              <Flex justifyContent="space-between" alignItems="center" mb={4}>
+                <Heading size="md">{t('archive_create_modal_header')}</Heading>
+                <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+                  <X size={18} />
+                </Button>
+              </Flex>
               {isLoggedIn ? <CreateUpdateAccession /> : null}
-            </ModalBody>
-            <ModalFooter />
-          </ModalContent>
-        </Modal>
+            </Box>
+          </Box>
+        )}
+
         {isLoading || !accessions ? (
           <Spinner />
         ) : (
@@ -114,39 +130,44 @@ export default function Archive() {
           />
         )}
         {accessions && accessions?.items.length > 0 && !isLoading && (
-          <HStack mt={3}>
-            {pagination.currentPage != 0 &&
-              pagination.currentPage != pagination.totalPages && (
-                <Button
-                  size="xs"
-                  leftIcon={<ArrowLeft />}
-                  colorScheme="purple"
-                  variant="link"
-                  onClick={() =>
-                    updateFilters({
-                      page: pagination.currentPage - 1,
-                    })
-                  }
-                />
-              )}
-            <Box>
-              {t('archive_pagination_page')}
-              <b>{pagination.currentPage + 1}</b>
-              {t('archive_pagination_page_out_of')}
-              <b>{pagination.totalPages}</b>
-            </Box>
+          <HStack mt={3} gap={2}>
+            {pagination.currentPage !== 0 && (
+              <Button
+                size="xs"
+                colorPalette="pink"
+                variant="ghost"
+                onClick={() =>
+                  updateFilters({
+                    page: pagination.currentPage - 1,
+                  })
+                }
+              >
+                {i18n.language === 'ar' ? (
+                  <ArrowRight size={14} />
+                ) : (
+                  <ArrowLeft size={14} />
+                )}
+                {t('archive_pagination_previous')}
+              </Button>
+            )}
             {pagination.currentPage + 1 < pagination.totalPages && (
               <Button
                 size="xs"
-                leftIcon={<ArrowRight />}
-                colorScheme="purple"
-                variant="link"
+                colorPalette="pink"
+                variant="ghost"
                 onClick={() =>
                   updateFilters({
                     page: pagination.currentPage + 1,
                   })
                 }
-              />
+              >
+                {t('archive_pagination_next')}
+                {i18n.language === 'ar' ? (
+                  <ArrowLeft size={14} />
+                ) : (
+                  <ArrowRight size={14} />
+                )}
+              </Button>
             )}
           </HStack>
         )}

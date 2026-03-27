@@ -1,60 +1,36 @@
-import { Button, useClipboard, useToast, Stack } from '@chakra-ui/react'
-import { CopyIcon, ExternalLinkIcon, InfoOutlineIcon } from '@chakra-ui/icons'
-import { NavLink } from 'react-router'
+'use client'
+
+import { Button, HStack } from '@chakra-ui/react'
+import { Copy, ExternalLink } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { appConfig } from '../constants.ts'
+import { useCallback } from 'react'
+import { useToast } from '../context/ToastContext'
 
 interface AccessionButtonsProps {
   onOpen: () => void
-  id: string | undefined
-  lang: string
 }
 
-export default function AccessionButtons({
-  onOpen,
-  id,
-  lang,
-}: AccessionButtonsProps) {
+const AccessionButtons = ({ onOpen }: AccessionButtonsProps) => {
   const { t } = useTranslation()
-  const { onCopy } = useClipboard(window.location.href)
-  const toast = useToast()
+  const { showToast } = useToast()
 
-  const handleCopy = () => {
-    const url = `${appConfig.appURLFrontend}archive/${id}?lang=${lang}`
-    onCopy(url)
-    toast({
-      title: t('link_copied'),
-      description: url,
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    })
-  }
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(window.location.href)
+    showToast(t('link_copied'), 'success')
+  }, [showToast, t])
 
   return (
-    <Stack spacing={2}>
-      <Button
-        onClick={onOpen}
-        rightIcon={<InfoOutlineIcon />}
-        size="xs"
-        variant="outline"
-      >
-        {t('view_accession_see_metadata')}
-      </Button>
-
-      <Button
-        variant="outline"
-        onClick={handleCopy}
-        rightIcon={<CopyIcon />}
-        size="xs"
-      >
+    <HStack gap={2}>
+      <Button size="sm" colorPalette="cyan" onClick={handleCopy}>
+        <Copy size={14} style={{ marginRight: '4px' }} />
         {t('copy_record')}
       </Button>
-      <NavLink to="/archive" target="_blank">
-        <Button variant="outline" rightIcon={<ExternalLinkIcon />} size="xs">
-          {t('what_is_sda')}
-        </Button>
-      </NavLink>
-    </Stack>
+      <Button size="sm" colorPalette="cyan" onClick={onOpen}>
+        <ExternalLink size={14} style={{ marginRight: '4px' }} />
+        {t('view_accession_see_metadata')}
+      </Button>
+    </HStack>
   )
 }
+
+export default AccessionButtons

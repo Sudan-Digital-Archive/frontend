@@ -1,26 +1,25 @@
+'use client'
+
 import { Box, Heading, Text } from '@chakra-ui/react'
+import type { Collection } from '../apiTypes/apiResponses'
 
 interface CollectionHeaderProps {
-  title: string
-  description: string
+  collection: Collection
 }
 
-export function CollectionHeader({
-  title,
-  description,
-}: CollectionHeaderProps) {
+export function CollectionHeader({ collection }: CollectionHeaderProps) {
   return (
-    <Box>
+    <Box textAlign="center">
       <Heading
-        textAlign="center"
-        py={2}
+        size="xl"
         bgGradient="linear(to-r, cyan.300, pink.600)"
         bgClip="text"
+        mb={4}
       >
-        {title}
+        {collection.title}
       </Heading>
-      <Text textAlign="left" fontSize="lg" fontStyle="italic" mt={3} mb={5}>
-        {description}
+      <Text fontSize="lg" color="fg.muted">
+        {collection.description}
       </Text>
     </Box>
   )

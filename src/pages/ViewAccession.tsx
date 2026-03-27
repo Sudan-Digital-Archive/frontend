@@ -1,80 +1,64 @@
+'use client'
+
 import {
   DateMetadata,
   Subject,
   Title,
   Description,
   OriginalURL,
-} from '../components/metadata/index.tsx'
+} from '../components/metadata/index'
 import { useParams, useSearchParams } from 'react-router'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { appConfig } from '../constants.ts'
-import type { AccessionOne } from '../apiTypes/apiResponses.ts'
-import { useWindowSize } from '../hooks/useWindowSize.ts'
-import AccessionButtons from '../components/AccessionButtons.tsx'
+import { appConfig } from '../constants'
+import type { AccessionOne } from '../apiTypes/apiResponses'
 import {
   Spinner,
   VStack,
   Box,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerCloseButton,
-  DrawerOverlay,
-  DrawerContent,
   Text,
   HStack,
-  useDisclosure,
   Button,
-  Heading,
-  Divider,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-  Collapse,
+  Portal,
 } from '@chakra-ui/react'
-import { useParsedDate } from '../hooks/useParsedDate.ts'
-import { useUser } from '../hooks/useUser.ts'
-import Layout from '../components/Layout.tsx'
+import { useParsedDate } from '../hooks/useParsedDate'
+import { useUser } from '../hooks/useUser'
+import Layout from '../components/Layout'
+import { X, Copy, ExternalLink } from 'react-feather'
 
 interface AccessionInfoProps {
   timestamp: string
-  id: string | undefined
-  lang: string
   onOpen: () => void
-  isMobile: boolean
 }
 
-function AccessionInfo({
-  id,
-  lang,
-  onOpen,
-  timestamp,
-  isMobile,
-}: Readonly<AccessionInfoProps>) {
+function AccessionInfo({ onOpen, timestamp }: Readonly<AccessionInfoProps>) {
   const { t } = useTranslation()
   const { parseDate } = useParsedDate()
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(window.location.href)
+  }
+
   return (
-    <>
-      <Box color="white" p={2} borderRadius="md">
-        <Heading size="sm">{t('sda_record')}</Heading>
-        <Text fontSize="xs">
+    <HStack gap={4} align="center">
+      <Box>
+        <Text fontWeight="bold" fontSize="sm">
+          {t('sda_record')}
+        </Text>
+        <Text fontSize="xs" color="fg.muted">
           {t('view_accession_captured')} {parseDate(timestamp)}
         </Text>
       </Box>
-      {isMobile ? (
-        <Divider orientation="horizontal" borderColor="white" />
-      ) : (
-        <Divider
-          orientation="vertical"
-          borderColor="white"
-          height="80px"
-          p={2}
-        />
-      )}
-      <AccessionButtons onOpen={onOpen} id={id} lang={lang} />
-    </>
+      <Box height="30px" width="1px" bg="border" />
+      <Button size="sm" variant="ghost" onClick={handleCopy}>
+        <Copy size={14} style={{ marginRight: '4px' }} />
+        {t('copy_record')}
+      </Button>
+      <Button size="sm" variant="ghost" onClick={onOpen}>
+        <ExternalLink size={14} style={{ marginRight: '4px' }} />
+        {t('view_accession_see_metadata')}
+      </Button>
+    </HStack>
   )
 }
 
@@ -86,15 +70,14 @@ export default function ViewAccession() {
     status: number
     message: string
   } | null>(null)
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [showMetadata, setShowMetadata] = useState(true)
   const { t, i18n } = useTranslation()
-  const width = useWindowSize()
-  const isMobile = width <= 768
   const [searchParams] = useSearchParams()
-  const lang = searchParams.get('lang') || 'en'
+  const lang = searchParams.get('lang') || i18n.language
   const isPrivate = searchParams.get('isPrivate') === 'true'
   const { isLoggedIn } = useUser()
-  const metadataHeaderDisclosure = useDisclosure({ defaultIsOpen: true })
+
   useEffect(() => {
     i18n.changeLanguage(lang)
   }, [lang, i18n])
@@ -152,16 +135,21 @@ export default function ViewAccession() {
           height="30vh"
           width="100%"
         >
-          <Box width={{ base: '90%', md: '50%' }} margin="auto">
-            <Alert status={error ? 'error' : 'warning'}>
-              <AlertIcon />
-              <AlertTitle>
+          <Box
+            width={{ base: '90%', md: '50%' }}
+            margin="auto"
+            p={4}
+            borderWidth="1px"
+            borderRadius="md"
+          >
+            <VStack gap={2}>
+              <Text fontWeight="bold" color="red.500">
                 {error ? t('error_occurred') : t('login_required')}
-              </AlertTitle>
-              <AlertDescription>
+              </Text>
+              <Text>
                 {error ? error.message : t('login_required_description')}
-              </AlertDescription>
-            </Alert>
+              </Text>
+            </VStack>
           </Box>
         </Box>
       </Layout>
@@ -181,109 +169,119 @@ export default function ViewAccession() {
           <Spinner />
         ) : (
           <>
-            <Collapse in={metadataHeaderDisclosure.isOpen} animateOpacity>
-              {isMobile ? (
-                <VStack
-                  m={2}
-                  spacing={2}
-                  alignItems="center"
-                  display="flex"
-                  flexDirection="column"
-                >
+            <Box w="100%" py={3}>
+              {showMetadata && (
+                <Box w="100%" display="flex" justifyContent="center">
                   <AccessionInfo
                     timestamp={accession.accession.crawl_timestamp}
-                    id={id}
-                    lang={lang}
-                    onOpen={onOpen}
-                    isMobile={true}
+                    onOpen={() => setIsDrawerOpen(true)}
                   />
-                </VStack>
-              ) : (
-                <HStack m={2} spacing={2} alignItems="center" display="flex">
-                  <AccessionInfo
-                    timestamp={accession.accession.crawl_timestamp}
-                    id={id}
-                    lang={lang}
-                    onOpen={onOpen}
-                    isMobile={false}
-                  />
-                </HStack>
+                </Box>
               )}
+              <Box display="flex" justifyContent="center" mt={2}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setShowMetadata(!showMetadata)}
+                >
+                  {showMetadata
+                    ? t('view_accession_hide_metadata')
+                    : t('view_accession_show_metadata')}
+                </Button>
+              </Box>
+            </Box>
 
-              <Drawer
-                placement="right"
-                onClose={onClose}
-                isOpen={isOpen}
-                size="lg"
-              >
-                <DrawerOverlay />
-                <DrawerContent>
-                  <DrawerCloseButton />
-                  <DrawerHeader borderBottomWidth="1px">
-                    <Title
-                      title={
-                        i18n.language === 'en'
-                          ? accession.accession.title_en ||
-                            t('metadata_missing_title')
-                          : accession.accession.title_ar ||
-                            t('metadata_missing_title')
-                      }
-                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                    />
-                  </DrawerHeader>
-                  <DrawerBody>
-                    <Subject
-                      subjects={
-                        i18n.language === 'en'
-                          ? accession.accession.subjects_en
-                          : accession.accession.subjects_ar
-                      }
-                    />
-                    {((i18n.language === 'en' &&
-                      accession.accession.description_en) ||
-                      (i18n.language === 'ar' &&
-                        accession.accession.description_ar)) && (
-                      <Description
-                        description={
+            {isDrawerOpen && (
+              <Portal>
+                <Box
+                  position="fixed"
+                  top={0}
+                  right={0}
+                  bottom={0}
+                  w={{ base: '100%', md: '400px' }}
+                  bg="bg.subtle"
+                  borderLeft="1px solid"
+                  borderColor="border"
+                  zIndex={1000}
+                  overflowY="auto"
+                >
+                  <Box p={4}>
+                    <HStack
+                      justifyContent="space-between"
+                      alignItems="center"
+                      mb={4}
+                    >
+                      <Title
+                        title={
                           i18n.language === 'en'
-                            ? accession.accession.description_en
-                            : accession.accession.description_ar
+                            ? accession.accession.title_en ||
+                              t('metadata_missing_title')
+                            : accession.accession.title_ar ||
+                              t('metadata_missing_title')
                         }
                         fontSize={i18n.language === 'en' ? 'md' : 'lg'}
                       />
-                    )}
-                    <Box>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsDrawerOpen(false)}
+                      >
+                        <X size={18} />
+                      </Button>
+                    </HStack>
+                    <VStack gap={4} align="stretch">
+                      <Subject
+                        subjects={
+                          i18n.language === 'en'
+                            ? accession.accession.subjects_en
+                            : accession.accession.subjects_ar
+                        }
+                      />
+                      {((i18n.language === 'en' &&
+                        accession.accession.description_en) ||
+                        (i18n.language === 'ar' &&
+                          accession.accession.description_ar)) && (
+                        <Description
+                          description={
+                            i18n.language === 'en'
+                              ? accession.accession.description_en
+                              : accession.accession.description_ar
+                          }
+                          fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                        />
+                      )}
                       <DateMetadata
                         date={accession.accession.dublin_metadata_date}
                         fontSize={i18n.language === 'en' ? 'md' : 'lg'}
                       />
-                    </Box>
-                    <OriginalURL
-                      url={accession.accession.seed_url}
-                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                    />
-                  </DrawerBody>
-                </DrawerContent>
-              </Drawer>
-            </Collapse>
-            <Button
-              onClick={metadataHeaderDisclosure.onToggle}
-              variant="outline"
-            >
-              {metadataHeaderDisclosure.isOpen &&
-                t('view_accession_hide_metadata')}
-              {!metadataHeaderDisclosure.isOpen &&
-                t('view_accession_show_metadata')}
-            </Button>
+                      <OriginalURL
+                        url={accession.accession.seed_url}
+                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      />
+                    </VStack>
+                  </Box>
+                </Box>
+                <Box
+                  position="fixed"
+                  top={0}
+                  left={0}
+                  right={{ base: '0', md: '400px' }}
+                  bottom={0}
+                  bg="blackAlpha.600"
+                  zIndex={999}
+                  onClick={() => setIsDrawerOpen(false)}
+                />
+              </Portal>
+            )}
 
-            <Box flex="1" w="100vw" bg="white">
-              <Box h="4px" bg="teal.500" />
+            <Box flex="1" w="100vw" bg="white" color="black">
+              <Box height="4px" bg="cyan.500" />
               <replay-web-page
                 embed="replayonly"
                 replayBase="/replay/"
                 source={replayerState.source}
                 url={replayerState.url}
-              ></replay-web-page>
+              />
             </Box>
           </>
         )}

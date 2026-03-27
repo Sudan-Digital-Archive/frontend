@@ -1,18 +1,12 @@
-import {
-  Box,
-  VStack,
-  Heading,
-  Text,
-  OrderedList,
-  ListItem,
-  Link,
-} from '@chakra-ui/react'
-import { NavLink } from 'react-router'
-import Layout from '../components/Layout.tsx'
+'use client'
+
+import { Box, VStack, Heading, Text, List } from '@chakra-ui/react'
+import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
 
 export default function TechnicalStack() {
   const { t, i18n } = useTranslation()
+  const fontSize = i18n.language === 'en' ? 'lg' : '2xl'
 
   return (
     <Layout>
@@ -24,88 +18,78 @@ export default function TechnicalStack() {
         mx="auto"
         px={4}
       >
-        <Box>
-          <VStack spacing={2} align="left">
+        <Box width="100%">
+          <VStack gap={4} align="stretch">
             <Heading
               textAlign="center"
-              py={2}
-              bgGradient="linear(to-r, cyan.300, pink.600)"
-              bgClip="text"
+              py={4}
+              className="gradientTextStatic"
+              fontSize={{ base: '3xl', md: '5xl' }}
+              fontWeight="bold"
             >
               {t('tech_stack_title')}
             </Heading>
 
-            <Heading as="h6" fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+            <Heading as="h6" fontSize={fontSize} fontWeight="semibold">
               {t('tech_stack_why_build')}
-              <Link
-                as={NavLink}
-                color="cyan"
-                to="https://archive.org"
-                isExternal
-                variant="underline"
+              <a
+                href="https://archive.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 archive.org
-              </Link>
+              </a>
               {t('tech_stack_why_build_2')}
             </Heading>
-            <OrderedList>
-              <ListItem>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
-                  {t('tech_stack_point_1_part_1')}
-                  <Link
-                    as={NavLink}
-                    color="cyan"
-                    to="https://archive.org"
-                    isExternal
-                    variant="underline"
-                  >
-                    archive.org
-                  </Link>
-                  {t('tech_stack_point_1_part_2')}
-                </Text>
-              </ListItem>
-              <ListItem>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
-                  {t('tech_stack_point_2_part_1')}
-                  <Link
-                    as={NavLink}
-                    color="cyan"
-                    to="https://bayanat.org"
-                    isExternal
-                    variant="underline"
-                  >
-                    bayanat.org
-                  </Link>
-                  {t('tech_stack_point_2_part_2')}
-                </Text>
-              </ListItem>
-              <ListItem>
-                <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
-                  {t('tech_stack_point_3_part_1')}
-                  <Link
-                    as={NavLink}
-                    color="cyan"
-                    to="https://browsertrix.com/"
-                    isExternal
-                    variant="underline"
-                  >
-                    browsertrix
-                  </Link>
-                  {t('tech_stack_point_3_part_2')}
-                </Text>
-              </ListItem>
-            </OrderedList>
-            <Text fontSize={i18n.language === 'en' ? 'lg' : '2xl'}>
+            <List.Root as="ol" listStyle="decimal">
+              <List.Item fontSize={fontSize}>
+                {t('tech_stack_point_1_part_1')}
+                <a
+                  href="https://archive.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                >
+                  archive.org
+                </a>
+                {t('tech_stack_point_1_part_2')}
+              </List.Item>
+              <List.Item fontSize={fontSize}>
+                {t('tech_stack_point_2_part_1')}
+                <a
+                  href="https://bayanat.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                >
+                  bayanat.org
+                </a>
+                {t('tech_stack_point_2_part_2')}
+              </List.Item>
+              <List.Item fontSize={fontSize}>
+                {t('tech_stack_point_3_part_1')}
+                <a
+                  href="https://browsertrix.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#67e8f9', textDecoration: 'underline' }}
+                >
+                  browsertrix
+                </a>
+                {t('tech_stack_point_3_part_2')}
+              </List.Item>
+            </List.Root>
+            <Text fontSize={fontSize}>
               {t('tech_stack_final_part_1')}
-              <Link
-                as={NavLink}
-                color="cyan"
-                to="https://github.com/orgs/Sudan-Digital-Archive/repositories"
-                isExternal
-                variant="underline"
+              <a
+                href="https://github.com/orgs/Sudan-Digital-Archive/repositories"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: '#67e8f9', textDecoration: 'underline' }}
               >
                 {t('tech_stack_final_link')}
-              </Link>
+              </a>
               {t('tech_stack_final_part_2')}
             </Text>
           </VStack>

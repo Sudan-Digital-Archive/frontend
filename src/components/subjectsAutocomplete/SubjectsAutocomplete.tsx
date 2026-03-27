@@ -1,18 +1,17 @@
+'use client'
+
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, useToast, IconButton, HStack } from '@chakra-ui/react'
-import {
-  CreatableSelect,
-  Select,
-  chakraComponents,
-  type OptionProps,
-  type MultiValueRemoveProps,
-} from 'chakra-react-select'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { Box, HStack, IconButton } from '@chakra-ui/react'
+import { CreatableSelect } from 'chakra-react-select'
+import type { OptionProps } from 'chakra-react-select'
+import { Delete } from 'react-feather'
 import { appConfig } from '../../constants'
 import type { Subject, SubjectsResponse } from '../../apiTypes/apiResponses'
 import type { SubjectOption } from './types'
 import { useUser } from '../../hooks/useUser'
+import { useToast } from '../../context/ToastContext'
+import { useColorMode } from '../ui/color-mode'
 
 interface SubjectsAutocompleteProps {
   menuPlacement?: 'top' | 'bottom'
@@ -36,11 +35,12 @@ export const SubjectsAutocomplete = ({
 }: SubjectsAutocompleteProps) => {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
+  const { showToast } = useToast()
+  const { colorMode } = useColorMode()
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isCreatingNewSubject, setIsCreatingNewSubject] = useState(false)
   const [isDeletingSubject, setIsDeletingSubject] = useState(false)
-  const toast = useToast()
   const [selectedOptions, setSelectedOptions] = useState<SubjectOption[]>(
     defaultValues
       ? defaultValues.values.map((value, index) => ({
@@ -50,7 +50,6 @@ export const SubjectsAutocomplete = ({
       : [],
   )
 
-  // Initialize locked values when subjects are loaded
   useEffect(() => {
     if (lockedValues && lockedValues.length > 0 && subjects.length > 0) {
       const lockedOptions = subjects
@@ -99,16 +98,11 @@ export const SubjectsAutocomplete = ({
       setSubjects(data.items || [])
     } catch (error) {
       console.error('Error fetching subjects:', error)
-      toast({
-        title: t('subjects_autocomplete_error_fetching_subjects'),
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      showToast(t('subjects_autocomplete_error_fetching_subjects'), 'error')
     } finally {
       setIsLoading(false)
     }
-  }, [apiLang, toast, t, collectionId])
+  }, [apiLang, t, collectionId, showToast])
 
   const createNewSubject = async (subjectName: string) => {
     setIsCreatingNewSubject(true)
@@ -132,24 +126,17 @@ export const SubjectsAutocomplete = ({
       const newSubject = await response.json()
       setSubjects((prev) => [...prev, newSubject])
 
-      toast({
-        title: t('subjects_autocomplete_create_success', {
+      showToast(
+        t('subjects_autocomplete_create_success', {
           subject: newSubject.subject,
         }),
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
+        'success',
+      )
 
       return newSubject
     } catch (error) {
       console.error('Error creating subject:', error)
-      toast({
-        title: t('subjects_autocomplete_error_creating_subject'),
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      showToast(t('subjects_autocomplete_error_creating_subject'), 'error')
       return null
     } finally {
       setIsCreatingNewSubject(false)
@@ -181,24 +168,12 @@ export const SubjectsAutocomplete = ({
       setSubjects((prev) => prev.filter((s) => s.id !== subjectId))
       setSelectedOptions((prev) => prev.filter((o) => o.value !== subjectId))
 
-      toast({
-        title: t('subjects_autocomplete_delete_success'),
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
-
       if (onChange) {
         onChange(selectedOptions.filter((o) => o.value !== subjectId))
       }
     } catch (error) {
       console.error('Error deleting subject:', error)
-      toast({
-        title: t('subjects_autocomplete_error_deleting_subject'),
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      showToast(t('subjects_autocomplete_error_fetching_subjects'), 'error')
     } finally {
       setIsDeletingSubject(false)
     }
@@ -210,7 +185,6 @@ export const SubjectsAutocomplete = ({
 
   useEffect(() => {
     if (value !== undefined && subjects.length > 0) {
-      // Look up actual subject names from fetched subjects
       const optionsWithLabels = value.map((v) => {
         const subject = subjects.find((s) => s.id === v.value)
         return {
@@ -222,23 +196,22 @@ export const SubjectsAutocomplete = ({
     }
   }, [value, subjects])
 
-  const handleChange = (newValue: readonly SubjectOption[]) => {
-    // Prevent removal of locked values
+  const handleChange = (newValue: readonly SubjectOption[] | null) => {
+    const safeValue = newValue || []
     if (lockedValues && lockedValues.length > 0) {
       const lockedSet = new Set(lockedValues)
       const hasRemovedLocked = selectedOptions.some(
         (option) =>
           lockedSet.has(option.value) &&
-          !newValue.some((nv) => nv.value === option.value),
+          !safeValue.some((nv) => nv.value === option.value),
       )
 
       if (hasRemovedLocked) {
-        // Re-add locked values that were removed
         const lockedOptions = selectedOptions.filter((option) =>
           lockedSet.has(option.value),
         )
         const combinedValue = [
-          ...newValue.filter((nv) => !lockedSet.has(nv.value)),
+          ...safeValue.filter((nv) => !lockedSet.has(nv.value)),
           ...lockedOptions,
         ]
         setSelectedOptions(combinedValue)
@@ -250,10 +223,10 @@ export const SubjectsAutocomplete = ({
       }
     }
 
-    setSelectedOptions(newValue as SubjectOption[])
+    setSelectedOptions(safeValue as SubjectOption[])
 
     if (onChange) {
-      onChange(newValue)
+      onChange(safeValue)
     }
   }
 
@@ -273,46 +246,35 @@ export const SubjectsAutocomplete = ({
     }
   }
 
-  const customComponents = {
-    Option: (props: OptionProps<SubjectOption>) => {
-      return (
-        <HStack
-          {...props.innerProps}
-          px={4}
-          py={2}
-          bg={props.isFocused ? 'gray.100' : 'transparent'}
-          _dark={{
-            bg: props.isFocused ? 'gray.700' : 'transparent',
-          }}
-          justify="space-between"
-          width="100%"
-          cursor="pointer"
-        >
-          <Box>{props.data.label}</Box>
-          {isLoggedIn && (
-            <IconButton
-              aria-label={t('delete')}
-              icon={<DeleteIcon />}
-              size="sm"
-              colorScheme="red"
-              variant="ghost"
-              isLoading={isDeletingSubject}
-              onClick={(e) => {
-                e.stopPropagation()
-                deleteSubject(props.data.value)
-              }}
-            />
-          )}
-        </HStack>
-      )
-    },
-    MultiValueRemove: (props: MultiValueRemoveProps<SubjectOption>) => {
-      // Don't show remove button for locked values
-      if (lockedValues?.includes(props.data.value)) {
-        return null
-      }
-      return <chakraComponents.MultiValueRemove {...props} />
-    },
+  const CustomOption = (props: OptionProps<SubjectOption>) => {
+    return (
+      <HStack
+        {...props.innerProps}
+        px={4}
+        py={2}
+        bg={props.isFocused ? 'bg.emphasized' : 'transparent'}
+        justify="space-between"
+        width="100%"
+        cursor="pointer"
+      >
+        <Box>{props.data.label}</Box>
+        {isLoggedIn && (
+          <IconButton
+            aria-label="Delete"
+            size="sm"
+            colorPalette="red"
+            variant="ghost"
+            loading={isDeletingSubject}
+            onClick={(e) => {
+              e.stopPropagation()
+              deleteSubject(props.data.value)
+            }}
+          >
+            <Delete size={14} />
+          </IconButton>
+        )}
+      </HStack>
+    )
   }
 
   return (
@@ -320,7 +282,6 @@ export const SubjectsAutocomplete = ({
       {isLoggedIn ? (
         <CreatableSelect
           isMulti
-          tagColorScheme="cyan"
           name="subjects"
           options={subjectOptions}
           placeholder={t('subjects_autocomplete_search_subjects')}
@@ -335,9 +296,15 @@ export const SubjectsAutocomplete = ({
           onChange={handleChange}
           onCreateOption={handleCreateOption}
           chakraStyles={{
+            control: (provided) => ({
+              ...provided,
+              border: `1px solid ${colorMode === 'dark' ? '#4b5563' : '#9ca3af'}`,
+              borderRadius: '6px',
+              backgroundColor: colorMode === 'dark' ? '#252525' : '#ffffff',
+            }),
             loadingIndicator: (provided) => ({
               ...provided,
-              marginRight: 2,
+              mr: 2,
             }),
             dropdownIndicator: (provided) => ({
               ...provided,
@@ -353,30 +320,22 @@ export const SubjectsAutocomplete = ({
             }),
             valueContainer: (provided) => ({
               ...provided,
-              padding: '8px',
+              p: '8px',
               flexWrap: 'wrap',
               gap: '4px',
             }),
-            option: (provided, { isSelected }) => ({
-              ...provided,
-              color: isSelected ? 'grey.300' : provided.color,
-              _dark: {
-                backgroundColor: isSelected
-                  ? 'cyan.700'
-                  : provided.backgroundColor,
-              },
-            }),
           }}
-          components={customComponents}
+          components={{
+            Option: CustomOption,
+          }}
           closeMenuOnSelect={false}
           size="md"
           hideSelectedOptions={false}
           controlShouldRenderValue={true}
         />
       ) : (
-        <Select
+        <CreatableSelect
           isMulti
-          tagColorScheme="cyan"
           name="subjects"
           options={subjectOptions}
           placeholder={t('subjects_autocomplete_search_subjects')}
@@ -387,9 +346,15 @@ export const SubjectsAutocomplete = ({
           value={selectedOptions}
           onChange={handleChange}
           chakraStyles={{
+            control: (provided) => ({
+              ...provided,
+              border: `1px solid ${colorMode === 'dark' ? '#4b5563' : '#9ca3af'}`,
+              borderRadius: '6px',
+              backgroundColor: colorMode === 'dark' ? '#252525' : '#ffffff',
+            }),
             loadingIndicator: (provided) => ({
               ...provided,
-              marginRight: 2,
+              mr: 2,
             }),
             dropdownIndicator: (provided) => ({
               ...provided,
@@ -405,21 +370,14 @@ export const SubjectsAutocomplete = ({
             }),
             valueContainer: (provided) => ({
               ...provided,
-              padding: '8px',
+              p: '8px',
               flexWrap: 'wrap',
               gap: '4px',
             }),
-            option: (provided, { isSelected }) => ({
-              ...provided,
-              color: isSelected ? 'grey.300' : provided.color,
-              _dark: {
-                backgroundColor: isSelected
-                  ? 'cyan.700'
-                  : provided.backgroundColor,
-              },
-            }),
           }}
-          components={customComponents}
+          components={{
+            Option: CustomOption,
+          }}
           closeMenuOnSelect={false}
           size="md"
           hideSelectedOptions={false}

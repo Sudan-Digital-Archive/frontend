@@ -1,20 +1,17 @@
+'use client'
+
 import {
   Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
   Box,
   Flex,
   Spinner,
   Center,
   Text,
+  Input,
 } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import { appConfig } from '../../constants.ts'
-import type { FormEvent } from 'react'
-import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
+import { appConfig } from '../../constants'
 
 export function Login() {
   const { t } = useTranslation()
@@ -27,33 +24,19 @@ export function Login() {
 
   const validateEmail = (value: string) => {
     if (!value) {
-      return { valid: false, error: t('login_email_required') }
+      return t('login_email_required')
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return { valid: false, error: t('login_invalid_email') }
+      return t('login_invalid_email')
     }
-    return { valid: true, error: '' }
+    return ''
   }
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setEmail(value)
-  }
-
-  const handleEmailBlur = () => {
-    const emailCheck = validateEmail(email)
-    if (!emailCheck.valid) {
-      setEmailError(emailCheck.error)
-    } else {
-      setEmailError('')
-    }
-  }
-
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const emailCheck = validateEmail(email)
-    if (!emailCheck.valid) {
-      setEmailError(emailCheck.error)
+    const error = validateEmail(email)
+    if (error) {
+      setEmailError(error)
       return
     }
 
@@ -84,46 +67,47 @@ export function Login() {
     <Flex align="center" justify="center">
       <Box width="100%" maxWidth="500px" padding="4">
         <form onSubmit={handleSubmit} noValidate>
-          <FormControl isInvalid={!!emailError}>
-            <FormLabel>{t('login_email_address')}</FormLabel>
+          <Box mb={4}>
+            <Text mb={2}>{t('login_email_address')}</Text>
             <Input
               type="email"
               value={email}
-              onChange={handleEmailChange}
-              onBlur={handleEmailBlur}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setEmailError(validateEmail(email))}
               placeholder={t('login_enter_email')}
+              bg="input.bg"
+              borderColor="input.border"
+              _placeholder={{ color: 'fg.muted' }}
             />
-            <FormErrorMessage>{emailError}</FormErrorMessage>
-          </FormControl>
+            {emailError && (
+              <Text color="red.400" mt={1} fontSize="sm">
+                {emailError}
+              </Text>
+            )}
+          </Box>
 
           <Button
             mt={4}
-            colorScheme="cyan"
-            isLoading={isSubmitting}
+            variant="ghost"
+            colorPalette="cyan"
             type="submit"
             width="100%"
             disabled={isSubmitting}
           >
-            {t('login_request_link')}
+            {isSubmitting ? <Spinner size="sm" /> : t('login_request_link')}
           </Button>
 
           {isSuccess && (
-            <Center mt={4} color="green.500">
-              <CheckCircleIcon mr={2} />
+            <Center mt={4} color="green.400">
+              <Text mr={2}>✓</Text>
               <Text>{t('login_email_sent')}</Text>
             </Center>
           )}
 
           {isError && (
-            <Center mt={4} color="red.500">
-              <WarningIcon mr={2} />
+            <Center mt={4} color="red.400">
+              <Text mr={2}>⚠</Text>
               <Text>{isError}</Text>
-            </Center>
-          )}
-
-          {isSubmitting && (
-            <Center mt={4}>
-              <Spinner />
             </Center>
           )}
         </form>

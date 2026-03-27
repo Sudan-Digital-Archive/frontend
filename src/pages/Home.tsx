@@ -1,5 +1,7 @@
+'use client'
+
 import { Box, VStack, Heading, Text } from '@chakra-ui/react'
-import Layout from '../components/Layout.tsx'
+import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
 
 export default function Home() {
@@ -19,14 +21,9 @@ export default function Home() {
         pb={5}
         px={4}
       >
-        <VStack spacing={8}>
+        <VStack gap={8}>
           <Box>
-            <Text
-              className="gradientText"
-              bgClip="text"
-              fontSize="6xl"
-              fontWeight="extrabold"
-            >
+            <Text className="gradientText" fontSize="6xl" fontWeight="black">
               {t('landing_heading')}
             </Text>
           </Box>
@@ -36,29 +33,29 @@ export default function Home() {
               size={i18n.language === 'en' ? 'lg' : '2xl'}
               lineHeight="tall"
               fontWeight="medium"
-              color="gray.500"
+              color="fg.muted"
             >
               {t('landing_sentence_one_part_one')}
-              <Box as="span" color="gray.200">
+              <Text as="span" color="accent.secondary">
                 {t('landing_sentence_one_part_two_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_one_part_three')}
               {t('landing_sentence_two_part_one')}
-              <Box as="span" color="gray.200">
+              <Text as="span" color="accent.secondary">
                 {t('landing_sentence_two_part_two_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_three')}
-              <Box as="span" color="gray.200">
+              <Text as="span" color="accent.secondary">
                 {t('landing_sentence_two_part_four_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_five')}
-              <Box as="span" color="gray.300">
+              <Text as="span" color="accent.primary">
                 {t('landing_sentence_two_part_six_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_seven')}
-              <Box as="span" color="gray.300">
+              <Text as="span" color="accent.primary">
                 {t('landing_sentence_two_part_eight_highlight')}
-              </Box>
+              </Text>
               {t('landing_sentence_two_part_nine')}
             </Heading>
           </Box>

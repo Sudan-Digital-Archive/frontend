@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import type { UserRole } from '../apiTypes/userTypes.ts'
+import type { UserRole } from '../apiTypes/userTypes'
 
 export interface UserContextType {
   isLoggedIn: boolean

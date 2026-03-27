@@ -1,36 +1,33 @@
+'use client'
+
 import {
   Box,
   Heading,
   SimpleGrid,
-  CardHeader,
-  CardBody,
-  CardFooter,
   Button,
   VStack,
   Text,
   HStack,
   Spinner,
-  Switch,
   Flex,
-  Tag,
+  Badge,
+  Checkbox,
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
-import { Description } from '../components/metadata/Description'
-import Layout from '../components/Layout.tsx'
+import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
-import { LangNavLink } from '../components/LangNavLink.tsx'
 import { useEffect, useMemo } from 'react'
-import { useCollections } from '../hooks/useCollections.ts'
-import { useUser } from '../hooks/useUser.ts'
-import { useSearchParams } from 'react-router'
+import { useCollections } from '../hooks/useCollections'
+import { useUser } from '../hooks/useUser'
+import { useSearchParams, NavLink } from 'react-router'
 
 export default function Collections() {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
   const [searchParams] = useSearchParams()
 
-  const lang = searchParams.get('lang') || 'en'
+  const lang = searchParams.get('lang') || i18n.language
   const isPrivate = searchParams.get('isPrivate') === 'true'
 
   const baseFilters = useMemo(
@@ -48,37 +45,26 @@ export default function Collections() {
 
   useEffect(() => {
     i18n.changeLanguage(lang)
-    switch (lang) {
-      case 'en':
-        document.documentElement.lang = 'en'
-        document.documentElement.dir = 'ltr'
-        break
-      case 'ar':
-        document.documentElement.lang = 'ar'
-        document.documentElement.dir = 'rtl'
-        break
-      default:
-        throw `Language ${lang} is not supported`
-    }
+    const dir = lang === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.lang = lang
+    document.documentElement.dir = dir
   }, [lang, i18n])
+
+  const handlePreviousPage = () => {
+    updateFilters({ page: pagination.currentPage - 1 })
+  }
+
+  const handleNextPage = () => {
+    updateFilters({ page: pagination.currentPage + 1 })
+  }
 
   return (
     <Layout
       changeLanguageOverride={() => {
         const newLanguage = i18n.language === 'en' ? 'ar' : 'en'
         i18n.changeLanguage(newLanguage)
-        switch (newLanguage) {
-          case 'en':
-            document.documentElement.lang = 'en'
-            document.documentElement.dir = 'ltr'
-            break
-          case 'ar':
-            document.documentElement.lang = 'ar'
-            document.documentElement.dir = 'rtl'
-            break
-          default:
-            throw `Language ${newLanguage} is not supported`
-        }
+        document.documentElement.lang = newLanguage
+        document.documentElement.dir = newLanguage === 'ar' ? 'rtl' : 'ltr'
         updateFilters({
           lang: newLanguage === 'en' ? 'english' : 'arabic',
         })
@@ -88,27 +74,30 @@ export default function Collections() {
         <Box w="100%" maxW="6xl" p={10} mx="auto">
           <Heading
             textAlign="center"
-            py={2}
-            bgGradient="linear(to-r, cyan.300, pink.600)"
-            bgClip="text"
+            py={4}
+            className="gradientTextStatic"
+            fontSize={{ base: '3xl', md: '5xl' }}
+            fontWeight="bold"
             mb={10}
           >
             {t('collections_title')}
           </Heading>
           {isLoggedIn && (
             <Flex mb={5} alignItems="center" justifyContent="center">
-              <Tag size="lg" colorScheme="cyan">
+              <Badge colorPalette="cyan">
                 {t('archive_filter_private_records')}
-              </Tag>
-              <Switch
-                my={2}
+              </Badge>
+              <Checkbox.Root
+                checked={isPrivate}
+                onCheckedChange={(e) =>
+                  updateFilters({ is_private: e.checked === true })
+                }
                 mx={2}
-                size="lg"
-                isChecked={isPrivate}
-                onChange={(e) => {
-                  updateFilters({ is_private: e.target.checked })
-                }}
-              />
+              >
+                <Checkbox.HiddenInput />
+                <Checkbox.Control />
+                <Checkbox.Label />
+              </Checkbox.Root>
             </Flex>
           )}
           {isLoading || !collections ? (
@@ -125,69 +114,65 @@ export default function Collections() {
               {t('collections_empty')}
             </Text>
           ) : (
-            <SimpleGrid
-              spacing={10}
-              columns={{ sm: 1, md: 2, lg: 3 }}
-              my={5}
-              mx={5}
-            >
+            <SimpleGrid minChildWidth="320px" gap={10} my={5} px={5}>
               {collections.items.map((collection) => (
                 <ArchiveCard key={`collection-card-${collection.id}`}>
-                  <CardHeader>
-                    <Heading size="md">{collection.title}</Heading>
-                  </CardHeader>
-                  <CardBody>
-                    <Description
-                      description={collection.description}
-                      truncate
-                    />
-                  </CardBody>
-                  <CardFooter>
-                    <LangNavLink
+                  <Flex
+                    direction="column"
+                    p={4}
+                    flex={1}
+                    justifyContent="space-between"
+                    minH="200px"
+                  >
+                    <Box>
+                      <Heading size="md" mb={2} lineClamp={2}>
+                        {collection.title}
+                      </Heading>
+                      <Text lineClamp={3}>{collection.description}</Text>
+                    </Box>
+                    <NavLink
                       to={`/collections/${collection.id}?isPrivate=${collection.is_private}`}
                     >
-                      <Button colorScheme="purple" variant="solid">
+                      <Button variant="ghost" colorPalette="cyan" mt={4}>
                         {t('collection_view_button')}
                       </Button>
-                    </LangNavLink>
-                  </CardFooter>
+                    </NavLink>
+                  </Flex>
                 </ArchiveCard>
               ))}
             </SimpleGrid>
           )}
           {collections && collections.items.length > 0 && !isLoading && (
-            <HStack mt={3} justifyContent="center">
+            <HStack mt={3} justifyContent="center" gap={2}>
               {pagination.currentPage !== 0 && (
                 <Button
                   size="xs"
-                  leftIcon={<ArrowLeft />}
-                  colorScheme="purple"
-                  variant="link"
-                  onClick={() =>
-                    updateFilters({
-                      page: pagination.currentPage - 1,
-                    })
-                  }
-                />
+                  colorPalette="pink"
+                  variant="ghost"
+                  onClick={handlePreviousPage}
+                >
+                  {i18n.language === 'ar' ? (
+                    <ArrowRight size={14} />
+                  ) : (
+                    <ArrowLeft size={14} />
+                  )}
+                  {t('collections_pagination_previous')}
+                </Button>
               )}
-              <Box>
-                {t('archive_pagination_page')}
-                <b>{pagination.currentPage + 1}</b>
-                {t('archive_pagination_page_out_of')}
-                <b>{pagination.totalPages}</b>
-              </Box>
               {pagination.currentPage + 1 < pagination.totalPages && (
                 <Button
                   size="xs"
-                  leftIcon={<ArrowRight />}
-                  colorScheme="purple"
-                  variant="link"
-                  onClick={() =>
-                    updateFilters({
-                      page: pagination.currentPage + 1,
-                    })
-                  }
-                />
+                  colorPalette="pink"
+                  variant="ghost"
+                  onClick={handleNextPage}
+                >
+                  {t('collections_pagination_next')}
+                  {i18n.language === 'ar' ? (
+                    <ArrowLeft size={14} />
+                  ) : (
+                    <ArrowRight size={14} />
+                  )}
+                </Button>
               )}
             </HStack>
           )}

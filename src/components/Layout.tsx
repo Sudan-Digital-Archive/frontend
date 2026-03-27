@@ -1,7 +1,9 @@
+'use client'
+
 import { ReactNode } from 'react'
-import { SlideFade } from '@chakra-ui/react'
-import Menu from './Menu.tsx'
-import Footer from './Footer.tsx'
+import Menu from './Menu'
+import Footer from './Footer'
+import { Toast } from './ui/Toast'
 
 interface LayoutProps {
   children: ReactNode
@@ -15,7 +17,8 @@ export default function Layout({
   return (
     <>
       <Menu changeLanguageOverride={changeLanguageOverride} />
-      <SlideFade in>{children}</SlideFade>
+      <Toast />
+      {children}
       <Footer />
     </>
   )

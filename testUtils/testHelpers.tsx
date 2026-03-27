@@ -8,7 +8,9 @@ import arTranslations from '../src/translations/ar.json'
 import enTranslations from '../src/translations/en.json'
 import { registerLocale } from 'react-datepicker'
 import { ar } from 'date-fns/locale'
-import { ChakraProvider } from '@chakra-ui/react'
+import { Provider } from '../src/components/ui/provider'
+import { ColorModeProvider } from '../src/components/ui/color-mode'
+import { ToastProvider } from '../src/context/ToastContext'
 import { vi } from 'vitest'
 import { UserContext } from '../src/context/UserContextDefinition'
 import type { UserRole } from '../src/apiTypes/userTypes'
@@ -99,13 +101,20 @@ export const renderWithProviders = (
 
   return render(
     <Router {...routerProps}>
-      <ChakraProvider>
-        <I18nextProvider i18n={i18n}>
-          <MockUserProvider isLoggedIn={options.isLoggedIn} role={options.role}>
-            {component}
-          </MockUserProvider>
-        </I18nextProvider>
-      </ChakraProvider>
+      <Provider>
+        <ColorModeProvider>
+          <ToastProvider>
+            <I18nextProvider i18n={i18n}>
+              <MockUserProvider
+                isLoggedIn={options.isLoggedIn}
+                role={options.role}
+              >
+                {component}
+              </MockUserProvider>
+            </I18nextProvider>
+          </ToastProvider>
+        </ColorModeProvider>
+      </Provider>
     </Router>,
   )
 }

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { appConfig } from '../constants.ts'
-import { buildFilters } from '../utils/url.ts'
-import type { CollectionsQueryFilters } from '../apiTypes/apiRequests.ts'
-import type { ListCollections } from '../apiTypes/apiResponses.ts'
+import { appConfig } from '../constants'
+import { buildFilters } from '../utils/url'
+import type { CollectionsQueryFilters } from '../apiTypes/apiRequests'
+import type { ListCollections } from '../apiTypes/apiResponses'
 
 interface UseCollectionsOptions {
   isLoggedIn: boolean

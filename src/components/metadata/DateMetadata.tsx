@@ -14,7 +14,7 @@ export function DateMetadata({
 
   return (
     <Text fontSize={fontSize}>
-      <Badge colorScheme="cyan">{t('metadata_date_label')}</Badge>{' '}
+      <Badge colorPalette="cyan">{t('metadata_date_label')}</Badge>{' '}
       <Text as="i" fontSize={fontSize}>
         {parseDate(date)}
       </Text>
