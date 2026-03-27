@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, VStack, Heading, Text } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
@@ -30,7 +28,7 @@ export default function WhyAnotherArchive() {
               {t('why_another_archive_title')}
             </Heading>
 
-            <Heading as="h6" fontSize={fontSize} fontWeight="semibold">
+            <Heading fontSize={fontSize} fontWeight="semibold">
               {t('why_another_archive_heading')}
             </Heading>
             <Text fontSize={fontSize}>{t('why_another_archive_para_one')}</Text>

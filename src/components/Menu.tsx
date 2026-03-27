@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, HStack, Button, Stack, Text, Portal } from '@chakra-ui/react'
 import { NavLink, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'

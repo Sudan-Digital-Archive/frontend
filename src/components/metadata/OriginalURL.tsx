@@ -1,5 +1,3 @@
-'use client'
-
 import { Link, Badge, Text, Box } from '@chakra-ui/react'
 import { ExternalLink } from 'react-feather'
 import { useTranslation } from 'react-i18next'

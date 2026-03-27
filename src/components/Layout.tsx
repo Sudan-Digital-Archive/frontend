@@ -1,5 +1,3 @@
-'use client'
-
 import { ReactNode } from 'react'
 import Menu from './Menu'
 import Footer from './Footer'

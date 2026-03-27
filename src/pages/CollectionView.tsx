@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, Spinner, VStack, Text, HStack, Button } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { useParams, useSearchParams } from 'react-router'

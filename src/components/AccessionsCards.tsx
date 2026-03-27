@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, Button, Flex, SimpleGrid } from '@chakra-ui/react'
 import { ArchiveCard } from './ArchiveCard'
 import {

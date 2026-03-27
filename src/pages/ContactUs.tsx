@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, Heading, Button, Text, VStack } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { Copy } from 'react-feather'

@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, VStack, Heading, Text } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'

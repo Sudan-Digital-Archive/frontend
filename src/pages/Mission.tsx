@@ -1,5 +1,3 @@
-'use client'
-
 import { Box, VStack, Heading, Text, Image } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { useTranslation } from 'react-i18next'
@@ -39,7 +37,12 @@ export default function Mission() {
                 alt={t('mission_image_one_alt')}
               />
             </Box>
-            <Text as="i" textAlign="center" fontStyle="italic">
+            <Text
+              as="i"
+              textAlign="center"
+              fontSize={fontSize}
+              fontStyle="italic"
+            >
               {t('mission_image_one_caption')}
             </Text>
             <Text fontSize={fontSize}>{t('mission_para_one')}</Text>

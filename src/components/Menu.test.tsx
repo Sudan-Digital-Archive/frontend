@@ -40,12 +40,12 @@ describe('Menu', () => {
   })
 
   it('should show User Management link for admin users', () => {
-    renderWithProviders(<Menu />, { isLoggedIn: true, role: 'Admin' })
+    renderWithProviders(<Menu />, { isLoggedIn: true, role: 'admin' })
     expect(screen.getByText('User Management')).toBeTruthy()
   })
 
   it('should not show User Management link for non-admin users', () => {
-    renderWithProviders(<Menu />, { isLoggedIn: true, role: 'Contributor' })
+    renderWithProviders(<Menu />, { isLoggedIn: true, role: 'contributor' })
     expect(screen.queryByText('User Management')).toBeNull()
   })
 
