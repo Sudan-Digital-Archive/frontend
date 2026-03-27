@@ -3,7 +3,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import '../css/date-picker.css'
 import { Box } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
-import { useColorMode } from './ui/color-mode'
 import { ar } from 'date-fns/locale'
 
 registerLocale('ar', ar)
@@ -20,14 +19,9 @@ export function ArchiveDatePicker({
   showPlaceholder = false,
 }: ArchiveDatePickerProps) {
   const { i18n, t } = useTranslation()
-  const { colorMode } = useColorMode()
 
   return (
-    <Box
-      className={colorMode === 'dark' ? 'dark-theme' : 'light-theme'}
-      mr={2}
-      ml={2}
-    >
+    <Box mr={2} ml={2}>
       <DatePicker
         dateFormat={i18n.language === 'ar' ? 'yyyy/MM/dd' : 'MM/dd/yyyy'}
         selected={selected}
