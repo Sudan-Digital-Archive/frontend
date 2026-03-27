@@ -37,10 +37,13 @@ export const useUsers = (): UseUsersReturn => {
   })
 
   const updateFilters = useCallback((updates: Partial<UsersQueryFilters>) => {
-    setQueryFilters((prev) => ({
-      ...prev,
-      ...updates,
-    }))
+    setQueryFilters((prev) => {
+      const newState = { ...prev, ...updates }
+      if (JSON.stringify(prev) === JSON.stringify(newState)) {
+        return prev
+      }
+      return newState
+    })
   }, [])
 
   const buildQueryString = useCallback((filters: UsersQueryFilters): string => {
