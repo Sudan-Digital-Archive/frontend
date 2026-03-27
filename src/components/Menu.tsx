@@ -1,31 +1,28 @@
-import {
-  Box,
-  HStack,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Stack,
-  IconButton,
-  Text,
-} from '@chakra-ui/react'
-import { ChevronDown, Menu as MenuIcon } from 'react-feather'
-import { NavLink } from 'react-router'
-import { Home } from 'react-feather'
+'use client'
+
+import { Box, HStack, Button, Stack, Text, Portal } from '@chakra-ui/react'
+import { NavLink, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useWindowSize } from '../hooks/useWindowSize.ts'
-import { useUser } from '../hooks/useUser.ts'
-import { LangNavLink } from './LangNavLink.tsx'
+import { useWindowSize } from '../hooks/useWindowSize'
+import { useUser } from '../hooks/useUser'
+import { useColorMode } from './ui/color-mode'
+import { useState } from 'react'
+import { Menu } from '@chakra-ui/react'
+import { ChevronDown, Home, Sun, Moon } from 'react-feather'
 
 interface NavbarProps {
-  // useful if you want to prevent layout shifts
-  // e.g. refresh data before everything goes right to left
   changeLanguageOverride?: () => void
 }
 
 const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
   const { i18n, t } = useTranslation()
+  const navigate = useNavigate()
+  const width = useWindowSize()
+  const isMobile = width <= 768
+  const { isLoggedIn, role } = useUser()
+  const { colorMode, toggleColorMode } = useColorMode()
+  const isAdmin = role?.toLowerCase() === 'admin'
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleLanguageChange = () => {
     const newLanguage = i18n.language === 'en' ? 'ar' : 'en'
@@ -44,167 +41,22 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
     }
   }
 
-  const MenuBar = () => {
-    const width = useWindowSize()
-    const isMobile = width <= 768
-    const { isLoggedIn, role } = useUser()
-    const isAdmin = role?.toLowerCase() === 'admin'
+  const archiveItems = [
+    { path: '/archive', label: t('nav_search') },
+    { path: '/collections', label: t('nav_collections') },
+  ]
 
-    return (
-      <>
-        {isMobile ? (
-          <>
-            <Menu>
-              <MenuButton
-                as={IconButton}
-                icon={<MenuIcon />}
-                variant="outline"
-              />
-              <MenuList>
-                <MenuItem isDisabled>
-                  <HStack>
-                    <Text fontWeight="bold">{t('nav_the_archive')}</Text>
-                    <ChevronDown size="16" />
-                  </HStack>
-                </MenuItem>
-                <MenuItem pl={6} as={NavLink} to="/archive">
-                  {t('nav_search')}
-                </MenuItem>
-                <MenuItem pl={6} as={LangNavLink} to="/collections">
-                  {t('nav_collections')}
-                </MenuItem>
-                <MenuItem isDisabled>
-                  <HStack>
-                    <Text fontWeight="bold">{t('nav_about')}</Text>
-                    <ChevronDown size="16" />
-                  </HStack>
-                </MenuItem>
-                <MenuItem pl={6} as={NavLink} to="/who-are-we">
-                  {t('nav_who_are_we')}
-                </MenuItem>
-                <MenuItem pl={6} as={NavLink} to="/mission">
-                  {t('nav_mission')}
-                </MenuItem>
-                <MenuItem pl={6} as={NavLink} to="/why-another-archive">
-                  {t('nav_why_another_archive')}
-                </MenuItem>
-                <MenuItem pl={6} as={NavLink} to="/tech-stack">
-                  {t('nav_tech_stack')}
-                </MenuItem>
-                <MenuItem pl={6} as={NavLink} to="/code-of-conduct">
-                  {t('nav_coc')}
-                </MenuItem>
-                <MenuItem as={NavLink} to="/contact-us">
-                  {t('nav_contact')}
-                </MenuItem>
-                {!isLoggedIn && (
-                  <MenuItem as={NavLink} to="/login">
-                    {t('nav_login')}
-                  </MenuItem>
-                )}
-                {isAdmin && (
-                  <MenuItem as={NavLink} to="/user-management">
-                    {t('nav_user_management')}
-                  </MenuItem>
-                )}
-                <MenuItem
-                  onClick={changeLanguageOverride || handleLanguageChange}
-                >
-                  {i18n.language === 'en' ? 'عربي' : 'English'}
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </>
-        ) : (
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            aria-label="navigation-menu"
-          >
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDown />}
-                size="sm"
-                variant="ghost"
-              >
-                {t('nav_the_archive')}
-              </MenuButton>
-              <MenuList>
-                <MenuItem as={NavLink} to="/archive">
-                  {t('nav_search')}
-                </MenuItem>
-                <MenuItem as={LangNavLink} to="/collections">
-                  {t('nav_collections')}
-                </MenuItem>
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rightIcon={<ChevronDown />}
-                size="sm"
-                variant="ghost"
-              >
-                {t('nav_about')}
-              </MenuButton>
-              <MenuList>
-                <MenuItem as={NavLink} to="/who-are-we">
-                  {t('nav_who_are_we')}
-                </MenuItem>
-                <MenuItem as={NavLink} to="/mission">
-                  {t('nav_mission')}
-                </MenuItem>
-                <MenuItem as={NavLink} to="/why-another-archive">
-                  {t('nav_why_another_archive')}
-                </MenuItem>
-                <MenuItem as={NavLink} to="/tech-stack">
-                  {t('nav_tech_stack')}
-                </MenuItem>
-                <MenuItem as={NavLink} to="/code-of-conduct">
-                  {t('nav_coc')}
-                </MenuItem>
-              </MenuList>
-            </Menu>
-            <Menu>
-              <NavLink to="/contact-us">
-                <MenuButton as={Button} size="sm" variant="ghost">
-                  {t('nav_contact')}
-                </MenuButton>
-              </NavLink>
-            </Menu>
-            {!isLoggedIn && (
-              <Menu>
-                <NavLink to="/login">
-                  <MenuButton as={Button} size="sm" variant="ghost">
-                    {t('nav_login')}
-                  </MenuButton>
-                </NavLink>
-              </Menu>
-            )}
-            {isAdmin && (
-              <Menu>
-                <NavLink to="/user-management">
-                  <MenuButton as={Button} size="sm" variant="ghost">
-                    {t('nav_user_management')}
-                  </MenuButton>
-                </NavLink>
-              </Menu>
-            )}
-            <Box>
-              <Button
-                colorScheme="pink"
-                variant="ghost"
-                onClick={changeLanguageOverride || handleLanguageChange}
-              >
-                {i18n.language === 'en' ? 'عربي' : 'English'}
-              </Button>
-            </Box>
-          </Stack>
-        )}
-      </>
-    )
+  const aboutItems = [
+    { path: '/who-are-we', label: t('nav_who_are_we') },
+    { path: '/mission', label: t('nav_mission') },
+    { path: '/why-another-archive', label: t('nav_why_another_archive') },
+    { path: '/tech-stack', label: t('nav_tech_stack') },
+    { path: '/code-of-conduct', label: t('nav_coc') },
+  ]
+
+  const handleMenuItemClick = (path: string) => {
+    navigate(path)
+    setMenuOpen(false)
   }
 
   return (
@@ -213,8 +65,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
       zIndex={1}
       borderTop="3px solid"
       style={{
-        borderImage:
-          'linear-gradient(to right, var(--chakra-colors-cyan-300), var(--chakra-colors-pink-600)) 1 0 0 0',
+        borderImage: 'linear-gradient(to right, #67e8f9, #ec4899) 1 0 0 0',
       }}
     >
       <Box maxW="6xl" mx="auto" px={4}>
@@ -223,14 +74,301 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
           alignItems="center"
           py={4}
           flexDir={['column', 'column', 'row']}
-          gridGap={[4, 4, 0]}
+          gap={[4, 4, 0]}
         >
           <Box display="flex" alignItems="center">
-            <NavLink to="/">
-              <Home />
+            <NavLink to="/" style={{ cursor: 'pointer' }}>
+              <Home size={20} />
             </NavLink>
           </Box>
-          <MenuBar />
+
+          {isMobile ? (
+            <Menu.Root
+              open={menuOpen}
+              onOpenChange={(e) => setMenuOpen(e.open)}
+            >
+              <Menu.Trigger asChild>
+                <Button variant="outline" size="sm">
+                  <ChevronDown size={16} />
+                </Button>
+              </Menu.Trigger>
+              <Portal>
+                <Menu.Positioner>
+                  <Menu.Content bg="colors.dropdownBg">
+                    <Menu.Item
+                      value="archive"
+                      onClick={() => handleMenuItemClick('/archive')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_search')}</Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="collections"
+                      onClick={() => handleMenuItemClick('/collections')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_collections')}</Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="who-are-we"
+                      onClick={() => handleMenuItemClick('/who-are-we')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_who_are_we')}</Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="mission"
+                      onClick={() => handleMenuItemClick('/mission')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_mission')}</Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="why-another-archive"
+                      onClick={() =>
+                        handleMenuItemClick('/why-another-archive')
+                      }
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_why_another_archive')}</Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="tech-stack"
+                      onClick={() => handleMenuItemClick('/tech-stack')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_tech_stack')}</Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="code-of-conduct"
+                      onClick={() => handleMenuItemClick('/code-of-conduct')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_coc')}</Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="contact-us"
+                      onClick={() => handleMenuItemClick('/contact-us')}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <Text>{t('nav_contact')}</Text>
+                    </Menu.Item>
+                    {!isLoggedIn && (
+                      <Menu.Item
+                        value="login"
+                        onClick={() => handleMenuItemClick('/login')}
+                        cursor="pointer"
+                        px={4}
+                        py={2}
+                        _hover={{ bg: 'colors.dropdownHover' }}
+                      >
+                        <Text>{t('nav_login')}</Text>
+                      </Menu.Item>
+                    )}
+                    {isAdmin && (
+                      <Menu.Item
+                        value="user-management"
+                        onClick={() => handleMenuItemClick('/user-management')}
+                        cursor="pointer"
+                        px={4}
+                        py={2}
+                        _hover={{ bg: 'colors.dropdownHover' }}
+                      >
+                        <Text>{t('nav_user_management')}</Text>
+                      </Menu.Item>
+                    )}
+                    <Menu.Item
+                      value="language"
+                      onClick={changeLanguageOverride || handleLanguageChange}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHoverPink' }}
+                    >
+                      <Text colorPalette="pink">
+                        {i18n.language === 'en' ? 'عربي' : 'English'}
+                      </Text>
+                    </Menu.Item>
+                    <Menu.Item
+                      value="theme"
+                      onClick={toggleColorMode}
+                      cursor="pointer"
+                      px={4}
+                      py={2}
+                      _hover={{ bg: 'colors.dropdownHover' }}
+                    >
+                      <HStack gap={2}>
+                        {colorMode === 'dark' ? (
+                          <Sun size={16} />
+                        ) : (
+                          <Moon size={16} />
+                        )}
+                        <Text>
+                          {colorMode === 'dark'
+                            ? t('light_mode')
+                            : t('dark_mode')}
+                        </Text>
+                      </HStack>
+                    </Menu.Item>
+                  </Menu.Content>
+                </Menu.Positioner>
+              </Portal>
+            </Menu.Root>
+          ) : (
+            <Stack
+              direction="row"
+              gap={2}
+              alignItems="center"
+              aria-label="navigation-menu"
+            >
+              <Menu.Root>
+                <Menu.Trigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
+                    {t('nav_the_archive')}{' '}
+                    <ChevronDown size={14} style={{ marginLeft: '4px' }} />
+                  </Button>
+                </Menu.Trigger>
+                <Portal>
+                  <Menu.Positioner>
+                    <Menu.Content bg="dropdownBg" minWidth="150px">
+                      {archiveItems.map((item) => (
+                        <Menu.Item
+                          key={item.path}
+                          value={item.path}
+                          onClick={() => navigate(item.path)}
+                          cursor="pointer"
+                          px={4}
+                          py={2}
+                          _hover={{ bg: 'colors.dropdownHover' }}
+                        >
+                          {item.label}
+                        </Menu.Item>
+                      ))}
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Portal>
+              </Menu.Root>
+
+              <Menu.Root>
+                <Menu.Trigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
+                    {t('nav_about')}{' '}
+                    <ChevronDown size={14} style={{ marginLeft: '4px' }} />
+                  </Button>
+                </Menu.Trigger>
+                <Portal>
+                  <Menu.Positioner>
+                    <Menu.Content bg="dropdownBg" minWidth="180px">
+                      {aboutItems.map((item) => (
+                        <Menu.Item
+                          key={item.path}
+                          value={item.path}
+                          onClick={() => navigate(item.path)}
+                          cursor="pointer"
+                          px={4}
+                          py={2}
+                          _hover={{ bg: 'colors.dropdownHover' }}
+                        >
+                          {item.label}
+                        </Menu.Item>
+                      ))}
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Portal>
+              </Menu.Root>
+
+              <NavLink to="/contact-us" style={{ cursor: 'pointer' }}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  cursor="pointer"
+                  _hover={{ bg: 'colors.dropdownHover' }}
+                >
+                  {t('nav_contact')}
+                </Button>
+              </NavLink>
+
+              {!isLoggedIn && (
+                <NavLink to="/login" style={{ cursor: 'pointer' }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
+                    {t('nav_login')}
+                  </Button>
+                </NavLink>
+              )}
+
+              {isAdmin && (
+                <NavLink to="/user-management" style={{ cursor: 'pointer' }}>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    cursor="pointer"
+                    _hover={{ bg: 'colors.dropdownHover' }}
+                  >
+                    {t('nav_user_management')}
+                  </Button>
+                </NavLink>
+              )}
+
+              <Button
+                colorPalette="pink"
+                variant="ghost"
+                cursor="pointer"
+                onClick={changeLanguageOverride || handleLanguageChange}
+                _hover={{ bg: 'colors.dropdownHoverPink' }}
+              >
+                {i18n.language === 'en' ? 'عربي' : 'English'}
+              </Button>
+
+              <Button
+                variant="ghost"
+                cursor="pointer"
+                onClick={toggleColorMode}
+                _hover={{ bg: 'colors.dropdownHover' }}
+                p={2}
+              >
+                {colorMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </Button>
+            </Stack>
+          )}
         </HStack>
       </Box>
     </Box>

@@ -7,6 +7,7 @@ interface DescriptionProps {
   fontSize?: string
   truncate?: boolean
   maxLength?: number
+  lineClamp?: number
 }
 
 export function Description({
@@ -14,6 +15,7 @@ export function Description({
   fontSize = 'md',
   truncate = false,
   maxLength = 200,
+  lineClamp,
 }: DescriptionProps) {
   const { t } = useTranslation()
   const displayText = truncate
@@ -24,8 +26,8 @@ export function Description({
   return (
     <>
       {hasDescription ? (
-        <Text fontSize={fontSize}>
-          <Badge colorScheme="cyan">{t('metadata_description_label')}</Badge>{' '}
+        <Text fontSize={fontSize} lineClamp={lineClamp}>
+          <Badge colorPalette="cyan">{t('metadata_description_label')}</Badge>{' '}
           {displayText}
         </Text>
       ) : (

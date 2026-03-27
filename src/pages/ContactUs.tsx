@@ -1,30 +1,23 @@
-import {
-  Box,
-  Heading,
-  Button,
-  useClipboard,
-  useToast,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
-import { CopyIcon } from '@chakra-ui/icons'
-import Layout from '../components/Layout.tsx'
+'use client'
+
+import { Box, Heading, Button, Text, VStack } from '@chakra-ui/react'
+import Layout from '../components/Layout'
+import { Copy } from 'react-feather'
 import { useTranslation } from 'react-i18next'
+import { useToast } from '../context/ToastContext'
 
 export default function ContactUs() {
   const { t } = useTranslation()
   const email = 'info@sudandigitalarchive.com'
-  const { onCopy } = useClipboard(email)
-  const toast = useToast()
+  const { showToast } = useToast()
 
-  const handleCopy = () => {
-    onCopy()
-    toast({
-      title: t('email_copied'),
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
-    })
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(email)
+      showToast(t('email_copied'))
+    } catch (err) {
+      console.error('Failed to copy!', err)
+    }
   }
 
   return (
@@ -37,23 +30,26 @@ export default function ContactUs() {
         maxW="2xl"
         mx="auto"
         pt={10}
+        width="100%"
       >
-        <VStack spacing={8}>
+        <VStack gap={8} width="100%">
           <Heading
             textAlign="center"
-            className="gradientText"
-            bgClip="text"
+            className="gradientTextStatic"
             fontSize="4xl"
+            fontWeight="bold"
+            width="100%"
+            whiteSpace="nowrap"
           >
             {t('get_in_touch')}
           </Heading>
           <Button
-            colorScheme="cyan"
+            colorPalette="cyan"
             size="md"
             variant="ghost"
             onClick={handleCopy}
-            rightIcon={<CopyIcon />}
           >
+            <Copy size={16} style={{ marginRight: '8px' }} />
             <Text as="i" mx={2}>
               {email}
             </Text>

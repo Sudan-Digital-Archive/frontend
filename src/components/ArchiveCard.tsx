@@ -1,23 +1,32 @@
-import { Card, CardProps, useColorModeValue } from '@chakra-ui/react'
+'use client'
 
-export const ArchiveCard = (props: CardProps) => {
-  const bg = useColorModeValue('white', 'gray.800')
+import { Box } from '@chakra-ui/react'
+import type { ReactNode } from 'react'
 
+interface ArchiveCardProps {
+  children: ReactNode
+}
+
+export const ArchiveCard = ({ children }: ArchiveCardProps) => {
   return (
-    <Card
-      bg={bg}
+    <Box
+      bg="card.bg"
       boxShadow="xl"
       borderRadius="xl"
       border="1px solid"
-      borderColor="transparent"
+      borderColor="card.border"
       transition="all 0.3s ease-in-out"
       _hover={{
         boxShadow: '2xl',
         transform: 'translateY(-5px)',
-        borderColor: 'cyan.400',
       }}
       overflow="hidden"
-      {...props}
-    />
+      height="100%"
+      minH="200px"
+      display="flex"
+      flexDirection="column"
+    >
+      {children}
+    </Box>
   )
 }

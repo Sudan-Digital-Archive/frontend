@@ -1,4 +1,6 @@
-import { Tag, TagLabel } from '@chakra-ui/react'
+'use client'
+
+import { Box } from '@chakra-ui/react'
 
 interface SubjectTagProps {
   label: string
@@ -6,14 +8,18 @@ interface SubjectTagProps {
 
 export const SubjectTag = ({ label }: SubjectTagProps) => {
   return (
-    <Tag
-      fontSize="md"
-      variant="solid"
-      colorScheme="cyan"
+    <Box
+      as="span"
+      display="inline-block"
+      px={2}
+      py={0.5}
+      fontSize="sm"
+      bg="#db2777"
+      color="white"
       borderRadius="full"
       m={0.5}
     >
-      <TagLabel>{label}</TagLabel>
-    </Tag>
+      {label}
+    </Box>
   )
 }

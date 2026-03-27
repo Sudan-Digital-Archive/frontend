@@ -1,25 +1,26 @@
+'use client'
+
 import {
   Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  useToast,
-  Textarea,
-  Radio,
-  RadioGroup,
-  Stack,
   Box,
-  Switch,
+  Input,
+  Textarea,
+  Text,
+  Flex,
+  Heading,
+  VStack,
+  HStack,
+  Checkbox,
+  RadioGroup,
 } from '@chakra-ui/react'
-import { ArchiveDatePicker } from '../DatePicker.tsx'
+import { ArchiveDatePicker } from '../DatePicker'
 import { useTranslation } from 'react-i18next'
-import { appConfig } from '../../constants.ts'
+import { appConfig } from '../../constants'
 import { useState, useEffect, useCallback } from 'react'
-import { SubjectsAutocomplete } from '../subjectsAutocomplete/SubjectsAutocomplete.tsx'
-import type { ChangeEvent, FormEvent } from 'react'
-import type { AccessionWithMetadata } from '../../apiTypes/apiResponses.ts'
-import type { SubjectOption } from '../subjectsAutocomplete/types.ts'
+import { SubjectsAutocomplete } from '../subjectsAutocomplete/SubjectsAutocomplete'
+import type { SubjectOption } from '../subjectsAutocomplete/types'
+import type { AccessionWithMetadata } from '../../apiTypes/apiResponses'
+import { useToast } from '../../context/ToastContext'
 
 interface CreateUpdateAccessionProps {
   accessionToUpdate?: AccessionWithMetadata
@@ -31,7 +32,7 @@ export function CreateUpdateAccession({
   onSuccess,
 }: CreateUpdateAccessionProps) {
   const { t, i18n } = useTranslation()
-  const toast = useToast()
+  const { showToast } = useToast()
   const isEditMode = !!accessionToUpdate
 
   const [url, setUrl] = useState(accessionToUpdate?.seed_url || '')
@@ -58,7 +59,6 @@ export function CreateUpdateAccession({
     accessionToUpdate?.is_private || false,
   )
 
-  // Initialize subjects if editing an existing record
   useEffect(() => {
     if (accessionToUpdate) {
       const subjectIds =
@@ -93,14 +93,12 @@ export function CreateUpdateAccession({
 
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [isFormValid, setIsFormValid] = useState(false)
   const validateURL = useCallback(
     (value: string) => {
       try {
         new URL(value)
         return { valid: true, error: '' }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_) {
+      } catch {
         return { valid: false, error: t('create_accession_invalid_url') }
       }
     },
@@ -114,8 +112,7 @@ export function CreateUpdateAccession({
       try {
         new Date(value)
         return { valid: true, error: '' }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (_) {
+      } catch {
         return { valid: false, error: t('create_accession_invalid_date') }
       }
     },
@@ -131,37 +128,7 @@ export function CreateUpdateAccession({
     [t],
   )
 
-  const validateForm = useCallback(() => {
-    const urlValid = validateURL(url).valid
-    const titleValid = validateTitle(title).valid
-    const subjectsValid = subjects.length > 0
-    const dateValid = validateDate(date).valid
-    return urlValid && titleValid && subjectsValid && dateValid
-  }, [
-    date,
-    subjects.length,
-    title,
-    url,
-    validateDate,
-    validateTitle,
-    validateURL,
-  ])
-  useEffect(() => {
-    const isFormValid = validateForm()
-
-    setIsFormValid(isFormValid)
-  }, [validateForm])
-
-  const getBrowserProfile = (profile: string) => {
-    switch (profile) {
-      case t('create_accession_crawl_type_facebook'):
-        return 'facebook'
-      default:
-        return null
-    }
-  }
-
-  const handleUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setUrl(value)
   }
@@ -175,7 +142,7 @@ export function CreateUpdateAccession({
     }
   }
 
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setTitle(value)
   }
@@ -193,7 +160,9 @@ export function CreateUpdateAccession({
     setSubjects(values)
   }
 
-  const handleDescriptionChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setDescription(e.target.value)
   }
 
@@ -219,12 +188,10 @@ export function CreateUpdateAccession({
         document.documentElement.lang = 'ar'
         document.documentElement.dir = 'rtl'
         break
-      default:
-        throw `Language ${newLanguage} is not supported`
     }
   }
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const urlCheck = validateURL(url)
     if (!urlCheck.valid) {
@@ -264,7 +231,11 @@ export function CreateUpdateAccession({
         metadata_time: `${
           new Date(date as Date).toISOString().split('T')[0]
         }T00:00:00`,
-        browser_profile: isEditMode ? null : getBrowserProfile(browserProfile),
+        browser_profile: isEditMode
+          ? null
+          : browserProfile === t('create_accession_crawl_type_facebook')
+            ? 'facebook'
+            : null,
         is_private: isPrivate,
       }
 
@@ -283,17 +254,12 @@ export function CreateUpdateAccession({
       })
 
       if (response.status === 201 || response.status === 200) {
-        toast({
-          title: isEditMode
-            ? t('update_accession_success_title')
-            : t('create_accession_crawling_url_title'),
-          description: isEditMode
+        showToast(
+          isEditMode
             ? t('update_accession_success_description')
             : t('create_accession_success_description'),
-          status: 'success',
-          duration: 9000,
-          isClosable: true,
-        })
+          'success',
+        )
 
         if (isEditMode && onSuccess) {
           onSuccess()
@@ -309,33 +275,23 @@ export function CreateUpdateAccession({
       } else {
         const errorText = await response.text()
         console.error(errorText)
-        toast({
-          title: isEditMode
-            ? t('update_accession_error_title')
-            : t('create_accession_error_toast_title'),
-          description: `${
+        showToast(
+          `${
             isEditMode
               ? t('update_accession_error_description')
               : t('create_accession_error_toast_description')
           } ${errorText}`,
-          status: 'error',
-          duration: 9000,
-          isClosable: true,
-        })
+          'error',
+        )
       }
     } catch (error) {
       console.error(error)
-      toast({
-        title: isEditMode
-          ? t('update_accession_error_title')
-          : t('create_accession_error_toast_title'),
-        description: isEditMode
+      showToast(
+        isEditMode
           ? t('update_accession_error_description')
           : t('create_accession_error_toast_description'),
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      })
+        'error',
+      )
     } finally {
       setIsSubmitting(false)
     }
@@ -344,60 +300,64 @@ export function CreateUpdateAccession({
   return (
     <form onSubmit={handleSubmit} noValidate>
       {isEditMode && (
-        <FormControl display="flex" alignItems="center" mb={2}>
-          <FormLabel
-            htmlFor="language-switch"
-            mr={2}
-            display="flex"
-            alignItems="center"
+        <Flex alignItems="center" mb={2}>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={handleLanguageChange}
+            mb={2}
           >
             {t('change_language_label', {
               targetLanguage:
                 i18n.language === 'en' ? t('arabic') : t('english'),
             })}
-          </FormLabel>
-          <Switch
-            id="language-switch"
-            isChecked={i18n.language === 'ar'}
-            onChange={handleLanguageChange}
-            alignSelf="top"
-            transform="translateY(-3px)"
-          />
-        </FormControl>
+          </Button>
+        </Flex>
       )}
-      <FormControl isInvalid={!!urlError} isRequired>
-        <FormLabel>{t('create_accession_url_field_label')}</FormLabel>
-        <Input
-          value={url}
-          onChange={handleUrlChange}
-          // prevents annoying url validation when you close modal after submission
-          // since url is always focused after submission
-          onBlur={() =>
-            setTimeout(() => {
-              handleUrlBlur()
-            }, 300)
-          }
-          placeholder={t('create_accession_url_field_placeholder')}
-          isDisabled={isEditMode}
-        />
-        <FormErrorMessage>{urlError}</FormErrorMessage>
-      </FormControl>
+      <VStack gap={4} align="stretch">
+        <Box>
+          <Heading size="sm" mb={1}>
+            {t('create_accession_url_field_label')}
+          </Heading>
+          <Input
+            value={url}
+            onChange={handleUrlChange}
+            onBlur={handleUrlBlur}
+            placeholder={t('create_accession_url_field_placeholder')}
+            disabled={isEditMode}
+            bg="input.bg"
+            borderColor="gray"
+            _placeholder={{ color: 'fg.muted' }}
+          />
+          {urlError && (
+            <Text color="red.500" fontSize="sm">
+              {urlError}
+            </Text>
+          )}
+        </Box>
 
-      <FormControl isInvalid={!!titleError} isRequired>
-        <FormLabel mt={5}>{t('create_accession_title_field_label')}</FormLabel>
-        <Input
-          value={title}
-          onChange={handleTitleChange}
-          onBlur={handleTitleBlur}
-        />
-        <FormErrorMessage>{titleError}</FormErrorMessage>
-      </FormControl>
+        <Box>
+          <Heading size="sm" mb={1}>
+            {t('create_accession_title_field_label')}
+          </Heading>
+          <Input
+            value={title}
+            onChange={handleTitleChange}
+            onBlur={handleTitleBlur}
+            bg="input.bg"
+            borderColor="gray"
+          />
+          {titleError && (
+            <Text color="red.500" fontSize="sm">
+              {titleError}
+            </Text>
+          )}
+        </Box>
 
-      <FormControl isRequired isInvalid={!!subjectsError}>
-        <FormLabel mt={5}>
-          {t('create_accession_subjects_field_label')}
-        </FormLabel>
-        <Box my={2}>
+        <Box>
+          <Heading size="sm" mb={1}>
+            {t('create_accession_subjects_field_label')}
+          </Heading>
           <SubjectsAutocomplete
             onChange={handleSubjectsChange}
             value={subjects}
@@ -416,65 +376,101 @@ export function CreateUpdateAccession({
                 : undefined
             }
           />
+          {subjectsError && (
+            <Text color="red.500" fontSize="sm">
+              {subjectsError}
+            </Text>
+          )}
         </Box>
-        <FormErrorMessage>{subjectsError}</FormErrorMessage>
-      </FormControl>
 
-      <FormControl>
-        <FormLabel mt={5}>
-          {t('create_accession_description_field_label')}
-        </FormLabel>
-        <Textarea value={description} onChange={handleDescriptionChange} />
-      </FormControl>
+        <Box>
+          <Heading size="sm" mb={1}>
+            {t('create_accession_description_field_label')}
+          </Heading>
+          <Textarea
+            value={description}
+            onChange={handleDescriptionChange}
+            bg="input.bg"
+            borderColor="gray"
+          />
+        </Box>
 
-      <FormControl isInvalid={!!dateError} isRequired>
-        <FormLabel mt={5}>{t('create_accession_date_field_label')}</FormLabel>
-        <ArchiveDatePicker
-          selected={(date && new Date(date)) || null}
-          onChange={(val) => handleDateChange(val)}
-          showPlaceholder={true}
-        />
-        <FormErrorMessage mb={2}>{dateError}</FormErrorMessage>
-      </FormControl>
+        <Box>
+          <Heading size="sm" mb={1}>
+            {t('create_accession_date_field_label')}
+          </Heading>
+          <ArchiveDatePicker
+            selected={date}
+            onChange={handleDateChange}
+            showPlaceholder={true}
+          />
+          {dateError && (
+            <Text color="red.500" fontSize="sm" mb={2}>
+              {dateError}
+            </Text>
+          )}
+        </Box>
 
-      {!isEditMode && (
-        <FormControl isRequired>
-          <FormLabel mt={5}>{t('create_accession_crawl_type_label')}</FormLabel>
-          <RadioGroup onChange={setBrowserProfile} value={browserProfile}>
-            <Stack direction="row">
-              <Radio value={t('create_accession_crawl_type_default')}>
-                {t('create_accession_crawl_type_default')}
-              </Radio>
-              <Radio value={t('create_accession_crawl_type_facebook')}>
-                {t('create_accession_crawl_type_facebook')}
-              </Radio>
-            </Stack>
-          </RadioGroup>
-        </FormControl>
-      )}
+        {!isEditMode && (
+          <Box>
+            <Heading size="sm" mb={1}>
+              {t('create_accession_crawl_type_label')}
+            </Heading>
+            <RadioGroup.Root
+              value={browserProfile}
+              onValueChange={(e) => setBrowserProfile(e.value ?? '')}
+            >
+              <HStack gap={4}>
+                <RadioGroup.Item
+                  value={t('create_accession_crawl_type_default')}
+                >
+                  <RadioGroup.ItemHiddenInput />
+                  <RadioGroup.ItemControl />
+                  <RadioGroup.ItemText>
+                    {t('create_accession_crawl_type_default')}
+                  </RadioGroup.ItemText>
+                </RadioGroup.Item>
+                <RadioGroup.Item
+                  value={t('create_accession_crawl_type_facebook')}
+                >
+                  <RadioGroup.ItemHiddenInput />
+                  <RadioGroup.ItemControl />
+                  <RadioGroup.ItemText>
+                    {t('create_accession_crawl_type_facebook')}
+                  </RadioGroup.ItemText>
+                </RadioGroup.Item>
+              </HStack>
+            </RadioGroup.Root>
+          </Box>
+        )}
 
-      <FormControl display="flex" alignItems="center" mt={5}>
-        <FormLabel htmlFor="is-private-switch" mb="0">
-          {t('create_accession_private_label')}
-        </FormLabel>
-        <Switch
-          id="is-private-switch"
-          isChecked={isPrivate}
-          onChange={(e) => setIsPrivate(e.target.checked)}
-        />
-      </FormControl>
+        <Flex alignItems="center" mt={2}>
+          <Heading size="sm" mr={2}>
+            {t('create_accession_private_label')}
+          </Heading>
+          <Checkbox.Root
+            checked={isPrivate}
+            onCheckedChange={(e) => setIsPrivate(e.checked === true)}
+          >
+            <Checkbox.HiddenInput />
+            <Checkbox.Control />
+            <Checkbox.Label />
+          </Checkbox.Root>
+        </Flex>
 
-      <Button
-        mt={4}
-        colorScheme="cyan"
-        isLoading={isSubmitting}
-        type="submit"
-        disabled={!isFormValid}
-      >
-        {isEditMode
-          ? t('edit_accession_submit_button')
-          : t('create_accession_submit_field_label')}
-      </Button>
+        <Button
+          mt={4}
+          variant="ghost"
+          colorPalette="cyan"
+          type="submit"
+          disabled={isSubmitting}
+          loading={isSubmitting}
+        >
+          {isEditMode
+            ? t('edit_accession_submit_button')
+            : t('create_accession_submit_field_label')}
+        </Button>
+      </VStack>
     </form>
   )
 }

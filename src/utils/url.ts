@@ -1,4 +1,4 @@
-import type { AccessionsQueryFilters } from '../apiTypes/apiRequests.ts'
+import type { AccessionsQueryFilters } from '../apiTypes/apiRequests'
 
 export function buildFilters(queryFilters: AccessionsQueryFilters) {
   const params = new URLSearchParams()

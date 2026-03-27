@@ -7,8 +7,13 @@ describe('CollectionHeader', () => {
   it('renders title and description correctly', () => {
     renderWithProviders(
       <CollectionHeader
-        title="Test Collection Title"
-        description="Test collection description"
+        collection={{
+          id: 1,
+          title: 'Test Collection Title',
+          description: 'Test collection description',
+          subject_ids: [],
+          is_private: false,
+        }}
       />,
     )
     expect(screen.getByText('Test Collection Title')).toBeTruthy()
@@ -17,7 +22,15 @@ describe('CollectionHeader', () => {
 
   it('renders with provided title', () => {
     renderWithProviders(
-      <CollectionHeader title="My Collection" description="A description" />,
+      <CollectionHeader
+        collection={{
+          id: 1,
+          title: 'My Collection',
+          description: 'A description',
+          subject_ids: [],
+          is_private: false,
+        }}
+      />,
     )
     expect(screen.getByText('My Collection')).toBeTruthy()
   })
@@ -25,8 +38,13 @@ describe('CollectionHeader', () => {
   it('renders with provided description', () => {
     renderWithProviders(
       <CollectionHeader
-        title="Title"
-        description="A longer description text"
+        collection={{
+          id: 1,
+          title: 'Title',
+          description: 'A longer description text',
+          subject_ids: [],
+          is_private: false,
+        }}
       />,
     )
     expect(screen.getByText('A longer description text')).toBeTruthy()

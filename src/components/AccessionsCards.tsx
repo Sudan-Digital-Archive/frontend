@@ -1,18 +1,6 @@
-import {
-  SimpleGrid,
-  CardHeader,
-  CardBody,
-  Box,
-  CardFooter,
-  Button,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-} from '@chakra-ui/react'
+'use client'
+
+import { Box, Button, Flex, SimpleGrid } from '@chakra-ui/react'
 import { ArchiveCard } from './ArchiveCard'
 import {
   DateMetadata,
@@ -23,11 +11,12 @@ import {
 } from './metadata'
 import { useTranslation } from 'react-i18next'
 import type { AccessionWithMetadata } from '../apiTypes/apiResponses'
-import { NavLink } from 'react-router'
 import { DeleteAccession } from './forms/DeleteAccession'
 import { CreateUpdateAccession } from './forms/CreateUpdateAccession'
-import { useUser } from '../hooks/useUser.ts'
-import React from 'react'
+import { useUser } from '../hooks/useUser'
+import { useState } from 'react'
+import { useNavigate } from 'react-router'
+import { X } from 'react-feather'
 
 interface AccessionsCardsProps {
   accessions: AccessionWithMetadata[]
@@ -40,36 +29,27 @@ export function AccessionsCards({
 }: AccessionsCardsProps) {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
-  const [deleteAccessionId, setDeleteAccessionId] = React.useState<
-    string | null
-  >(null)
+  const navigate = useNavigate()
+  const [deleteAccessionId, setDeleteAccessionId] = useState<string | null>(
+    null,
+  )
   const [editAccession, setEditAccession] =
-    React.useState<AccessionWithMetadata | null>(null)
-  const {
-    isOpen: isEditOpen,
-    onOpen: onEditOpen,
-    onClose: onEditClose,
-  } = useDisclosure()
-
-  const isDeleteModalOpen = (accessionId: string) =>
-    deleteAccessionId === accessionId
-  const onDeleteOpen = (accessionId: string) =>
-    setDeleteAccessionId(accessionId)
-  const onDeleteClose = () => setDeleteAccessionId(null)
+    useState<AccessionWithMetadata | null>(null)
+  const [isEditOpen, setIsEditOpen] = useState(false)
 
   const handleEditClick = (accession: AccessionWithMetadata) => {
     setEditAccession(accession)
-    onEditOpen()
+    setIsEditOpen(true)
   }
 
   const handleEditSuccess = () => {
-    onEditClose()
+    setIsEditOpen(false)
     onRefresh()
   }
 
   return (
     <>
-      <SimpleGrid spacing={10} columns={{ sm: 1, md: 2, lg: 3 }} my={5} mx={5}>
+      <SimpleGrid minChildWidth="320px" gap={10} my={5} px={5} width="100%">
         {accessions.map((accession: AccessionWithMetadata, index: number) => {
           const title =
             i18n.language === 'en' ? accession.title_en : accession.title_ar
@@ -81,101 +61,143 @@ export function AccessionsCards({
             i18n.language === 'en'
               ? accession.subjects_en
               : accession.subjects_ar
+          const hasDescription = description && description.trim().length > 0
 
           return (
             <ArchiveCard key={`accession-card-${index}`}>
-              <CardHeader>
-                <Title
-                  title={title || t('metadata_missing_title')}
-                  fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                  truncate
-                />
-              </CardHeader>
-              <CardBody>
-                {description && (
-                  <Description
-                    description={description}
-                    fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                    truncate
-                  />
-                )}
+              <Flex
+                direction="column"
+                p={4}
+                flex={1}
+                justifyContent="space-between"
+                minH="200px"
+              >
                 <Box>
-                  <DateMetadata
-                    date={accession.dublin_metadata_date}
-                    fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                  />
+                  <Box mb={3}>
+                    <Title
+                      title={title || t('metadata_missing_title')}
+                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      lineClamp={2}
+                    />
+                  </Box>
+
+                  <Box mb={2}>
+                    <DateMetadata
+                      date={accession.dublin_metadata_date}
+                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                    />
+                  </Box>
+
+                  <Subject subjects={subjects} />
+
+                  {hasDescription && (
+                    <Box mt={2}>
+                      <Description
+                        description={description}
+                        fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                        lineClamp={3}
+                      />
+                    </Box>
+                  )}
+
+                  <Box mt={2}>
+                    <OriginalURL
+                      url={accession.seed_url}
+                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                    />
+                  </Box>
                 </Box>
-                <Subject subjects={subjects} />
-                <OriginalURL
-                  url={accession.seed_url}
-                  fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                />
-              </CardBody>
-              <CardFooter justifyContent="space-between">
-                <NavLink
-                  to={`/archive/${accession.id}?isPrivate=${accession.is_private}&lang=${i18n.language}`}
-                >
+
+                <Flex mt={4} justifyContent="space-between" gap={2}>
                   <Button
-                    colorScheme="purple"
+                    variant="ghost"
+                    colorPalette="cyan"
                     fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
-                    variant="solid"
+                    onClick={() =>
+                      navigate(
+                        `/archive/${accession.id}?isPrivate=${accession.is_private}&lang=${i18n.language}`,
+                      )
+                    }
                   >
                     {t('archive_view_record_button')}
                   </Button>
-                </NavLink>
-                {isLoggedIn && (
-                  <Box>
-                    <Button
-                      colorScheme="blue"
-                      fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
-                      onClick={() => handleEditClick(accession)}
-                      mx={2}
-                      variant="solid"
-                    >
-                      {t('accession_card_edit_button')}
-                    </Button>
-                    <DeleteAccession
-                      accessionId={accession.id}
-                      isOpen={isDeleteModalOpen(accession.id)}
-                      onClose={onDeleteClose}
-                      onSuccess={() => {
-                        onRefresh()
-                        onDeleteClose()
-                      }}
-                    />
-                    {!isDeleteModalOpen(accession.id) && (
+                  {isLoggedIn && (
+                    <Flex gap={2}>
                       <Button
-                        colorScheme="red"
-                        onClick={() => onDeleteOpen(accession.id)}
+                        variant="ghost"
+                        colorPalette="cyan"
                         fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
-                        variant="solid"
+                        onClick={() => handleEditClick(accession)}
+                      >
+                        {t('accession_card_edit_button')}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        colorPalette="red"
+                        fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
+                        onClick={() => setDeleteAccessionId(accession.id)}
                       >
                         {t('accession_card_delete_button')}
                       </Button>
-                    )}
-                  </Box>
-                )}
-              </CardFooter>
+                    </Flex>
+                  )}
+                </Flex>
+              </Flex>
             </ArchiveCard>
           )
         })}
       </SimpleGrid>
 
-      <Modal isOpen={isEditOpen} onClose={onEditClose} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{t('edit_accession')}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            {editAccession && (
-              <CreateUpdateAccession
-                accessionToUpdate={editAccession}
-                onSuccess={handleEditSuccess}
-              />
-            )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      <DeleteAccession
+        accessionId={deleteAccessionId || ''}
+        isOpen={deleteAccessionId !== null}
+        onClose={() => setDeleteAccessionId(null)}
+        onSuccess={() => {
+          onRefresh()
+          setDeleteAccessionId(null)
+        }}
+      />
+
+      {isEditOpen && editAccession && (
+        <Box
+          position="fixed"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="blackAlpha.700"
+          zIndex={1000}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          p={4}
+        >
+          <Box
+            bg="bg.subtle"
+            p={6}
+            borderRadius="md"
+            maxW="600px"
+            w="100%"
+            maxH="90vh"
+            overflowY="auto"
+            border="1px solid"
+            borderColor="border"
+          >
+            <Flex justifyContent="space-between" alignItems="center" mb={4}>
+              <Box as="h2" fontSize="xl" fontWeight="bold">
+                {t('edit_accession')}
+              </Box>
+              <Button variant="ghost" onClick={() => setIsEditOpen(false)}>
+                <X size={18} />
+              </Button>
+            </Flex>
+            <CreateUpdateAccession
+              accessionToUpdate={editAccession}
+              onSuccess={handleEditSuccess}
+            />
+          </Box>
+        </Box>
+      )}
     </>
   )
 }

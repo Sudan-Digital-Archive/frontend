@@ -7,6 +7,7 @@ interface TitleProps {
   fontSize?: string
   truncate?: boolean
   maxLength?: number
+  lineClamp?: number
 }
 
 export function Title({
@@ -14,13 +15,14 @@ export function Title({
   fontSize = 'md',
   truncate = false,
   maxLength = 200,
+  lineClamp,
 }: TitleProps) {
   const { t } = useTranslation()
   const displayText = truncate ? truncateString(title || '', maxLength) : title
 
   return (
-    <Heading as="h5" size="sm" fontSize={fontSize}>
-      <Badge colorScheme="cyan" fontSize="0.9em">
+    <Heading as="h5" size="sm" fontSize={fontSize} lineClamp={lineClamp}>
+      <Badge colorPalette="cyan" fontSize="0.9em">
         {t('metadata_title_label')}
       </Badge>{' '}
       {displayText}

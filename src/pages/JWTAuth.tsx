@@ -1,18 +1,18 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 import {
   Center,
   Spinner,
   Text,
   VStack,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
+  Box,
+  Heading,
   Button,
 } from '@chakra-ui/react'
-import { useSearchParams, useNavigate, Link as RouterLink } from 'react-router'
-import { appConfig } from '../constants.ts'
-import Layout from '../components/Layout.tsx'
+import { useSearchParams, useNavigate, Link } from 'react-router'
+import { appConfig } from '../constants'
+import Layout from '../components/Layout'
 import { useUser } from '../hooks/useUser'
 import { useTranslation } from 'react-i18next'
 
@@ -69,7 +69,7 @@ export default function JWTAuth() {
         alignItems="center"
         justifyContent="center"
         height="100vh"
-        spacing={6}
+        gap={6}
       >
         {isLoading ? (
           <Center>
@@ -79,26 +79,21 @@ export default function JWTAuth() {
             </VStack>
           </Center>
         ) : error ? (
-          <Alert
-            status="error"
-            variant="subtle"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
+          <Box
             textAlign="center"
-            height="200px"
-            width="80%"
+            p={8}
+            borderWidth="1px"
+            borderRadius="md"
             maxW="500px"
           >
-            <AlertIcon boxSize="40px" mr={0} />
-            <AlertTitle mt={4} mb={1} fontSize="lg">
+            <Heading size="lg" mb={4} color="red.500">
               {t('jwt_auth_auth_failed')}
-            </AlertTitle>
-            <AlertDescription maxWidth="sm">{error}</AlertDescription>
-            <Button as={RouterLink} to="/login" colorScheme="cyan" mt={4}>
-              {t('jwt_auth_back_to_login')}
-            </Button>
-          </Alert>
+            </Heading>
+            <Text mb={4}>{error}</Text>
+            <Link to="/login">
+              <Button colorPalette="cyan">{t('jwt_auth_back_to_login')}</Button>
+            </Link>
+          </Box>
         ) : null}
       </VStack>
     </Layout>

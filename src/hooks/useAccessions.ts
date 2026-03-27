@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { appConfig } from 'src/constants.ts'
-import { buildFilters } from 'src/utils/url.ts'
-import type { AccessionsQueryFilters } from 'src/apiTypes/apiRequests.ts'
-import type { ListAccessions } from 'src/apiTypes/apiResponses.ts'
+import { appConfig } from '../constants'
+import { buildFilters } from '../utils/url'
+import type { AccessionsQueryFilters } from '../apiTypes/apiRequests'
+import type { ListAccessions } from '../apiTypes/apiResponses'
 
-// Normalize filters by removing empty strings and undefined values
-// This prevents refetching when filters are functionally equivalent
 function normalizeFilters(filters: AccessionsQueryFilters): string {
   const normalized = { ...filters }
 
-  // Remove empty string values
   Object.keys(normalized).forEach((key) => {
     const k = key as keyof AccessionsQueryFilters
     if (
@@ -21,7 +18,6 @@ function normalizeFilters(filters: AccessionsQueryFilters): string {
     }
   })
 
-  // Sort arrays for consistent comparison
   if (Array.isArray(normalized.metadata_subjects)) {
     normalized.metadata_subjects = [...normalized.metadata_subjects].sort()
   }
@@ -51,7 +47,6 @@ export const useAccessions = (options: UseAccessionsOptions) => {
     totalPages: 0,
   })
 
-  // Track last fetched filters to prevent duplicate fetches
   const lastFetchedFiltersRef = useRef<string>('')
 
   const updateFilters = useCallback(
@@ -80,6 +75,9 @@ export const useAccessions = (options: UseAccessionsOptions) => {
             Accept: 'application/json',
           },
         })
+        if (!response.ok) {
+          throw new Error(`Failed to fetch accessions: ${response.status}`)
+        }
         const data: ListAccessions = await response.json()
         setAccessions(data)
         setPagination({
@@ -100,7 +98,6 @@ export const useAccessions = (options: UseAccessionsOptions) => {
       return
     }
 
-    // Check if filters have meaningfully changed
     const currentFilters = normalizeFilters(queryFilters)
     if (currentFilters === lastFetchedFiltersRef.current) {
       return

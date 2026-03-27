@@ -1,6 +1,6 @@
 import { Text, Badge, Box } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
-import { SubjectTag } from '../SubjectTag.tsx'
+import { SubjectTag } from '../SubjectTag'
 
 interface SubjectProps {
   subjects: string[] | null
@@ -14,7 +14,7 @@ export function Subject({ subjects }: SubjectProps) {
     <Box my={hasSubjects ? 1 : 0} data-testid="subject-container">
       {hasSubjects ? (
         <Text fontSize={fontSize}>
-          <Badge colorScheme="cyan">{t('metadata_subjects_label')}:</Badge>{' '}
+          <Badge colorPalette="cyan">{t('metadata_subjects_label')}:</Badge>{' '}
           {subjects.map((subject, idx) => (
             <SubjectTag key={`subject-${idx}`} label={subject} />
           ))}
