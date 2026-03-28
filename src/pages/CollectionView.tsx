@@ -170,6 +170,7 @@ export default function CollectionView() {
                 size="xs"
                 colorPalette="pink"
                 variant="ghost"
+                _active={{ bg: 'pink.700', color: 'white' }}
                 onClick={() =>
                   updateFilters({
                     page: pagination.currentPage - 1,
@@ -185,6 +186,7 @@ export default function CollectionView() {
                 size="xs"
                 colorPalette="pink"
                 variant="ghost"
+                _active={{ bg: 'pink.700', color: 'white' }}
                 onClick={() =>
                   updateFilters({
                     page: pagination.currentPage + 1,

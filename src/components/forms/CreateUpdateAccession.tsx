@@ -302,6 +302,7 @@ export function CreateUpdateAccession({
           <Button
             size="sm"
             variant="ghost"
+            _active={{ bg: 'gray.600' }}
             onClick={handleLanguageChange}
             mb={2}
           >
@@ -460,6 +461,7 @@ export function CreateUpdateAccession({
           mt={4}
           variant="ghost"
           colorPalette="cyan"
+          _active={{ bg: 'cyan.700', color: 'white' }}
           type="submit"
           disabled={isSubmitting}
           loading={isSubmitting}

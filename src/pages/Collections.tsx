@@ -131,7 +131,12 @@ export default function Collections() {
                     <NavLink
                       to={`/collections/${collection.id}?isPrivate=${collection.is_private}`}
                     >
-                      <Button variant="ghost" colorPalette="cyan" mt={4}>
+                      <Button
+                        variant="ghost"
+                        colorPalette="cyan"
+                        _active={{ bg: 'cyan.700', color: 'white' }}
+                        mt={4}
+                      >
                         {t('collection_view_button')}
                       </Button>
                     </NavLink>
@@ -147,6 +152,7 @@ export default function Collections() {
                   size="xs"
                   colorPalette="pink"
                   variant="ghost"
+                  _active={{ bg: 'pink.700', color: 'white' }}
                   onClick={handlePreviousPage}
                 >
                   {i18n.language === 'ar' ? (
@@ -162,6 +168,7 @@ export default function Collections() {
                   size="xs"
                   colorPalette="pink"
                   variant="ghost"
+                  _active={{ bg: 'pink.700', color: 'white' }}
                   onClick={handleNextPage}
                 >
                   {t('collections_pagination_next')}

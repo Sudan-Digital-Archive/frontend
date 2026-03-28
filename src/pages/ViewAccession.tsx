@@ -68,11 +68,21 @@ function AccessionInfo({ onOpen, timestamp }: Readonly<AccessionInfoProps>) {
         bg="border"
         display={{ base: 'block', md: 'none' }}
       />
-      <Button size="sm" variant="ghost" onClick={handleCopy}>
+      <Button
+        size="sm"
+        variant="ghost"
+        _active={{ bg: 'gray.600' }}
+        onClick={handleCopy}
+      >
         <Copy size={14} style={{ marginRight: '4px' }} />
         {t('copy_record')}
       </Button>
-      <Button size="sm" variant="ghost" onClick={onOpen}>
+      <Button
+        size="sm"
+        variant="ghost"
+        _active={{ bg: 'gray.600' }}
+        onClick={onOpen}
+      >
         <ExternalLink size={14} style={{ marginRight: '4px' }} />
         {t('view_accession_see_metadata')}
       </Button>
@@ -200,6 +210,7 @@ export default function ViewAccession() {
                 <Button
                   size="sm"
                   variant="ghost"
+                  _active={{ bg: 'gray.600' }}
                   onClick={() => setShowMetadata(!showMetadata)}
                 >
                   {showMetadata
@@ -240,6 +251,7 @@ export default function ViewAccession() {
                     <Drawer.CloseTrigger asChild>
                       <Button
                         variant="ghost"
+                        _active={{ bg: 'gray.600' }}
                         size="sm"
                         position="absolute"
                         top={2}

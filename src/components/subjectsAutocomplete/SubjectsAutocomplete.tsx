@@ -264,6 +264,7 @@ export const SubjectsAutocomplete = ({
             size="sm"
             colorPalette="red"
             variant="ghost"
+            _active={{ bg: 'red.700', color: 'white' }}
             loading={isDeletingSubject}
             onClick={(e) => {
               e.stopPropagation()

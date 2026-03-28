@@ -88,6 +88,7 @@ export function Login() {
             mt={4}
             variant="ghost"
             colorPalette="cyan"
+            _active={{ bg: 'cyan.700', color: 'white' }}
             type="submit"
             width="100%"
             disabled={isSubmitting}

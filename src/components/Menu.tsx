@@ -236,6 +236,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     variant="ghost"
                     cursor="pointer"
                     _hover={{ bg: 'colors.dropdownHover' }}
+                    _active={{ bg: 'colors.dropdownHover' }}
                   >
                     {t('nav_the_archive')}{' '}
                     <ChevronDown size={14} style={{ marginLeft: '4px' }} />
@@ -269,6 +270,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     variant="ghost"
                     cursor="pointer"
                     _hover={{ bg: 'colors.dropdownHover' }}
+                    _active={{ bg: 'colors.dropdownHover' }}
                   >
                     {t('nav_about')}{' '}
                     <ChevronDown size={14} style={{ marginLeft: '4px' }} />
@@ -301,6 +303,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                   variant="ghost"
                   cursor="pointer"
                   _hover={{ bg: 'colors.dropdownHover' }}
+                  _active={{ bg: 'colors.dropdownHover' }}
                 >
                   {t('nav_contact')}
                 </Button>
@@ -313,6 +316,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     variant="ghost"
                     cursor="pointer"
                     _hover={{ bg: 'colors.dropdownHover' }}
+                    _active={{ bg: 'colors.dropdownHover' }}
                   >
                     {t('nav_login')}
                   </Button>
@@ -326,6 +330,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                     variant="ghost"
                     cursor="pointer"
                     _hover={{ bg: 'colors.dropdownHover' }}
+                    _active={{ bg: 'colors.dropdownHover' }}
                   >
                     {t('nav_user_management')}
                   </Button>
@@ -338,6 +343,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 cursor="pointer"
                 onClick={changeLanguageOverride || handleLanguageChange}
                 _hover={{ bg: 'colors.dropdownHoverPink' }}
+                _active={{ bg: 'colors.dropdownHoverPink' }}
               >
                 {i18n.language === 'en' ? 'عربي' : 'English'}
               </Button>
@@ -347,6 +353,7 @@ const Navbar = ({ changeLanguageOverride }: NavbarProps) => {
                 cursor="pointer"
                 onClick={toggleColorMode}
                 _hover={{ bg: 'colors.dropdownHover' }}
+                _active={{ bg: 'colors.dropdownHover' }}
                 p={2}
               >
                 {colorMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
