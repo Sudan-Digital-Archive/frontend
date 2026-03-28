@@ -169,9 +169,11 @@ export const SubjectsAutocomplete = ({
       if (onChange) {
         onChange(selectedOptions.filter((o) => o.value !== subjectId))
       }
+
+      showToast(t('subjects_autocomplete_delete_success'), 'success')
     } catch (error) {
       console.error('Error deleting subject:', error)
-      showToast(t('subjects_autocomplete_error_fetching_subjects'), 'error')
+      showToast(t('subjects_autocomplete_error_deleting_subject'), 'error')
     } finally {
       setIsDeletingSubject(false)
     }
@@ -262,6 +264,7 @@ export const SubjectsAutocomplete = ({
             size="sm"
             colorPalette="red"
             variant="ghost"
+            _active={{ bg: 'red.700', color: 'white' }}
             loading={isDeletingSubject}
             onClick={(e) => {
               e.stopPropagation()

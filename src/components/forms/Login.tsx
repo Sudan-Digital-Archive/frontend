@@ -10,14 +10,15 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { appConfig } from '../../constants'
+import { useToast } from '../../context/ToastContext'
 
 export function Login() {
   const { t } = useTranslation()
+  const { showToast } = useToast()
 
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSuccess, setIsSuccess] = useState(false)
   const [isError, setIsError] = useState('')
 
   const validateEmail = (value: string) => {
@@ -39,7 +40,6 @@ export function Login() {
     }
 
     setIsSubmitting(true)
-    setIsSuccess(false)
     setIsError('')
 
     const response = await fetch(`${appConfig.apiURL}auth`, {
@@ -51,8 +51,8 @@ export function Login() {
     })
 
     if (response.status === 200) {
-      setIsSuccess(true)
       setEmail('')
+      showToast(t('login_email_sent'), 'success')
     } else {
       const responseText = await response.text()
       setIsError(responseText)
@@ -88,19 +88,13 @@ export function Login() {
             mt={4}
             variant="ghost"
             colorPalette="cyan"
+            _active={{ bg: 'cyan.700', color: 'white' }}
             type="submit"
             width="100%"
             disabled={isSubmitting}
           >
             {isSubmitting ? <Spinner size="sm" /> : t('login_request_link')}
           </Button>
-
-          {isSuccess && (
-            <Center mt={4} color="green.400">
-              <Text mr={2}>✓</Text>
-              <Text>{t('login_email_sent')}</Text>
-            </Center>
-          )}
 
           {isError && (
             <Center mt={4} color="red.400">

@@ -157,6 +157,7 @@ export default function UserManagement() {
             <Button
               variant="ghost"
               colorPalette="cyan"
+              _active={{ bg: 'cyan.700', color: 'white' }}
               onClick={() => setIsCreateModalOpen(true)}
             >
               <Plus size={16} style={{ marginRight: '4px' }} />
@@ -241,6 +242,7 @@ export default function UserManagement() {
                               size="sm"
                               variant="ghost"
                               colorPalette="cyan"
+                              _active={{ bg: 'cyan.700', color: 'white' }}
                               onClick={() => handleUpdateUser(user.id)}
                             >
                               {t('user_management_update_button')}
@@ -249,6 +251,7 @@ export default function UserManagement() {
                               size="sm"
                               variant="ghost"
                               colorPalette="red"
+                              _active={{ bg: 'red.700', color: 'white' }}
                               onClick={() => setDeleteUserId(user.id)}
                             >
                               {t('user_management_delete_button')}
@@ -266,6 +269,7 @@ export default function UserManagement() {
                   <Button
                     size="sm"
                     variant="ghost"
+                    _active={{ bg: 'gray.600' }}
                     onClick={() =>
                       updateFilters({ page: pagination.currentPage - 1 })
                     }
@@ -278,6 +282,7 @@ export default function UserManagement() {
                   <Button
                     size="sm"
                     variant="ghost"
+                    _active={{ bg: 'gray.600' }}
                     onClick={() =>
                       updateFilters({ page: pagination.currentPage + 1 })
                     }
@@ -375,6 +380,7 @@ export default function UserManagement() {
                 <Button
                   variant="ghost"
                   colorPalette="cyan"
+                  _active={{ bg: 'cyan.700', color: 'white' }}
                   onClick={handleCreateUser}
                 >
                   {t('user_management_create_button')}
@@ -423,6 +429,7 @@ export default function UserManagement() {
                 <Button
                   variant="ghost"
                   colorPalette="red"
+                  _active={{ bg: 'red.700', color: 'white' }}
                   onClick={handleDeleteUser}
                 >
                   {t('user_management_delete_confirm_button')}

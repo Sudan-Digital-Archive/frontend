@@ -110,7 +110,11 @@ export default function Archive() {
             >
               <Flex justifyContent="space-between" alignItems="center" mb={4}>
                 <Heading size="md">{t('archive_create_modal_header')}</Heading>
-                <Button variant="ghost" onClick={() => setIsModalOpen(false)}>
+                <Button
+                  variant="ghost"
+                  _active={{ bg: 'gray.600' }}
+                  onClick={() => setIsModalOpen(false)}
+                >
                   <X size={18} />
                 </Button>
               </Flex>
@@ -134,6 +138,7 @@ export default function Archive() {
                 size="xs"
                 colorPalette="pink"
                 variant="ghost"
+                _active={{ bg: 'pink.700', color: 'white' }}
                 onClick={() =>
                   updateFilters({
                     page: pagination.currentPage - 1,
@@ -153,6 +158,7 @@ export default function Archive() {
                 size="xs"
                 colorPalette="pink"
                 variant="ghost"
+                _active={{ bg: 'pink.700', color: 'white' }}
                 onClick={() =>
                   updateFilters({
                     page: pagination.currentPage + 1,

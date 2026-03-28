@@ -45,6 +45,7 @@ export default function ContactUs() {
             colorPalette="cyan"
             size="md"
             variant="ghost"
+            _active={{ bg: 'cyan.700', color: 'white' }}
             onClick={handleCopy}
           >
             <Copy size={16} style={{ marginRight: '8px' }} />

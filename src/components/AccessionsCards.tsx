@@ -111,6 +111,7 @@ export function AccessionsCards({
                     variant="ghost"
                     colorPalette="cyan"
                     fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
+                    _active={{ bg: 'cyan.700', color: 'white' }}
                     onClick={() =>
                       navigate(
                         `/archive/${accession.id}?isPrivate=${accession.is_private}&lang=${i18n.language}`,
@@ -125,15 +126,15 @@ export function AccessionsCards({
                         variant="ghost"
                         colorPalette="cyan"
                         fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
+                        _active={{ bg: 'cyan.700', color: 'white' }}
                         onClick={() => handleEditClick(accession)}
                       >
                         {t('accession_card_edit_button')}
                       </Button>
                       <Button
                         variant="ghost"
-                        colorPalette="red"
-                        fontSize={i18n.language === 'en' ? '0.8em' : '1em'}
-                        onClick={() => setDeleteAccessionId(accession.id)}
+                        _active={{ bg: 'gray.600' }}
+                        onClick={() => setIsEditOpen(false)}
                       >
                         {t('accession_card_delete_button')}
                       </Button>
