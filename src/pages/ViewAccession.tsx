@@ -21,6 +21,7 @@ import {
 } from '@chakra-ui/react'
 import { useParsedDate } from '../hooks/useParsedDate'
 import { useUser } from '../hooks/useUser'
+import { useToast } from '../context/ToastContext'
 import Layout from '../components/Layout'
 import { X, Copy, ExternalLink } from 'react-feather'
 
@@ -32,9 +33,11 @@ interface AccessionInfoProps {
 function AccessionInfo({ onOpen, timestamp }: Readonly<AccessionInfoProps>) {
   const { t } = useTranslation()
   const { parseDate } = useParsedDate()
+  const { showToast } = useToast()
 
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href)
+    showToast(t('link_copied'), 'success')
   }
 
   return (

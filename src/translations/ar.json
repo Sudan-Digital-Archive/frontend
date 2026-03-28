@@ -119,6 +119,8 @@
     "subjects_autocomplete_no_subjects_found": "لم يتم العثور على مواضيع",
     "subjects_autocomplete_create": "إنشاء",
     "subjects_autocomplete_create_success": "تم إنشاء موضوع جديد {{subject}}",
+    "subjects_autocomplete_delete_success": "تم حذف الموضوع بنجاح",
+    "subjects_autocomplete_error_deleting_subject": "خطأ في حذف الموضوع",
     "mission_image_one_alt": "فسيفساء كندكة",
     "mission_image_one_caption": "فن بواسطة مرغني صالح",
     "mission_image_two_alt": "متظاهرون على قطار من عطبرة",
