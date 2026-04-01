@@ -192,7 +192,7 @@ export function ArchiveFilters({
           queryFilters.metadata_subjects.length > 0 &&
           (!lockedSubjectIds || lockedSubjectIds.length === 0) && (
             <Flex alignItems="center" mt={{ base: 4, md: 0 }}>
-              <Badge colorPalette="pink" fontSize="sm" py={1} px={2} mr={2}>
+              <Badge colorPalette="cyan" fontSize="sm" py={1} px={2} mr={2}>
                 {queryFilters.metadata_subjects_inclusive_filter
                   ? t('exclusive')
                   : t('inclusive')}
