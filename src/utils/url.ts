@@ -18,3 +18,16 @@ export function buildFilters(
   }
   return params
 }
+
+export function buildArchiveUrl(
+  accessionId: string | number,
+  language: string,
+  isPrivate?: boolean,
+): string {
+  const params = new URLSearchParams()
+  if (isPrivate) {
+    params.set('isPrivate', 'true')
+  }
+  params.set('lang', language)
+  return `/archive/${accessionId}?${params.toString()}`
+}

@@ -6,6 +6,10 @@ import {
   Description,
   OriginalURL,
   Subject,
+  Creator,
+  Location,
+  Contributors,
+  Relations,
 } from './metadata'
 import { useTranslation } from 'react-i18next'
 import type { AccessionWithMetadata } from '../apiTypes/apiResponses'
@@ -60,6 +64,24 @@ export function AccessionsCards({
               ? accession.subjects_en
               : accession.subjects_ar
           const hasDescription = description && description.trim().length > 0
+          const creator =
+            i18n.language === 'en' ? accession.creator_en : accession.creator_ar
+          const location =
+            i18n.language === 'en'
+              ? accession.location_en
+              : accession.location_ar
+          const contributors =
+            i18n.language === 'en'
+              ? accession.contributors_en
+              : accession.contributors_ar
+          const contributorRoles =
+            i18n.language === 'en'
+              ? accession.contributor_roles_en
+              : accession.contributor_roles_ar
+          const relations =
+            i18n.language === 'en'
+              ? accession.relations_en
+              : accession.relations_ar
 
           return (
             <ArchiveCard key={`accession-card-${index}`}>
@@ -87,6 +109,21 @@ export function AccessionsCards({
                   </Box>
 
                   <Subject subjects={subjects} />
+
+                  <Creator creator={creator} />
+
+                  <Location location={location} />
+
+                  <Contributors
+                    contributors={contributors}
+                    contributorRoles={contributorRoles}
+                  />
+
+                  <Relations
+                    relations={relations}
+                    language={i18n.language}
+                    isPrivate={accession.is_private}
+                  />
 
                   {hasDescription && (
                     <Box mt={2}>

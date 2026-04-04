@@ -4,6 +4,11 @@ import {
   Title,
   Description,
   OriginalURL,
+  ArchiveLink,
+  Creator,
+  Location,
+  Contributors,
+  Relations,
 } from '../components/metadata/index'
 import { useParams, useSearchParams } from 'react-router'
 import { useState, useEffect } from 'react'
@@ -270,6 +275,41 @@ export default function ViewAccession() {
                             : accession.accession.subjects_ar
                         }
                       />
+                      <Creator
+                        creator={
+                          i18n.language === 'en'
+                            ? accession.accession.creator_en
+                            : accession.accession.creator_ar
+                        }
+                      />
+                      <Location
+                        location={
+                          i18n.language === 'en'
+                            ? accession.accession.location_en
+                            : accession.accession.location_ar
+                        }
+                      />
+                      <Contributors
+                        contributors={
+                          i18n.language === 'en'
+                            ? accession.accession.contributors_en
+                            : accession.accession.contributors_ar
+                        }
+                        contributorRoles={
+                          i18n.language === 'en'
+                            ? accession.accession.contributor_roles_en
+                            : accession.accession.contributor_roles_ar
+                        }
+                      />
+                      <Relations
+                        relations={
+                          i18n.language === 'en'
+                            ? accession.accession.relations_en
+                            : accession.accession.relations_ar
+                        }
+                        language={i18n.language}
+                        isPrivate={isPrivate}
+                      />
                       {((i18n.language === 'en' &&
                         accession.accession.description_en) ||
                         (i18n.language === 'ar' &&
@@ -290,6 +330,18 @@ export default function ViewAccession() {
                       <OriginalURL
                         url={accession.accession.seed_url}
                         fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                      />
+                      <ArchiveLink
+                        accessionId={accession.accession.id}
+                        title={
+                          i18n.language === 'en'
+                            ? accession.accession.title_en ||
+                              t('metadata_missing_title')
+                            : accession.accession.title_ar ||
+                              t('metadata_missing_title')
+                        }
+                        language={i18n.language}
+                        isPrivate={isPrivate}
                       />
                     </VStack>
                   </Drawer.Body>

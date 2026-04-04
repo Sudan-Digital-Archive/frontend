@@ -12,7 +12,7 @@ export const SubjectTag = ({ label }: SubjectTagProps) => {
       px={2}
       py={0.5}
       fontSize="sm"
-      bg="#db2777"
+      bg="pink.600"
       color="white"
       borderRadius="full"
       m={0.5}
