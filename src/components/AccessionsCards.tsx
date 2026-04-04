@@ -1,5 +1,4 @@
-import { Box, Button, Flex, SimpleGrid } from '@chakra-ui/react'
-import { ArchiveCard } from './ArchiveCard'
+import { Box, Button, Flex, SimpleGrid, Card, Stack } from '@chakra-ui/react'
 import {
   DateMetadata,
   Title,
@@ -84,66 +83,68 @@ export function AccessionsCards({
               : accession.relations_ar
 
           return (
-            <ArchiveCard key={`accession-card-${index}`}>
-              <Flex
-                direction="column"
-                p={4}
-                flex={1}
-                justifyContent="space-between"
-                minH="200px"
-              >
-                <Box>
-                  <Box mb={3}>
-                    <Title
-                      title={title || t('metadata_missing_title')}
-                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                      lineClamp={2}
-                    />
-                  </Box>
-
-                  <Box mb={2}>
-                    <DateMetadata
-                      date={accession.dublin_metadata_date}
-                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                    />
-                  </Box>
-
+            <Card.Root
+              key={`accession-card-${index}`}
+              bg="card.bg"
+              boxShadow="xl"
+              borderRadius="xl"
+              border="1px solid"
+              borderColor="card.border"
+              transition="all 0.3s ease-in-out"
+              _hover={{
+                boxShadow: '2xl',
+                transform: 'translateY(-5px)',
+              }}
+              overflow="hidden"
+              height="100%"
+              minH="200px"
+              display="flex"
+              flexDirection="column"
+            >
+              <Card.Header p={4} pb={2}>
+                <Title
+                  title={title || t('metadata_missing_title')}
+                  fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                  lineClamp={2}
+                />
+              </Card.Header>
+              <Card.Body p={4} pt={2}>
+                <Stack gap={0}>
+                  <DateMetadata
+                    date={accession.dublin_metadata_date}
+                    fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                  />
                   <Subject subjects={subjects} />
-
                   <Creator creator={creator} />
-
                   <Location location={location} />
-
                   <Contributors
                     contributors={contributors}
                     contributorRoles={contributorRoles}
                   />
-
                   <Relations
                     relations={relations}
                     language={i18n.language}
                     isPrivate={accession.is_private}
                   />
-
-                  {hasDescription && (
-                    <Box mt={2}>
-                      <Description
-                        description={description}
-                        fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                        lineClamp={3}
-                      />
-                    </Box>
-                  )}
-
+                </Stack>
+                {hasDescription && (
                   <Box mt={2}>
-                    <OriginalURL
-                      url={accession.seed_url}
+                    <Description
+                      description={description}
                       fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                      lineClamp={3}
                     />
                   </Box>
+                )}
+                <Box mt={2}>
+                  <OriginalURL
+                    url={accession.seed_url}
+                    fontSize={i18n.language === 'en' ? 'sm' : 'md'}
+                  />
                 </Box>
-
-                <Flex mt={4} justifyContent="space-between" gap={2}>
+              </Card.Body>
+              <Card.Footer p={4} pt={2}>
+                <Flex justifyContent="space-between" gap={2}>
                   <Button
                     variant="ghost"
                     colorPalette="cyan"
@@ -178,8 +179,8 @@ export function AccessionsCards({
                     </Flex>
                   )}
                 </Flex>
-              </Flex>
-            </ArchiveCard>
+              </Card.Footer>
+            </Card.Root>
           )
         })}
       </SimpleGrid>

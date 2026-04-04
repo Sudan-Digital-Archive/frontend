@@ -27,7 +27,7 @@ export function Contributors({
                 <SubjectTag label={contributor} />
                 {role && (
                   <>
-                    <Em fontSize="xs" ml={1}>
+                    <Em fontSize="xs" ml={2} mr={1}>
                       {t('contributor_has_role')}
                     </Em>
                     <Box
@@ -35,7 +35,7 @@ export function Contributors({
                       display="inline-block"
                       px={2}
                       py={0.5}
-                      fontSize="xs"
+                      fontSize="sm"
                       bg="pink.600"
                       color="white"
                       borderRadius="full"

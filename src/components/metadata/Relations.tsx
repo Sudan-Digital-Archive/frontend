@@ -86,7 +86,8 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
                     isPrivate,
                   )}
                   target="_blank"
-                  _hover={{ color: 'pink.400' }}
+                  textDecoration="none"
+                  _hover={{ textDecoration: 'underline', color: 'pink.400' }}
                 >
                   <Box
                     as="span"
