@@ -1,12 +1,5 @@
-import { Box, Button, Flex, SimpleGrid } from '@chakra-ui/react'
-import { ArchiveCard } from './ArchiveCard'
-import {
-  DateMetadata,
-  Title,
-  Description,
-  OriginalURL,
-  Subject,
-} from './metadata'
+import { Box, Button, Flex, SimpleGrid, Card } from '@chakra-ui/react'
+import { Title, MetadataDisplay } from './metadata'
 import { useTranslation } from 'react-i18next'
 import type { AccessionWithMetadata } from '../apiTypes/apiResponses'
 import { DeleteAccession } from './forms/DeleteAccession'
@@ -47,7 +40,7 @@ export function AccessionsCards({
 
   return (
     <>
-      <SimpleGrid minChildWidth="320px" gap={10} my={5} px={5} width="100%">
+      <SimpleGrid minChildWidth="380px" gap={10} my={5} px={5} width="100%">
         {accessions.map((accession: AccessionWithMetadata, index: number) => {
           const title =
             i18n.language === 'en' ? accession.title_en : accession.title_ar
@@ -59,54 +52,68 @@ export function AccessionsCards({
             i18n.language === 'en'
               ? accession.subjects_en
               : accession.subjects_ar
-          const hasDescription = description && description.trim().length > 0
+          const creator =
+            i18n.language === 'en' ? accession.creator_en : accession.creator_ar
+          const location =
+            i18n.language === 'en'
+              ? accession.location_en
+              : accession.location_ar
+          const contributors =
+            i18n.language === 'en'
+              ? accession.contributors_en
+              : accession.contributors_ar
+          const contributorRoles =
+            i18n.language === 'en'
+              ? accession.contributor_roles_en
+              : accession.contributor_roles_ar
+          const relations =
+            i18n.language === 'en'
+              ? accession.relations_en
+              : accession.relations_ar
 
           return (
-            <ArchiveCard key={`accession-card-${index}`}>
-              <Flex
-                direction="column"
-                p={4}
-                flex={1}
-                justifyContent="space-between"
-                minH="200px"
-              >
-                <Box>
-                  <Box mb={3}>
-                    <Title
-                      title={title || t('metadata_missing_title')}
-                      fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                      lineClamp={2}
-                    />
-                  </Box>
-
-                  <Box mb={2}>
-                    <DateMetadata
-                      date={accession.dublin_metadata_date}
-                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                    />
-                  </Box>
-
-                  <Subject subjects={subjects} />
-
-                  {hasDescription && (
-                    <Box mt={2}>
-                      <Description
-                        description={description}
-                        fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                        lineClamp={3}
-                      />
-                    </Box>
-                  )}
-
-                  <Box mt={2}>
-                    <OriginalURL
-                      url={accession.seed_url}
-                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                    />
-                  </Box>
-                </Box>
-
-                <Flex mt={4} justifyContent="space-between" gap={2}>
+            <Card.Root
+              key={`accession-card-${index}`}
+              bg="card.bg"
+              boxShadow="xl"
+              borderRadius="xl"
+              border="1px solid"
+              borderColor="card.border"
+              transition="all 0.3s ease-in-out"
+              _hover={{
+                boxShadow: '2xl',
+                transform: 'translateY(-5px)',
+              }}
+              overflow="hidden"
+              height="100%"
+              minH="200px"
+              display="flex"
+              flexDirection="column"
+            >
+              <Card.Header p={4} pb={2}>
+                <Title
+                  title={title || t('metadata_missing_title')}
+                  fontSize={i18n.language === 'en' ? 'md' : 'lg'}
+                  lineClamp={2}
+                />
+              </Card.Header>
+              <Card.Body p={4} pt={2}>
+                <MetadataDisplay
+                  subjects={subjects}
+                  creator={creator}
+                  location={location}
+                  contributors={contributors}
+                  contributorRoles={contributorRoles}
+                  relations={relations}
+                  description={description}
+                  date={accession.dublin_metadata_date}
+                  originalUrl={accession.seed_url}
+                  language={i18n.language}
+                  isPrivate={accession.is_private}
+                />
+              </Card.Body>
+              <Card.Footer p={4} pt={2}>
+                <Flex justifyContent="space-between" gap={2}>
                   <Button
                     variant="ghost"
                     colorPalette="cyan"
@@ -141,8 +148,8 @@ export function AccessionsCards({
                     </Flex>
                   )}
                 </Flex>
-              </Flex>
-            </ArchiveCard>
+              </Card.Footer>
+            </Card.Root>
           )
         })}
       </SimpleGrid>

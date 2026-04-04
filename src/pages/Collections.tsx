@@ -98,6 +98,7 @@ export default function Collections() {
               </Checkbox.Root>
             </Flex>
           )}
+
           {isLoading || !collections ? (
             <Box
               display="flex"

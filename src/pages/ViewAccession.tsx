@@ -1,10 +1,4 @@
-import {
-  DateMetadata,
-  Subject,
-  Title,
-  Description,
-  OriginalURL,
-} from '../components/metadata/index'
+import { Title, MetadataDisplay } from '../components/metadata/index'
 import { useParams, useSearchParams } from 'react-router'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -230,9 +224,6 @@ export default function ViewAccession() {
               <Drawer.Positioner>
                 <Drawer.Content
                   bg="bg.subtle"
-                  borderTop={{ base: '1px solid', md: 'none' }}
-                  borderLeft={{ base: 'none', md: '1px solid' }}
-                  borderColor="border"
                   borderTopRadius={{ base: 'lg', md: 'none' }}
                 >
                   <Drawer.Header position="relative" pb={2}>
@@ -262,36 +253,47 @@ export default function ViewAccession() {
                     </Drawer.CloseTrigger>
                   </Drawer.Header>
                   <Drawer.Body>
-                    <VStack gap={4} align="stretch">
-                      <Subject
-                        subjects={
-                          i18n.language === 'en'
-                            ? accession.accession.subjects_en
-                            : accession.accession.subjects_ar
-                        }
-                      />
-                      {((i18n.language === 'en' &&
-                        accession.accession.description_en) ||
-                        (i18n.language === 'ar' &&
-                          accession.accession.description_ar)) && (
-                        <Description
-                          description={
-                            i18n.language === 'en'
-                              ? accession.accession.description_en
-                              : accession.accession.description_ar
-                          }
-                          fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                        />
-                      )}
-                      <DateMetadata
-                        date={accession.accession.dublin_metadata_date}
-                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                      />
-                      <OriginalURL
-                        url={accession.accession.seed_url}
-                        fontSize={i18n.language === 'en' ? 'md' : 'lg'}
-                      />
-                    </VStack>
+                    <MetadataDisplay
+                      subjects={
+                        i18n.language === 'en'
+                          ? accession.accession.subjects_en
+                          : accession.accession.subjects_ar
+                      }
+                      creator={
+                        i18n.language === 'en'
+                          ? accession.accession.creator_en
+                          : accession.accession.creator_ar
+                      }
+                      location={
+                        i18n.language === 'en'
+                          ? accession.accession.location_en
+                          : accession.accession.location_ar
+                      }
+                      contributors={
+                        i18n.language === 'en'
+                          ? accession.accession.contributors_en
+                          : accession.accession.contributors_ar
+                      }
+                      contributorRoles={
+                        i18n.language === 'en'
+                          ? accession.accession.contributor_roles_en
+                          : accession.accession.contributor_roles_ar
+                      }
+                      relations={
+                        i18n.language === 'en'
+                          ? accession.accession.relations_en
+                          : accession.accession.relations_ar
+                      }
+                      description={
+                        i18n.language === 'en'
+                          ? accession.accession.description_en
+                          : accession.accession.description_ar
+                      }
+                      date={accession.accession.dublin_metadata_date}
+                      originalUrl={accession.accession.seed_url}
+                      language={i18n.language}
+                      isPrivate={isPrivate}
+                    />
                   </Drawer.Body>
                 </Drawer.Content>
               </Drawer.Positioner>
