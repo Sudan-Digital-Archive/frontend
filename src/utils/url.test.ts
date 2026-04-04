@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildFilters } from './url'
+import { buildFilters, buildArchiveUrl } from './url'
 import { AccessionsQueryFilters } from '../apiTypes/apiRequests'
 
 describe('buildFilters', () => {
@@ -55,5 +55,16 @@ describe('buildFilters', () => {
     expect(paramString).toContain(
       'url_filter=https%3A%2F%2Fexample.com%2Fpath%3Fquery%3D1%26other%3D2',
     )
+  })
+
+  it('should return correct path with language param', () => {
+    const url = buildArchiveUrl(123, 'english')
+    expect(url).toBe('/archive/123?lang=english')
+  })
+
+  it('should include isPrivate param when flag is true', () => {
+    const url = buildArchiveUrl(456, 'arabic', true)
+    expect(url).toContain('isPrivate=true')
+    expect(url).toContain('lang=arabic')
   })
 })
