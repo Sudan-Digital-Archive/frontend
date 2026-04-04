@@ -3,14 +3,14 @@ import { buildArchiveUrl } from '../../utils/url'
 
 interface ArchiveLinkProps {
   accessionId: string
-  title: string
+  title?: string
   language: string
   isPrivate?: boolean
+  url?: string
 }
 
 export function ArchiveLink({
   accessionId,
-  title,
   language,
   isPrivate,
 }: ArchiveLinkProps) {
@@ -18,7 +18,7 @@ export function ArchiveLink({
 
   return (
     <Box as="span">
-      <Link href={href} _hover={{ color: 'pink.400' }}>
+      <Link href={href} target="_blank" _hover={{ color: 'pink.400' }}>
         <Box
           as="span"
           display="inline-block"
@@ -30,7 +30,7 @@ export function ArchiveLink({
           borderRadius="full"
           m={0.5}
         >
-          {title}
+          View Original
         </Box>
       </Link>
     </Box>

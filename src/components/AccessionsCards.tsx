@@ -1,15 +1,5 @@
-import { Box, Button, Flex, SimpleGrid, Card, Stack } from '@chakra-ui/react'
-import {
-  DateMetadata,
-  Title,
-  Description,
-  OriginalURL,
-  Subject,
-  Creator,
-  Location,
-  Contributors,
-  Relations,
-} from './metadata'
+import { Box, Button, Flex, SimpleGrid, Card } from '@chakra-ui/react'
+import { Title, MetadataDisplay } from './metadata'
 import { useTranslation } from 'react-i18next'
 import type { AccessionWithMetadata } from '../apiTypes/apiResponses'
 import { DeleteAccession } from './forms/DeleteAccession'
@@ -50,7 +40,7 @@ export function AccessionsCards({
 
   return (
     <>
-      <SimpleGrid minChildWidth="320px" gap={10} my={5} px={5} width="100%">
+      <SimpleGrid minChildWidth="380px" gap={10} my={5} px={5} width="100%">
         {accessions.map((accession: AccessionWithMetadata, index: number) => {
           const title =
             i18n.language === 'en' ? accession.title_en : accession.title_ar
@@ -62,7 +52,6 @@ export function AccessionsCards({
             i18n.language === 'en'
               ? accession.subjects_en
               : accession.subjects_ar
-          const hasDescription = description && description.trim().length > 0
           const creator =
             i18n.language === 'en' ? accession.creator_en : accession.creator_ar
           const location =
@@ -109,39 +98,19 @@ export function AccessionsCards({
                 />
               </Card.Header>
               <Card.Body p={4} pt={2}>
-                <Stack gap={0}>
-                  <DateMetadata
-                    date={accession.dublin_metadata_date}
-                    fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                  />
-                  <Subject subjects={subjects} />
-                  <Creator creator={creator} />
-                  <Location location={location} />
-                  <Contributors
-                    contributors={contributors}
-                    contributorRoles={contributorRoles}
-                  />
-                  <Relations
-                    relations={relations}
-                    language={i18n.language}
-                    isPrivate={accession.is_private}
-                  />
-                </Stack>
-                {hasDescription && (
-                  <Box mt={2}>
-                    <Description
-                      description={description}
-                      fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                      lineClamp={3}
-                    />
-                  </Box>
-                )}
-                <Box mt={2}>
-                  <OriginalURL
-                    url={accession.seed_url}
-                    fontSize={i18n.language === 'en' ? 'sm' : 'md'}
-                  />
-                </Box>
+                <MetadataDisplay
+                  subjects={subjects}
+                  creator={creator}
+                  location={location}
+                  contributors={contributors}
+                  contributorRoles={contributorRoles}
+                  relations={relations}
+                  description={description}
+                  date={accession.dublin_metadata_date}
+                  originalUrl={accession.seed_url}
+                  language={i18n.language}
+                  isPrivate={accession.is_private}
+                />
               </Card.Body>
               <Card.Footer p={4} pt={2}>
                 <Flex justifyContent="space-between" gap={2}>
