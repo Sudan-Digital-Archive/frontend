@@ -43,6 +43,54 @@ export type SubjectsResponse = {
   per_page: number
 }
 
+export type Creator = {
+  id: number
+  creator: string
+}
+
+export type CreatorsResponse = {
+  items: Creator[]
+  num_pages: number
+  page: number
+  per_page: number
+}
+
+export type Location = {
+  id: number
+  location: string
+}
+
+export type LocationsResponse = {
+  items: Location[]
+  num_pages: number
+  page: number
+  per_page: number
+}
+
+export type Contributor = {
+  id: number
+  contributor: string
+}
+
+export type ContributorsResponse = {
+  items: Contributor[]
+  num_pages: number
+  page: number
+  per_page: number
+}
+
+export type ContributorRole = {
+  id: number
+  role: string
+}
+
+export type ContributorRolesResponse = {
+  items: ContributorRole[]
+  num_pages: number
+  page: number
+  per_page: number
+}
+
 export type Collection = {
   id: number
   title: string

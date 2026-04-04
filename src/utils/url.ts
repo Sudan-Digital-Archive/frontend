@@ -1,6 +1,11 @@
-import type { AccessionsQueryFilters } from '../apiTypes/apiRequests'
+import type {
+  AccessionsQueryFilters,
+  CollectionsQueryFilters,
+} from '../apiTypes/apiRequests'
 
-export function buildFilters(queryFilters: AccessionsQueryFilters) {
+export function buildFilters(
+  queryFilters: AccessionsQueryFilters | CollectionsQueryFilters,
+) {
   const params = new URLSearchParams()
   for (const [key, value] of Object.entries(queryFilters)) {
     if (value === undefined || value === null) continue
