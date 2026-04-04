@@ -10,7 +10,6 @@ import {
   Flex,
   Badge,
   Checkbox,
-  Switch,
 } from '@chakra-ui/react'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
@@ -20,12 +19,6 @@ import { useEffect, useMemo } from 'react'
 import { useCollections } from '../hooks/useCollections'
 import { useUser } from '../hooks/useUser'
 import { useSearchParams, NavLink } from 'react-router'
-import { SubjectsAutocomplete } from '../components/Autocomplete/SubjectsAutocomplete'
-import { CreatorsAutocomplete } from '../components/Autocomplete/CreatorsAutocomplete'
-import { LocationsAutocomplete } from '../components/Autocomplete/LocationsAutocomplete'
-import { ContributorsAutocomplete } from '../components/Autocomplete/ContributorsAutocomplete'
-import { ContributorRolesAutocomplete } from '../components/Autocomplete/ContributorRolesAutocomplete'
-import type { AutocompleteOption } from '../components/Autocomplete/GenericAutocomplete'
 
 export default function Collections() {
   const { t, i18n } = useTranslation()
@@ -43,11 +36,10 @@ export default function Collections() {
     [lang, isPrivate],
   )
 
-  const { collections, isLoading, pagination, updateFilters, queryFilters } =
-    useCollections({
-      isLoggedIn,
-      baseFilters,
-    })
+  const { collections, isLoading, pagination, updateFilters } = useCollections({
+    isLoggedIn,
+    baseFilters,
+  })
 
   useEffect(() => {
     i18n.changeLanguage(lang)
@@ -106,173 +98,6 @@ export default function Collections() {
               </Checkbox.Root>
             </Flex>
           )}
-
-          <Box py={5} width="100%">
-            <SubjectsAutocomplete
-              menuPlacement="top"
-              value={
-                queryFilters.metadata_subjects?.map((id) => ({
-                  value: id,
-                  label: String(id),
-                })) || []
-              }
-              onChange={(subjects) => {
-                updateFilters({
-                  metadata_subjects: subjects.map((s) => s.value),
-                })
-              }}
-            />
-            {Array.isArray(queryFilters.metadata_subjects) &&
-              queryFilters.metadata_subjects.length > 0 && (
-                <Flex alignItems="center" mt={2}>
-                  <Badge colorPalette="cyan" fontSize="sm" py={1} px={2} mr={2}>
-                    {queryFilters.metadata_subjects_inclusive_filter
-                      ? t('exclusive')
-                      : t('inclusive')}
-                  </Badge>
-                  <Switch.Root
-                    checked={
-                      queryFilters.metadata_subjects_inclusive_filter || false
-                    }
-                    onCheckedChange={(e) => {
-                      updateFilters({
-                        metadata_subjects_inclusive_filter: e.checked === true,
-                      })
-                    }}
-                    size="lg"
-                  >
-                    <Switch.HiddenInput />
-                    <Switch.Control>
-                      <Switch.Thumb />
-                    </Switch.Control>
-                  </Switch.Root>
-                </Flex>
-              )}
-          </Box>
-
-          <Box py={5} width="100%">
-            <CreatorsAutocomplete
-              menuPlacement="top"
-              value={
-                queryFilters.metadata_creators?.map((id) => ({
-                  value: id,
-                  label: String(id),
-                })) || []
-              }
-              onChange={(creators: readonly AutocompleteOption[]) => {
-                updateFilters({
-                  metadata_creators: creators.map((c) => c.value),
-                })
-              }}
-            />
-          </Box>
-
-          <Box py={5} width="100%">
-            <LocationsAutocomplete
-              menuPlacement="top"
-              value={
-                queryFilters.metadata_locations?.map((id) => ({
-                  value: id,
-                  label: String(id),
-                })) || []
-              }
-              onChange={(locations: readonly AutocompleteOption[]) => {
-                updateFilters({
-                  metadata_locations: locations.map((l) => l.value),
-                })
-              }}
-            />
-          </Box>
-
-          <Box py={5} width="100%">
-            <ContributorsAutocomplete
-              menuPlacement="top"
-              value={
-                queryFilters.metadata_contributors?.map((id) => ({
-                  value: id,
-                  label: String(id),
-                })) || []
-              }
-              onChange={(contributors: readonly AutocompleteOption[]) => {
-                updateFilters({
-                  metadata_contributors: contributors.map((c) => c.value),
-                })
-              }}
-            />
-            {Array.isArray(queryFilters.metadata_contributors) &&
-              queryFilters.metadata_contributors.length > 0 && (
-                <Flex alignItems="center" mt={2}>
-                  <Badge colorPalette="cyan" fontSize="sm" py={1} px={2} mr={2}>
-                    {queryFilters.metadata_contributors_inclusive_filter
-                      ? t('exclusive')
-                      : t('inclusive')}
-                  </Badge>
-                  <Switch.Root
-                    checked={
-                      queryFilters.metadata_contributors_inclusive_filter ||
-                      false
-                    }
-                    onCheckedChange={(e) => {
-                      updateFilters({
-                        metadata_contributors_inclusive_filter:
-                          e.checked === true,
-                      })
-                    }}
-                    size="lg"
-                  >
-                    <Switch.HiddenInput />
-                    <Switch.Control>
-                      <Switch.Thumb />
-                    </Switch.Control>
-                  </Switch.Root>
-                </Flex>
-              )}
-          </Box>
-
-          <Box py={5} width="100%">
-            <ContributorRolesAutocomplete
-              menuPlacement="top"
-              value={
-                queryFilters.metadata_contributor_roles?.map((id) => ({
-                  value: id,
-                  label: String(id),
-                })) || []
-              }
-              onChange={(roles: readonly AutocompleteOption[]) => {
-                updateFilters({
-                  metadata_contributor_roles: roles.map((r) => r.value),
-                })
-              }}
-            />
-            {Array.isArray(queryFilters.metadata_contributor_roles) &&
-              queryFilters.metadata_contributor_roles.length > 0 && (
-                <Flex alignItems="center" mt={2}>
-                  <Badge colorPalette="cyan" fontSize="sm" py={1} px={2} mr={2}>
-                    {queryFilters.metadata_contributor_roles_inclusive_filter
-                      ? t('exclusive')
-                      : t('inclusive')}
-                  </Badge>
-                  <Switch.Root
-                    checked={
-                      queryFilters.metadata_contributor_roles_inclusive_filter ||
-                      false
-                    }
-                    onCheckedChange={(e) => {
-                      updateFilters({
-                        metadata_contributor_roles_inclusive_filter:
-                          e.checked === true,
-                      })
-                    }}
-                    size="lg"
-                  >
-                    <Switch.HiddenInput />
-                    <Switch.Control>
-                      <Switch.Thumb />
-                    </Switch.Control>
-                  </Switch.Root>
-                </Flex>
-              )}
-          </Box>
 
           {isLoading || !collections ? (
             <Box
