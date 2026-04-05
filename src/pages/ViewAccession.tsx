@@ -291,7 +291,6 @@ export default function ViewAccession() {
                       }
                       date={accession.accession.dublin_metadata_date}
                       originalUrl={accession.accession.seed_url}
-                      crawlTimestamp={accession.accession.crawl_timestamp}
                       language={i18n.language}
                       isPrivate={isPrivate}
                     />

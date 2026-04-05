@@ -1,4 +1,4 @@
-import { Badge, Box, Link, Text } from '@chakra-ui/react'
+import { Badge, Box, Em, Link, Text } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect } from 'react'
 import { ExternalLink } from 'react-feather'
@@ -77,7 +77,7 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
                 mr={2}
               >
                 <Badge colorPalette="teal" fontSize="xs" mr={1}>
-                  {formatRelationType(relation.relation_type)}
+                  <Em>{formatRelationType(relation.relation_type)}</Em>
                 </Badge>
                 <Link
                   href={buildArchiveUrl(

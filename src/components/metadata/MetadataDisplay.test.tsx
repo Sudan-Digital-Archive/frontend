@@ -72,17 +72,9 @@ vi.mock('./Description', () => ({
   }) => <span data-testid="description">{description}</span>,
 }))
 
-vi.mock('./DublinMetadataIdentifier', () => ({
-  DublinMetadataIdentifier: ({
-    url,
-    crawlTimestamp,
-  }: {
-    url: string
-    crawlTimestamp: string
-  }) => (
-    <span data-testid="dublin-identifier">
-      {url} | {crawlTimestamp}
-    </span>
+vi.mock('./OriginalURL', () => ({
+  OriginalURL: ({ url }: { url: string }) => (
+    <span data-testid="original-url">{url}</span>
   ),
 }))
 
@@ -97,7 +89,6 @@ describe('MetadataDisplay', () => {
     description: 'Test description',
     date: '2024-01-15',
     originalUrl: 'https://example.com',
-    crawlTimestamp: '2024-01-01T00:00:00.000Z',
     language: 'english',
   }
 
@@ -110,9 +101,6 @@ describe('MetadataDisplay', () => {
     expect(screen.getByTestId('location').textContent).toBe('Test Location')
     expect(screen.getByTestId('contributors').textContent).toBe(
       'Contributor1,Contributor2 | Role1,Role2',
-    )
-    expect(screen.getByTestId('dublin-identifier').textContent).toBe(
-      'https://example.com | 2024-01-01T00:00:00.000Z',
     )
   })
 

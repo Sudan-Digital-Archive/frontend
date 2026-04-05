@@ -1,4 +1,4 @@
-import { Badge, Box, Text } from '@chakra-ui/react'
+import { Badge, Box, Em, Text } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { SubjectTag } from '../SubjectTag'
 
@@ -27,22 +27,12 @@ export function Contributors({
                 <SubjectTag label={contributor} />
                 {role && (
                   <>
-                    <Badge colorPalette="teal" fontSize="xs" ml={2} mr={1}>
-                      {t('contributor_has_role')}
-                    </Badge>
-                    <Box
-                      as="span"
-                      display="inline-block"
-                      px={2}
-                      py={0.5}
-                      fontSize="sm"
-                      bg="teal.600"
-                      color="white"
-                      borderRadius="full"
-                      m={0.5}
-                    >
-                      {role}
-                    </Box>
+                    <Em fontSize="xs" ml={2} mr={1}>
+                      <Badge colorPalette="teal" fontSize="xs">
+                        {t('contributor_has_role')}
+                      </Badge>
+                    </Em>
+                    <SubjectTag label={role} />
                   </>
                 )}
               </Text>
