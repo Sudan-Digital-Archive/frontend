@@ -7,6 +7,7 @@ import {
   Contributors,
   Relations,
   Description,
+  DublinMetadataIdentifier,
   OriginalURL,
 } from './index'
 import { useTranslation } from 'react-i18next'
@@ -22,6 +23,7 @@ interface MetadataDisplayProps {
   description: string | null
   date: string
   originalUrl: string
+  crawlTimestamp: string
   language: string
   isPrivate?: boolean
 }
@@ -36,6 +38,7 @@ export function MetadataDisplay({
   description,
   date,
   originalUrl,
+  crawlTimestamp,
   language,
   isPrivate,
 }: MetadataDisplayProps) {
@@ -65,6 +68,11 @@ export function MetadataDisplay({
           lineClamp={3}
         />
       )}
+      <DublinMetadataIdentifier
+        url={originalUrl}
+        crawlTimestamp={crawlTimestamp}
+        fontSize={fontSize}
+      />
       <OriginalURL url={originalUrl} fontSize={fontSize} />
     </Stack>
   )

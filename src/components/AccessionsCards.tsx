@@ -108,6 +108,7 @@ export function AccessionsCards({
                   description={description}
                   date={accession.dublin_metadata_date}
                   originalUrl={accession.seed_url}
+                  crawlTimestamp={accession.crawl_timestamp}
                   language={i18n.language}
                   isPrivate={accession.is_private}
                 />
