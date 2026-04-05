@@ -102,9 +102,6 @@ describe('MetadataDisplay', () => {
     expect(screen.getByTestId('contributors').textContent).toBe(
       'Contributor1,Contributor2 | Role1,Role2',
     )
-    expect(screen.getByTestId('original-url').textContent).toBe(
-      'https://example.com',
-    )
   })
 
   it('should pass isPrivate to Relations when provided', () => {

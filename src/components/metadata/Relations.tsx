@@ -76,9 +76,9 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
                 display="inline-block"
                 mr={2}
               >
-                <Em fontSize="xs" mr={1}>
-                  {formatRelationType(relation.relation_type)}
-                </Em>
+                <Badge colorPalette="teal" fontSize="xs" mr={1}>
+                  <Em>{formatRelationType(relation.relation_type)}</Em>
+                </Badge>
                 <Link
                   href={buildArchiveUrl(
                     relation.related_accession_id,
