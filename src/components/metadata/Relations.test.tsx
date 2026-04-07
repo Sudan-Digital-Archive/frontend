@@ -31,7 +31,7 @@ describe('Relations', () => {
       <Relations relations={mockRelations} language="english" />,
     )
 
-    expect(screen.getByText('has part')).toBeTruthy()
+    expect(screen.getByText('Has Part')).toBeTruthy()
     expect(screen.getByText('Accession 42')).toBeTruthy()
   })
 })
