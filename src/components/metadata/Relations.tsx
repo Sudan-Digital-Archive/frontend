@@ -15,8 +15,12 @@ interface RelationsProps {
   isPrivate?: boolean
 }
 
-function formatRelationType(type: DublinMetadataRelationType): string {
-  return type.replace(/_/g, ' ')
+function getRelationTypeTranslation(
+  type: DublinMetadataRelationType,
+  t: (key: string) => string,
+): string {
+  const key = `relation_type_${type}`
+  return t(key)
 }
 
 export function Relations({ relations, language, isPrivate }: RelationsProps) {
@@ -77,7 +81,9 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
                 mr={2}
               >
                 <Badge colorPalette="teal" fontSize="xs" mr={1}>
-                  <Em>{formatRelationType(relation.relation_type)}</Em>
+                  <Em>
+                    {getRelationTypeTranslation(relation.relation_type, t)}
+                  </Em>
                 </Badge>
                 <Link
                   href={buildArchiveUrl(
