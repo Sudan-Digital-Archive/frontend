@@ -130,7 +130,7 @@ export default function Collections() {
                       <Text lineClamp={3}>{collection.description}</Text>
                     </Box>
                     <NavLink
-                      to={`/collections/${collection.id}?isPrivate=${collection.is_private}`}
+                      to={`/collections/${collection.id}?isPrivate=${collection.is_private}&lang=${lang}`}
                     >
                       <Button
                         variant="ghost"
