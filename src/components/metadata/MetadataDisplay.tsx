@@ -24,6 +24,7 @@ interface MetadataDisplayProps {
   originalUrl: string
   language: string
   isPrivate?: boolean
+  truncate?: boolean
 }
 
 export function MetadataDisplay({
@@ -38,6 +39,7 @@ export function MetadataDisplay({
   originalUrl,
   language,
   isPrivate,
+  truncate = true,
 }: MetadataDisplayProps) {
   const { i18n } = useTranslation()
   const fontSize = i18n.language === 'en' ? 'md' : 'lg'
@@ -50,7 +52,7 @@ export function MetadataDisplay({
         <Description
           description={description}
           fontSize={fontSize}
-          lineClamp={3}
+          lineClamp={truncate !== false ? 3 : undefined}
         />
       )}
       <Subject subjects={subjects} />
