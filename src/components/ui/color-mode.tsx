@@ -19,6 +19,7 @@ const ColorModeContext = createContext<ColorModeContextType | undefined>(
   undefined,
 )
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useColorMode() {
   const context = useContext(ColorModeContext)
   if (!context) {
@@ -27,6 +28,7 @@ export function useColorMode() {
   return context
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useColorModeValue<T>(light: T, dark: T): T {
   const { colorMode } = useColorMode()
   return colorMode === 'dark' ? dark : light
