@@ -46,6 +46,13 @@ export function MetadataDisplay({
   return (
     <Stack gap={0}>
       <DateMetadata date={date} fontSize={fontSize} />
+      {hasDescription && (
+        <Description
+          description={description}
+          fontSize={fontSize}
+          lineClamp={3}
+        />
+      )}
       <Subject subjects={subjects} />
       <Creator creator={creator} />
       <Location location={location} />
@@ -58,13 +65,6 @@ export function MetadataDisplay({
         language={language}
         isPrivate={isPrivate}
       />
-      {hasDescription && (
-        <Description
-          description={description}
-          fontSize={fontSize}
-          lineClamp={3}
-        />
-      )}
       <OriginalURL url={originalUrl} fontSize={fontSize} />
     </Stack>
   )
