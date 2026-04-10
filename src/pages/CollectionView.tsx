@@ -37,6 +37,7 @@ export default function CollectionView() {
     baseFilters: {
       lang: lang === 'en' ? 'english' : 'arabic',
       is_private: isPrivate,
+      in_collection_id: id ? parseInt(id, 10) : undefined,
     },
     enabled: accessionsEnabled,
   })

@@ -17,7 +17,7 @@ export const SubjectsAutocomplete = (props: SubjectsAutocompleteProps) => {
   return (
     <GenericAutocomplete
       {...props}
-      endpoint="metadata-subjects"
+      endpoint="subjects"
       idKey="id"
       labelKey="subject"
       pluralLabel="subjects"

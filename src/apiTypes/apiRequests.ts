@@ -15,6 +15,7 @@ export type AccessionsQueryFilters = {
   metadata_contributor_roles_inclusive_filter?: boolean
   is_private?: boolean
   url_filter?: string
+  in_collection_id?: number
 }
 
 export type CollectionsQueryFilters = {
@@ -30,4 +31,5 @@ export type CollectionsQueryFilters = {
   metadata_contributors_inclusive_filter?: boolean
   metadata_contributor_roles?: number[]
   metadata_contributor_roles_inclusive_filter?: boolean
+  in_collection_id?: number
 }
