@@ -293,6 +293,7 @@ export default function ViewAccession() {
                       originalUrl={accession.accession.seed_url}
                       language={i18n.language}
                       isPrivate={isPrivate}
+                      truncate={false}
                     />
                   </Drawer.Body>
                 </Drawer.Content>
