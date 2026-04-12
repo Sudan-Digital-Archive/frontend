@@ -110,6 +110,7 @@ export function AccessionsCards({
                   originalUrl={accession.seed_url}
                   language={i18n.language}
                   isPrivate={accession.is_private}
+                  truncate={false}
                 />
               </Card.Body>
               <Card.Footer p={4} pt={2}>
