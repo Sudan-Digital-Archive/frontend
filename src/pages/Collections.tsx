@@ -142,7 +142,7 @@ export default function Collections() {
             </SimpleGrid>
           )}
           {collections && collections.items.length > 0 && !isLoading && (
-            <HStack mt={3} justifyContent="center">
+            <HStack mt={6} justifyContent="center">
               <Pagination
                 count={
                   pagination.totalPages *
