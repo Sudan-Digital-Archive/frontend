@@ -9,7 +9,7 @@ import {
   Spinner,
   Flex,
   Badge,
-  Checkbox,
+  Switch,
 } from '@chakra-ui/react'
 import { ArchiveCard } from '../components/ArchiveCard'
 import Layout from '../components/Layout'
@@ -79,17 +79,19 @@ export default function Collections() {
               <Badge colorPalette="cyan">
                 {t('archive_filter_private_records')}
               </Badge>
-              <Checkbox.Root
-                checked={isPrivate}
+              <Switch.Root
+                checked={queryFilters.is_private || false}
                 onCheckedChange={(e) =>
                   updateFilters({ is_private: e.checked === true })
                 }
+                colorPalette="cyan"
+                size="lg"
                 mx={2}
               >
-                <Checkbox.HiddenInput />
-                <Checkbox.Control />
-                <Checkbox.Label />
-              </Checkbox.Root>
+                <Switch.HiddenInput />
+                <Switch.Control />
+                <Switch.Thumb />
+              </Switch.Root>
             </Flex>
           )}
 

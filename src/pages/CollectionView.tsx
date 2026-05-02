@@ -37,7 +37,7 @@ export default function CollectionView() {
     isLoggedIn,
     baseFilters: {
       lang: lang === 'en' ? 'english' : 'arabic',
-      is_private: isPrivate,
+      is_private: false,
       in_collection_id: id ? parseInt(id, 10) : undefined,
     },
     enabled: accessionsEnabled,
@@ -56,6 +56,12 @@ export default function CollectionView() {
         break
     }
   }, [lang, i18n])
+
+  useEffect(() => {
+    if (isPrivate && isLoggedIn) {
+      updateFilters({ is_private: true })
+    }
+  }, [isPrivate, isLoggedIn, updateFilters])
 
   useEffect(() => {
     const fetchCollection = async () => {
