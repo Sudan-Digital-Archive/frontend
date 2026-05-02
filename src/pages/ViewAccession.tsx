@@ -12,6 +12,7 @@ import {
   HStack,
   Button,
   Drawer,
+  AspectRatio,
 } from '@chakra-ui/react'
 import { useParsedDate } from '../hooks/useParsedDate'
 import { useUser } from '../hooks/useUser'
@@ -100,6 +101,11 @@ export default function ViewAccession() {
   const isPrivate = searchParams.get('isPrivate') === 'true'
   const { isLoggedIn } = useUser()
 
+  const format = accession?.accession.dublin_metadata_format || 'wacz'
+  if (format !== 'wacz' && format !== 'mp4') {
+    throw new Error(`Unsupported format: ${format}`)
+  }
+
   useEffect(() => {
     i18n.changeLanguage(lang)
   }, [lang, i18n])
@@ -187,7 +193,9 @@ export default function ViewAccession() {
         alignItems="center"
         justifyContent="center"
       >
-        {!accession || !replayerState.source || !replayerState.url ? (
+        {!accession ||
+        (format === 'wacz' && (!replayerState.source || !replayerState.url)) ||
+        (format === 'mp4' && !replayerState.source) ? (
           <Spinner />
         ) : (
           <>
@@ -302,12 +310,20 @@ export default function ViewAccession() {
 
             <Box flex="1" w="100vw" bg="white" color="black">
               <Box height="4px" bg="cyan.500" />
-              <replay-web-page
-                embed="replayonly"
-                replayBase="/replay/"
-                source={replayerState.source}
-                url={replayerState.url}
-              />
+              {format === 'mp4' ? (
+                <AspectRatio ratio={16 / 9}>
+                  <video controls src={replayerState.source}>
+                    Your browser does not support the video tag.
+                  </video>
+                </AspectRatio>
+              ) : (
+                <replay-web-page
+                  embed="replayonly"
+                  replayBase="/replay/"
+                  source={replayerState.source}
+                  url={replayerState.url}
+                />
+              )}
             </Box>
           </>
         )}
