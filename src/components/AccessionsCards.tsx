@@ -140,8 +140,9 @@ export function AccessionsCards({
                       </Button>
                       <Button
                         variant="ghost"
-                        _active={{ bg: 'gray.600' }}
-                        onClick={() => setIsEditOpen(false)}
+                        colorPalette="cyan"
+                        _active={{ bg: 'cyan.700', color: 'white' }}
+                        onClick={() => setDeleteAccessionId(accession.id)}
                       >
                         {t('accession_card_delete_button')}
                       </Button>
