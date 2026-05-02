@@ -11,3 +11,6 @@ export const appConfig = {
   apiURL: apiURL,
   appURLFrontend: appURLFrontend,
 }
+
+export const defaultPerPage = 10
+export const perPageOptions = [10, 25, 50]

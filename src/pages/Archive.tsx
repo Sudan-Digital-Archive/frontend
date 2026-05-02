@@ -7,7 +7,9 @@ import {
   Heading,
   Flex,
 } from '@chakra-ui/react'
-import { ArrowLeft, ArrowRight, Plus, X } from 'react-feather'
+import { Plus, X } from 'react-feather'
+import { defaultPerPage } from '../constants'
+import { Pagination } from '../components/Pagination'
 import { CreateUpdateAccession } from '../components/forms/CreateUpdateAccession'
 import Layout from '../components/Layout'
 import { useMemo, useState } from 'react'
@@ -132,47 +134,19 @@ export default function Archive() {
           />
         )}
         {accessions && accessions?.items.length > 0 && !isLoading && (
-          <HStack mt={3} gap={2}>
-            {pagination.currentPage !== 0 && (
-              <Button
-                size="xs"
-                colorPalette="pink"
-                variant="ghost"
-                _active={{ bg: 'pink.700', color: 'white' }}
-                onClick={() =>
-                  updateFilters({
-                    page: pagination.currentPage - 1,
-                  })
-                }
-              >
-                {i18n.language === 'ar' ? (
-                  <ArrowRight size={14} />
-                ) : (
-                  <ArrowLeft size={14} />
-                )}
-                {t('archive_pagination_previous')}
-              </Button>
-            )}
-            {pagination.currentPage + 1 < pagination.totalPages && (
-              <Button
-                size="xs"
-                colorPalette="pink"
-                variant="ghost"
-                _active={{ bg: 'pink.700', color: 'white' }}
-                onClick={() =>
-                  updateFilters({
-                    page: pagination.currentPage + 1,
-                  })
-                }
-              >
-                {t('archive_pagination_next')}
-                {i18n.language === 'ar' ? (
-                  <ArrowLeft size={14} />
-                ) : (
-                  <ArrowRight size={14} />
-                )}
-              </Button>
-            )}
+          <HStack mt={3} justifyContent="center">
+            <Pagination
+              count={
+                pagination.totalPages *
+                (queryFilters.per_page || defaultPerPage)
+              }
+              pageSize={queryFilters.per_page || defaultPerPage}
+              page={pagination.currentPage + 1}
+              onPageChange={(newPage) => updateFilters({ page: newPage - 1 })}
+              onPageSizeChange={(newPerPage) => {
+                updateFilters({ per_page: newPerPage, page: 0 })
+              }}
+            />
           </HStack>
         )}
         {!isLoading && accessions && accessions.items.length === 0 && (

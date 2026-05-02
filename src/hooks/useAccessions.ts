@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { appConfig } from '../constants'
+import { appConfig, defaultPerPage } from '../constants'
 import { buildFilters } from '../utils/url'
 import type { AccessionsQueryFilters } from '../apiTypes/apiRequests'
 import type { ListAccessions } from '../apiTypes/apiResponses'
@@ -36,7 +36,7 @@ export const useAccessions = (options: UseAccessionsOptions) => {
 
   const [queryFilters, setQueryFilters] = useState<AccessionsQueryFilters>({
     page: 0,
-    per_page: 50,
+    per_page: defaultPerPage,
     ...baseFilters,
   })
 

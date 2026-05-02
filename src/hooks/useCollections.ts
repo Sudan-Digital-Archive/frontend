@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { appConfig } from '../constants'
+import { appConfig, defaultPerPage } from '../constants'
 import { buildFilters } from '../utils/url'
 import type { CollectionsQueryFilters } from '../apiTypes/apiRequests'
 import type { ListCollections } from '../apiTypes/apiResponses'
@@ -14,7 +14,7 @@ export const useCollections = (options: UseCollectionsOptions) => {
 
   const [queryFilters, setQueryFilters] = useState<CollectionsQueryFilters>({
     page: 0,
-    per_page: 50,
+    per_page: defaultPerPage,
     ...baseFilters,
   })
 
