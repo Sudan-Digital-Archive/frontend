@@ -13,8 +13,10 @@ import {
   NativeSelect,
   Checkbox,
 } from '@chakra-ui/react'
-import { ArrowLeft, ArrowRight, Plus } from 'react-feather'
+import { Plus } from 'react-feather'
 import Layout from '../components/Layout'
+import { Pagination } from '../components/Pagination'
+import { defaultPerPage } from '../constants'
 import { useTranslation } from 'react-i18next'
 import { useUsers } from '../hooks/useUsers'
 import { useToast } from '../context/ToastContext'
@@ -28,6 +30,7 @@ export default function UserManagement() {
     isLoading,
     pagination,
     updateFilters,
+    queryFilters,
     createUser,
     updateUser,
     deleteUser,
@@ -265,32 +268,21 @@ export default function UserManagement() {
               </Box>
 
               <HStack mt={4} justifyContent="center">
-                {pagination.currentPage !== 0 && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    _active={{ bg: 'gray.600' }}
-                    onClick={() =>
-                      updateFilters({ page: pagination.currentPage - 1 })
-                    }
-                  >
-                    <ArrowLeft size={14} style={{ marginRight: '4px' }} />
-                    {t('user_management_previous')}
-                  </Button>
-                )}
-                {pagination.currentPage + 1 < pagination.totalPages && (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    _active={{ bg: 'gray.600' }}
-                    onClick={() =>
-                      updateFilters({ page: pagination.currentPage + 1 })
-                    }
-                  >
-                    {t('user_management_next')}
-                    <ArrowRight size={14} style={{ marginLeft: '4px' }} />
-                  </Button>
-                )}
+                <Pagination
+                  count={
+                    pagination.totalPages *
+                    (queryFilters.per_page || defaultPerPage)
+                  }
+                  pageSize={queryFilters.per_page || defaultPerPage}
+                  page={pagination.currentPage + 1}
+                  onPageChange={(newPage) =>
+                    updateFilters({ page: newPage - 1 })
+                  }
+                  translations={{
+                    pageKey: 'user_management_page',
+                    outOfKey: 'user_management_page_out_of',
+                  }}
+                />
               </HStack>
             </>
           )}

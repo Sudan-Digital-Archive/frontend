@@ -1,5 +1,4 @@
-import { Box, Spinner, VStack, Text, HStack, Button } from '@chakra-ui/react'
-import { ArrowLeft, ArrowRight } from 'react-feather'
+import { Box, Spinner, VStack, Text, HStack } from '@chakra-ui/react'
 import { useParams, useSearchParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7,6 +6,8 @@ import Layout from '../components/Layout'
 import { CollectionHeader } from '../components/CollectionHeader'
 import { AccessionsCards } from '../components/AccessionsCards'
 import { ArchiveFilters } from '../components/ArchiveFilters'
+import { Pagination } from '../components/Pagination'
+import { defaultPerPage } from '../constants'
 import { useUser } from '../hooks/useUser'
 import { useAccessions } from '../hooks/useAccessions'
 import { appConfig } from '../constants'
@@ -165,39 +166,19 @@ export default function CollectionView() {
           />
         )}
         {accessions && accessions?.items.length > 0 && !isLoading && (
-          <HStack mt={3}>
-            {pagination.currentPage !== 0 && (
-              <Button
-                size="xs"
-                colorPalette="pink"
-                variant="ghost"
-                _active={{ bg: 'pink.700', color: 'white' }}
-                onClick={() =>
-                  updateFilters({
-                    page: pagination.currentPage - 1,
-                  })
-                }
-              >
-                <ArrowLeft size={14} style={{ marginRight: '4px' }} />
-                {t('collection_view_pagination_previous')}
-              </Button>
-            )}
-            {pagination.currentPage + 1 < pagination.totalPages && (
-              <Button
-                size="xs"
-                colorPalette="pink"
-                variant="ghost"
-                _active={{ bg: 'pink.700', color: 'white' }}
-                onClick={() =>
-                  updateFilters({
-                    page: pagination.currentPage + 1,
-                  })
-                }
-              >
-                {t('collection_view_pagination_next')}
-                <ArrowRight size={14} style={{ marginLeft: '4px' }} />
-              </Button>
-            )}
+          <HStack mt={3} justifyContent="center">
+            <Pagination
+              count={
+                pagination.totalPages *
+                (queryFilters.per_page || defaultPerPage)
+              }
+              pageSize={queryFilters.per_page || defaultPerPage}
+              page={pagination.currentPage + 1}
+              onPageChange={(newPage) => updateFilters({ page: newPage - 1 })}
+              onPageSizeChange={(newPerPage) => {
+                updateFilters({ per_page: newPerPage, page: 0 })
+              }}
+            />
           </HStack>
         )}
       </VStack>

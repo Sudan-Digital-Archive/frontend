@@ -12,6 +12,25 @@ export function UserProvider({ children }: UserProviderProps) {
   const [role, setRole] = useState<UserRole | null>(null)
 
   useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(`${appConfig.apiURL}auth`, {
+          credentials: 'include',
+        })
+        if (response.ok) {
+          const user: User = await response.json()
+          setIsLoggedIn(true)
+          setRole(user.role)
+        }
+      } catch {
+        // No active session - remain logged out
+      }
+    }
+
+    checkSession()
+  }, [])
+
+  useEffect(() => {
     const fetchRole = async () => {
       if (isLoggedIn) {
         try {

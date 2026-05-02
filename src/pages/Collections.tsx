@@ -11,9 +11,10 @@ import {
   Badge,
   Checkbox,
 } from '@chakra-ui/react'
-import { ArrowLeft, ArrowRight } from 'react-feather'
 import { ArchiveCard } from '../components/ArchiveCard'
 import Layout from '../components/Layout'
+import { Pagination } from '../components/Pagination'
+import { defaultPerPage } from '../constants'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useMemo } from 'react'
 import { useCollections } from '../hooks/useCollections'
@@ -36,10 +37,11 @@ export default function Collections() {
     [lang, isPrivate],
   )
 
-  const { collections, isLoading, pagination, updateFilters } = useCollections({
-    isLoggedIn,
-    baseFilters,
-  })
+  const { collections, isLoading, pagination, queryFilters, updateFilters } =
+    useCollections({
+      isLoggedIn,
+      baseFilters,
+    })
 
   useEffect(() => {
     i18n.changeLanguage(lang)
@@ -47,14 +49,6 @@ export default function Collections() {
     document.documentElement.lang = lang
     document.documentElement.dir = dir
   }, [lang, i18n])
-
-  const handlePreviousPage = () => {
-    updateFilters({ page: pagination.currentPage - 1 })
-  }
-
-  const handleNextPage = () => {
-    updateFilters({ page: pagination.currentPage + 1 })
-  }
 
   return (
     <Layout
@@ -147,39 +141,19 @@ export default function Collections() {
             </SimpleGrid>
           )}
           {collections && collections.items.length > 0 && !isLoading && (
-            <HStack mt={3} justifyContent="center" gap={2}>
-              {pagination.currentPage !== 0 && (
-                <Button
-                  size="xs"
-                  colorPalette="pink"
-                  variant="ghost"
-                  _active={{ bg: 'pink.700', color: 'white' }}
-                  onClick={handlePreviousPage}
-                >
-                  {i18n.language === 'ar' ? (
-                    <ArrowRight size={14} />
-                  ) : (
-                    <ArrowLeft size={14} />
-                  )}
-                  {t('collections_pagination_previous')}
-                </Button>
-              )}
-              {pagination.currentPage + 1 < pagination.totalPages && (
-                <Button
-                  size="xs"
-                  colorPalette="pink"
-                  variant="ghost"
-                  _active={{ bg: 'pink.700', color: 'white' }}
-                  onClick={handleNextPage}
-                >
-                  {t('collections_pagination_next')}
-                  {i18n.language === 'ar' ? (
-                    <ArrowLeft size={14} />
-                  ) : (
-                    <ArrowRight size={14} />
-                  )}
-                </Button>
-              )}
+            <HStack mt={3} justifyContent="center">
+              <Pagination
+                count={
+                  pagination.totalPages *
+                  (queryFilters.per_page || defaultPerPage)
+                }
+                pageSize={queryFilters.per_page || defaultPerPage}
+                page={pagination.currentPage + 1}
+                onPageChange={(newPage) => updateFilters({ page: newPage - 1 })}
+                onPageSizeChange={(newPerPage) => {
+                  updateFilters({ per_page: newPerPage, page: 0 })
+                }}
+              />
             </HStack>
           )}
         </Box>
