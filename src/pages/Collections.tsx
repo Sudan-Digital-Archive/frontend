@@ -90,7 +90,6 @@ export default function Collections() {
               >
                 <Switch.HiddenInput />
                 <Switch.Control />
-                <Switch.Thumb />
               </Switch.Root>
             </Flex>
           )}
