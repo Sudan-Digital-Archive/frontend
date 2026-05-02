@@ -63,7 +63,7 @@ export type ListAccessions = {
 }
 export type AccessionOne = {
   accession: AccessionWithMetadata
-  wacz_url: string
+  s3_url: string
 }
 
 export type Subject = {

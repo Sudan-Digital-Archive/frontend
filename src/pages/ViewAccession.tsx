@@ -129,7 +129,7 @@ export default function ViewAccession() {
         }
         const data = await response.json()
         setReplayerState({
-          source: data.wacz_url,
+          source: data.s3_url,
           url: data.accession.seed_url,
         })
         setAccession(data)
