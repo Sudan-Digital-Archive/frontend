@@ -1,3 +1,30 @@
+export type MetadataFormat = 'wacz' | 'mp4' | string
+
+export interface AccessionMetadataBase {
+  metadata_language: 'english' | 'arabic'
+  metadata_title: string
+  metadata_description: string | null
+  metadata_subjects: number[]
+  metadata_time: string
+  is_private: boolean
+  metadata_creator_id: number | null
+  metadata_location_id: number | null
+  metadata_contributor_ids: number[]
+  metadata_contributor_role_ids: (number | null)[]
+}
+
+export interface AccessionCrawlRequest extends AccessionMetadataBase {
+  url: string
+  metadata_format: MetadataFormat
+  browser_profile: 'facebook' | null
+}
+
+export interface AccessionRawUploadRequest extends AccessionMetadataBase {
+  metadata_format: MetadataFormat
+  original_url: string
+  s3_filename: string
+}
+
 export type AccessionsQueryFilters = {
   date_from?: Date
   date_to?: Date
