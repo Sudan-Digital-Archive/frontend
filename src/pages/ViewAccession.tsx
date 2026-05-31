@@ -307,14 +307,31 @@ export default function ViewAccession() {
               </Drawer.Positioner>
             </Drawer.Root>
 
-            <Box flex="1" w="100vw" h="auto" bg="white" color="black" position="relative">
+            <Box
+              flex="1"
+              w="100vw"
+              h="auto"
+              bg="white"
+              color="black"
+              position="relative"
+            >
               <Box height="4px" bg="cyan.500" />
               {format === 'mp4' ? (
-                <Box position="absolute" top="4px" left={0} right={0} bottom={0}>
+                <Box
+                  position="absolute"
+                  top="4px"
+                  left={0}
+                  right={0}
+                  bottom={0}
+                >
                   <video
                     controls
                     src={replayerState.source}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
                   >
                     Your browser does not support the video tag.
                   </video>

@@ -79,8 +79,12 @@ export function CreateUpdateAccession({
 
   const [creator, setCreator] = useState<AutocompleteOption | null>(null)
   const [location, setLocation] = useState<AutocompleteOption | null>(null)
-  const [contributors, setContributors] = useState<readonly AutocompleteOption[]>([])
-  const [contributorRoles, setContributorRoles] = useState<readonly AutocompleteOption[]>([])
+  const [contributors, setContributors] = useState<
+    readonly AutocompleteOption[]
+  >([])
+  const [contributorRoles, setContributorRoles] = useState<
+    readonly AutocompleteOption[]
+  >([])
 
   useEffect(() => {
     if (accessionToUpdate) {
@@ -121,23 +125,27 @@ export function CreateUpdateAccession({
         })
       }
 
-      if (accessionToUpdate.contributor_en_ids && accessionToUpdate.contributor_en_ids.length > 0) {
-        const contributorOptions: AutocompleteOption[] = accessionToUpdate.contributor_en_ids.map(
-          (id, index) => ({
+      if (
+        accessionToUpdate.contributor_en_ids &&
+        accessionToUpdate.contributor_en_ids.length > 0
+      ) {
+        const contributorOptions: AutocompleteOption[] =
+          accessionToUpdate.contributor_en_ids.map((id, index) => ({
             value: id,
             label: accessionToUpdate.contributors_en?.[index] || '',
-          }),
-        )
+          }))
         setContributors(contributorOptions)
       }
 
-      if (accessionToUpdate.contributor_role_en_ids && accessionToUpdate.contributor_role_en_ids.length > 0) {
-        const roleOptions: AutocompleteOption[] = accessionToUpdate.contributor_role_en_ids.map(
-          (id, index) => ({
+      if (
+        accessionToUpdate.contributor_role_en_ids &&
+        accessionToUpdate.contributor_role_en_ids.length > 0
+      ) {
+        const roleOptions: AutocompleteOption[] =
+          accessionToUpdate.contributor_role_en_ids.map((id, index) => ({
             value: id,
             label: accessionToUpdate.contributor_roles_en?.[index] || '',
-          }),
-        )
+          }))
         setContributorRoles(roleOptions)
       }
     }
@@ -261,7 +269,9 @@ export function CreateUpdateAccession({
     setContributors(values)
   }
 
-  const handleContributorRolesChange = (values: readonly AutocompleteOption[]) => {
+  const handleContributorRolesChange = (
+    values: readonly AutocompleteOption[],
+  ) => {
     setContributorRoles(values)
   }
 
@@ -309,7 +319,9 @@ export function CreateUpdateAccession({
   const buildMetadataPayload = () => {
     const subjectIds = subjects.map((subject) => subject.value)
     const contributorIds = contributors.map((c) => c.value)
-    const contributorRoleIds = contributorRoles.map((r) => (r.value > 0 ? r.value : null))
+    const contributorRoleIds = contributorRoles.map((r) =>
+      r.value > 0 ? r.value : null,
+    )
 
     return {
       metadata_language: i18n.language === 'en' ? 'english' : 'arabic',
@@ -603,10 +615,16 @@ export function CreateUpdateAccession({
                 <NativeSelect.Root maxW="200px">
                   <NativeSelect.Field
                     value={fileFormat}
-                    onChange={(e) => setFileFormat(e.target.value as 'wacz' | 'mp4')}
+                    onChange={(e) =>
+                      setFileFormat(e.target.value as 'wacz' | 'mp4')
+                    }
                   >
-                    <option value="wacz">{t('create_accession_format_wacz')}</option>
-                    <option value="mp4">{t('create_accession_format_mp4')}</option>
+                    <option value="wacz">
+                      {t('create_accession_format_wacz')}
+                    </option>
+                    <option value="mp4">
+                      {t('create_accession_format_mp4')}
+                    </option>
                   </NativeSelect.Field>
                 </NativeSelect.Root>
               </Box>
@@ -669,7 +687,9 @@ export function CreateUpdateAccession({
             onChange={handleCreatorChange}
             value={creator ? [creator] : []}
             defaultValues={
-              creator ? { values: [creator.value], labels: [creator.label] } : undefined
+              creator
+                ? { values: [creator.value], labels: [creator.label] }
+                : undefined
             }
           />
         </Box>
@@ -682,7 +702,9 @@ export function CreateUpdateAccession({
             onChange={handleLocationChange}
             value={location ? [location] : []}
             defaultValues={
-              location ? { values: [location.value], labels: [location.label] } : undefined
+              location
+                ? { values: [location.value], labels: [location.label] }
+                : undefined
             }
           />
         </Box>
@@ -739,10 +761,7 @@ export function CreateUpdateAccession({
           <Heading size="sm" mb={1}>
             {t('create_accession_date_field_label')}
           </Heading>
-          <ArchiveDatePicker
-            date={date}
-            onDateChange={handleDateChange}
-          />
+          <ArchiveDatePicker date={date} onDateChange={handleDateChange} />
           {dateError && (
             <Text color="red.500" fontSize="sm" mb={2}>
               {dateError}
@@ -802,7 +821,9 @@ export function CreateUpdateAccession({
             <Progress.Root value={uploadProgress} maxW="300px">
               <HStack justify="space-between" mb="1">
                 <Progress.Label>
-                  {t('create_accession_upload_progress', { percent: uploadProgress })}
+                  {t('create_accession_upload_progress', {
+                    percent: uploadProgress,
+                  })}
                 </Progress.Label>
                 <Progress.ValueText>{uploadProgress}%</Progress.ValueText>
               </HStack>
