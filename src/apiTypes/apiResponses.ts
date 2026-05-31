@@ -134,6 +134,11 @@ export type Collection = {
   subject_ids: number[]
 }
 
+export type AccessionRawUploadResponse = {
+  accession_id: number
+  upload_url: string
+}
+
 export type ListCollections = {
   items: Collection[]
   num_pages: number
