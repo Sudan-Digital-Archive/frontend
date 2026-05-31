@@ -6,8 +6,6 @@ import i18n from 'i18next'
 import React, { useState } from 'react'
 import arTranslations from '../src/translations/ar.json'
 import enTranslations from '../src/translations/en.json'
-import { registerLocale } from 'react-datepicker'
-import { ar } from 'date-fns/locale'
 import { Provider } from '../src/components/ui/provider'
 import { ColorModeProvider } from '../src/components/ui/color-mode'
 import { ToastProvider } from '../src/context/ToastContext'
@@ -23,7 +21,6 @@ export const resetLanguage = () => {
 
 export const addi18n = () => {
   beforeAll(() => {
-    registerLocale('ar', ar)
     i18n.init({
       lng: 'en',
       resources: {

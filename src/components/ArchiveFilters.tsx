@@ -122,14 +122,14 @@ export function ArchiveFilters({
           _placeholder={{ color: placeholderColor }}
         />
 
-        <Flex gap={4} alignItems="flex-start" mb={5} flexWrap="wrap">
+        <Flex gap={4} alignItems="center" mb={5} flexWrap="wrap">
           <Flex gap={2} alignItems="center" wrap="nowrap">
             <Badge colorPalette="cyan" fontSize="sm" py={1} px={3}>
               {t('archive_date_from_filter')}
             </Badge>
             <ArchiveDatePicker
-              selected={dateFrom}
-              onChange={(date) => handleDateChange(date, 'date_from')}
+              date={dateFrom}
+              onDateChange={(date) => handleDateChange(date, 'date_from')}
             />
           </Flex>
           <Flex gap={2} alignItems="center" wrap="nowrap">
@@ -137,8 +137,8 @@ export function ArchiveFilters({
               {t('archive_date_to_filter')}
             </Badge>
             <ArchiveDatePicker
-              selected={dateTo}
-              onChange={(date) => handleDateChange(date, 'date_to')}
+              date={dateTo}
+              onDateChange={(date) => handleDateChange(date, 'date_to')}
             />
           </Flex>
           <Flex gap={3} alignItems="center" flex={1} minW="300px">

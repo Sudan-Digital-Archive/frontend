@@ -96,7 +96,6 @@
     "create_accession_subject_field_label": "Subject",
     "create_accession_description_field_label": "Description",
     "create_accession_date_field_label": "Date",
-    "create_accession_date_placeholder": "Date the url was created",
     "create_accession_submit_field_label": "Submit",
     "create_accession_crawling_url_title": "Crawling URL",
     "create_accession_crawl_type_label": "Crawl Type",

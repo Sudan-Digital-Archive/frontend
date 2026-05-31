@@ -399,9 +399,8 @@ export function CreateUpdateAccession({
             {t('create_accession_date_field_label')}
           </Heading>
           <ArchiveDatePicker
-            selected={date}
-            onChange={handleDateChange}
-            showPlaceholder={true}
+            date={date}
+            onDateChange={handleDateChange}
           />
           {dateError && (
             <Text color="red.500" fontSize="sm" mb={2}>
