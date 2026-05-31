@@ -17,6 +17,16 @@ to get it stood up.
 Clone the repo, install `https://pnpm.io/`, run `pnpm i` and then
 `pnpm run dev`.
 
+### Environment Variables
+
+To point the frontend at a different API, create a `.env` file in the project root:
+
+```env
+VITE_API_URL=http://localhost:8080/sda-api/api/v1/
+```
+
+Without this, the app defaults to `https://api.sudandigitalarchive.com/sda-api/api/v1/` in development mode.
+
 ### Notes on Replay Web Page
 
 This site makes heavy use of
