@@ -311,7 +311,7 @@ export default function ViewAccession() {
               flex="1"
               w="100vw"
               h="auto"
-              bg="white"
+              bg="black"
               color="black"
               position="relative"
             >
@@ -323,6 +323,9 @@ export default function ViewAccession() {
                   left={0}
                   right={0}
                   bottom={0}
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
                 >
                   <video
                     controls
@@ -330,7 +333,7 @@ export default function ViewAccession() {
                     style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover',
+                      objectFit: 'contain',
                     }}
                   >
                     Your browser does not support the video tag.

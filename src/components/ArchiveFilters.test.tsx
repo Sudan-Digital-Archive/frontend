@@ -1,7 +1,7 @@
 import { ArchiveFilters } from './ArchiveFilters'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { addi18n, renderWithProviders } from '../../testUtils/testHelpers.tsx'
-import { screen, waitFor, fireEvent } from '@testing-library/react'
+import { screen, waitFor, fireEvent, act } from '@testing-library/react'
 
 const mockFetch = vi.fn()
 globalThis.fetch = mockFetch
@@ -41,6 +41,10 @@ describe('ArchiveFilters Component', () => {
         per_page: 50,
       }),
     })
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('renders URL filter input', () => {
@@ -91,33 +95,33 @@ describe('ArchiveFilters Component', () => {
   })
 
   it('calls updateFilters when URL filter changes after debounce', async () => {
+    vi.useFakeTimers()
     renderWithProviders(<ArchiveFilters {...defaultProps} />)
     const urlInput = screen.getByPlaceholderText('Filter by URL...')
     fireEvent.change(urlInput, { target: { value: 'example.com' } })
 
-    await waitFor(
-      () => {
-        expect(mockUpdateFilters).toHaveBeenCalledWith({
-          url_filter: 'example.com',
-        })
-      },
-      { timeout: 500 },
-    )
+    act(() => {
+      vi.advanceTimersByTime(300)
+    })
+
+    expect(mockUpdateFilters).toHaveBeenCalledWith({
+      url_filter: 'example.com',
+    })
   })
 
   it('calls updateFilters when text search changes after debounce', async () => {
+    vi.useFakeTimers()
     renderWithProviders(<ArchiveFilters {...defaultProps} />)
     const searchInput = screen.getByPlaceholderText('Enter search term here...')
     fireEvent.change(searchInput, { target: { value: 'search term' } })
 
-    await waitFor(
-      () => {
-        expect(mockUpdateFilters).toHaveBeenCalledWith({
-          query_term: 'search term',
-        })
-      },
-      { timeout: 500 },
-    )
+    act(() => {
+      vi.advanceTimersByTime(300)
+    })
+
+    expect(mockUpdateFilters).toHaveBeenCalledWith({
+      query_term: 'search term',
+    })
   })
 
   it('renders private switch when logged in', () => {
