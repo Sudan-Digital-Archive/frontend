@@ -12,7 +12,6 @@ import {
   HStack,
   Button,
   Drawer,
-  AspectRatio,
 } from '@chakra-ui/react'
 import { useParsedDate } from '../hooks/useParsedDate'
 import { useUser } from '../hooks/useUser'
@@ -308,14 +307,18 @@ export default function ViewAccession() {
               </Drawer.Positioner>
             </Drawer.Root>
 
-            <Box flex="1" w="100vw" bg="white" color="black">
+            <Box flex="1" w="100vw" h="auto" bg="white" color="black" position="relative">
               <Box height="4px" bg="cyan.500" />
               {format === 'mp4' ? (
-                <AspectRatio ratio={16 / 9}>
-                  <video controls src={replayerState.source}>
+                <Box position="absolute" top="4px" left={0} right={0} bottom={0}>
+                  <video
+                    controls
+                    src={replayerState.source}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  >
                     Your browser does not support the video tag.
                   </video>
-                </AspectRatio>
+                </Box>
               ) : (
                 <replay-web-page
                   embed="replayonly"
