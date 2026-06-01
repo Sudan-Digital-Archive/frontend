@@ -1,6 +1,6 @@
-import { Badge, Box, Em, Link, Text } from '@chakra-ui/react'
+import { Badge, Box, Em, Link } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import { ExternalLink } from 'react-feather'
 import type {
   Relation,
@@ -67,20 +67,15 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
   return (
     <Box my={hasRelations ? 1 : 0}>
       {hasRelations && (
-        <Text fontSize={fontSize}>
-          <Badge colorPalette="cyan">{t('metadata_relations_label')}</Badge>{' '}
+        <Box display="flex" flexWrap="wrap" gap={1} alignItems="center" fontSize={fontSize}>
+          <Badge colorPalette="cyan">{t('metadata_relations_label')}</Badge>
           {relations.map((relation) => {
             const title =
               relatedTitles[relation.related_accession_id] ||
               `Accession ${relation.related_accession_id}`
             return (
-              <Text
-                as="span"
-                key={`relation-${relation.id}`}
-                display="inline-block"
-                mr={2}
-              >
-                <Badge colorPalette="teal" fontSize="xs" mr={1}>
+              <Fragment key={`relation-${relation.id}`}>
+                <Badge colorPalette="teal" fontSize="xs">
                   <Em>
                     {getRelationTypeTranslation(relation.relation_type, t)}
                   </Em>
@@ -117,10 +112,10 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
                     />
                   </Box>
                 </Link>
-              </Text>
+              </Fragment>
             )
           })}
-        </Text>
+        </Box>
       )}
     </Box>
   )
