@@ -67,7 +67,13 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
   return (
     <Box my={hasRelations ? 1 : 0}>
       {hasRelations && (
-        <Box display="flex" flexWrap="wrap" gap={1} alignItems="center" fontSize={fontSize}>
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          gap={1}
+          alignItems="center"
+          fontSize={fontSize}
+        >
           <Badge colorPalette="cyan">{t('metadata_relations_label')}</Badge>
           {relations.map((relation) => {
             const title =
