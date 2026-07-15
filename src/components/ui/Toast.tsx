@@ -9,7 +9,7 @@ export function Toast() {
   return (
     <Box
       position="fixed"
-      bottom={6}
+      top={6}
       left="50%"
       transform="translateX(-50%)"
       bg={toast.type === 'error' ? 'toast.bgError' : 'toast.bg'}
