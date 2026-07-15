@@ -365,12 +365,10 @@ export function CreateUpdateAccession({
       return
     }
 
-    if (mode === 'url') {
-      const urlCheck = validateURL(url)
-      if (!urlCheck.valid) {
-        setUrlError(urlCheck.error)
-        return
-      }
+    const urlCheck = validateURL(url)
+    if (!urlCheck.valid) {
+      setUrlError(urlCheck.error)
+      return
     }
 
     setIsSubmitting(true)
@@ -547,28 +545,26 @@ export function CreateUpdateAccession({
       )}
 
       <VStack gap={4} align="stretch">
-        {mode === 'url' && (
-          <Box>
-            <Heading size="sm" mb={1}>
-              {t('create_accession_url_field_label')}
-            </Heading>
-            <Input
-              value={url}
-              onChange={handleUrlChange}
-              onBlur={handleUrlBlur}
-              placeholder={t('create_accession_url_field_placeholder')}
-              disabled={isEditMode}
-              bg="input.bg"
-              borderColor="gray"
-              _placeholder={{ color: 'fg.muted' }}
-            />
-            {urlError && (
-              <Text color="red.500" fontSize="sm">
-                {urlError}
-              </Text>
-            )}
-          </Box>
-        )}
+        <Box>
+          <Heading size="sm" mb={1}>
+            {t('create_accession_url_field_label')}
+          </Heading>
+          <Input
+            value={url}
+            onChange={handleUrlChange}
+            onBlur={handleUrlBlur}
+            placeholder={t('create_accession_url_field_placeholder')}
+            disabled={isEditMode}
+            bg="input.bg"
+            borderColor="gray"
+            _placeholder={{ color: 'fg.muted' }}
+          />
+          {urlError && (
+            <Text color="red.500" fontSize="sm">
+              {urlError}
+            </Text>
+          )}
+        </Box>
 
         {mode === 'file' && (
           <Box>
