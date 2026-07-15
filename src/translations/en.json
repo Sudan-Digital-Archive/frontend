@@ -201,6 +201,7 @@
     "contributor_roles_autocomplete_delete_success": "Contributor role deleted successfully",
     "contributor_roles_autocomplete_error_deleting": "Error deleting contributor role",
     "metadata_missing_title": "No title available",
+    "translation_missing": "Translation missing",
     "get_in_touch": "Get in Touch",
     "email_copied": "Email copied!",
     "nav_contact": "Contact Us",
