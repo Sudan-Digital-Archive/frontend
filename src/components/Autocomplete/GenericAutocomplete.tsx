@@ -151,7 +151,7 @@ export const GenericAutocomplete = ({
 
       showToast(
         t(`${pluralLabel}_autocomplete_create_success`, {
-          [createPayloadKey]: newItem[labelKey] as string,
+          [labelKey]: newItem[labelKey] as string,
         }),
         'success',
       )
