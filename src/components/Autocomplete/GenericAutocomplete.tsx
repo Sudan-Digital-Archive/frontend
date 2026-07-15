@@ -75,12 +75,13 @@ export const GenericAutocomplete = ({
 
   useEffect(() => {
     if (lockedValues && lockedValues.length > 0 && items.length > 0) {
-      const lockedOptions = items
-        .filter((item) => lockedValues.includes(item[idKey] as number))
-        .map((item) => ({
-          value: item[idKey] as number,
-          label: item[labelKey] as string,
-        }))
+      const lockedOptions = lockedValues.map((lockedValue) => {
+        const item = items.find((i) => i[idKey] === lockedValue)
+        return {
+          value: lockedValue,
+          label: item ? (item[labelKey] as string) : t('translation_missing'),
+        }
+      })
 
       setSelectedOptions((prev) => {
         const existingValues = new Set(prev.map((o) => o.value))
@@ -90,7 +91,7 @@ export const GenericAutocomplete = ({
         return [...prev, ...newLockedOptions]
       })
     }
-  }, [lockedValues, items, idKey, labelKey])
+  }, [lockedValues, items, idKey, labelKey, t])
 
   const apiLang = i18n.language === 'en' ? 'english' : 'arabic'
 
@@ -213,12 +214,12 @@ export const GenericAutocomplete = ({
         const item = items.find((i) => i[idKey] === v.value)
         return {
           value: v.value,
-          label: item ? (item[labelKey] as string) : v.label,
+          label: item ? (item[labelKey] as string) : t('translation_missing'),
         }
       })
       setSelectedOptions(optionsWithLabels)
     }
-  }, [value, items, idKey, labelKey])
+  }, [value, items, idKey, labelKey, t])
 
   const handleChange = (newValue: readonly AutocompleteOption[] | null) => {
     const safeValue = newValue || []

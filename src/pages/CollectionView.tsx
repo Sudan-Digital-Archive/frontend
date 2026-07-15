@@ -146,6 +146,9 @@ export default function CollectionView() {
             document.documentElement.dir = 'rtl'
             break
         }
+        updateFilters({
+          lang: newLanguage === 'en' ? 'english' : 'arabic',
+        })
       }}
     >
       <VStack alignItems="center" justifyContent="center">
