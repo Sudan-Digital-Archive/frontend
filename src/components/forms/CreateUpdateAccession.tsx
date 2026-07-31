@@ -73,7 +73,7 @@ export function CreateUpdateAccession({
   )
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [fileFormat, setFileFormat] = useState<'wacz' | 'mp4'>('wacz')
+  const [fileFormat, setFileFormat] = useState<'wacz' | 'mp4' | 'pdf'>('wacz')
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
 
@@ -281,7 +281,9 @@ export function CreateUpdateAccession({
       setSelectedFile(file)
       setFileError('')
 
-      if (file.name.endsWith('.mp4')) {
+      if (file.name.endsWith('.pdf')) {
+        setFileFormat('pdf')
+      } else if (file.name.endsWith('.mp4')) {
         setFileFormat('mp4')
       } else {
         setFileFormat('wacz')
@@ -572,7 +574,7 @@ export function CreateUpdateAccession({
               {t('create_accession_file_field_label')}
             </Heading>
             <FileUpload.Root
-              accept={['.wacz', '.mp4']}
+              accept={['.wacz', '.mp4', '.pdf']}
               onFileChange={handleFileChange}
               maxFiles={1}
             >
@@ -609,10 +611,10 @@ export function CreateUpdateAccession({
                   {t('create_accession_format_field_label')}
                 </Heading>
                 <NativeSelect.Root maxW="200px">
-                  <NativeSelect.Field
+                    <NativeSelect.Field
                     value={fileFormat}
                     onChange={(e) =>
-                      setFileFormat(e.target.value as 'wacz' | 'mp4')
+                      setFileFormat(e.target.value as 'wacz' | 'mp4' | 'pdf')
                     }
                   >
                     <option value="wacz">
@@ -620,6 +622,9 @@ export function CreateUpdateAccession({
                     </option>
                     <option value="mp4">
                       {t('create_accession_format_mp4')}
+                    </option>
+                    <option value="pdf">
+                      {t('create_accession_format_pdf')}
                     </option>
                   </NativeSelect.Field>
                 </NativeSelect.Root>

@@ -1,4 +1,4 @@
-export type MetadataFormat = 'wacz' | 'mp4' | string
+export type MetadataFormat = 'wacz' | 'mp4' | 'pdf' | string
 
 export interface AccessionMetadataBase {
   metadata_language: 'english' | 'arabic'
