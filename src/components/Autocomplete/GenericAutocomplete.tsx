@@ -6,7 +6,7 @@ import type { OptionProps } from 'chakra-react-select'
 import { Delete } from 'react-feather'
 import { appConfig } from '../../constants'
 import { useUser } from '../../hooks/useUser'
-import { useToast } from '../../context/ToastContext'
+import { toaster } from '../../components/ui/toaster'
 import { useColorMode } from '../ui/color-mode'
 
 export interface AutocompleteOption {
@@ -58,7 +58,6 @@ export const GenericAutocomplete = ({
 }: GenericAutocompleteProps) => {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
-  const { showToast } = useToast()
   const { colorMode } = useColorMode()
   const [items, setItems] = useState<Item[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -122,11 +121,14 @@ export const GenericAutocomplete = ({
       setItems(data.items || [])
     } catch (error) {
       console.error(`Error fetching ${pluralLabel}:`, error)
-      showToast(t(`${pluralLabel}_autocomplete_error_fetching`), 'error')
+      toaster.create({
+        description: t(`${pluralLabel}_autocomplete_error_fetching`),
+        type: 'error',
+      })
     } finally {
       setIsLoading(false)
     }
-  }, [apiLang, t, collectionId, showToast, endpoint, pluralLabel])
+  }, [apiLang, t, collectionId, endpoint, pluralLabel])
 
   const createNewItem = async (itemName: string) => {
     setIsCreatingNew(true)
@@ -150,17 +152,20 @@ export const GenericAutocomplete = ({
       const newItem = await response.json()
       setItems((prev) => [...prev, newItem])
 
-      showToast(
-        t(`${pluralLabel}_autocomplete_create_success`, {
+      toaster.create({
+        description: t(`${pluralLabel}_autocomplete_create_success`, {
           [labelKey]: newItem[labelKey] as string,
         }),
-        'success',
-      )
+        type: 'success',
+      })
 
       return newItem
     } catch (error) {
       console.error(`Error creating ${pluralLabel.slice(0, -1)}:`, error)
-      showToast(t(`${pluralLabel}_autocomplete_error_creating`), 'error')
+      toaster.create({
+        description: t(`${pluralLabel}_autocomplete_error_creating`),
+        type: 'error',
+      })
       return null
     } finally {
       setIsCreatingNew(false)
@@ -195,10 +200,16 @@ export const GenericAutocomplete = ({
         onChange(selectedOptions.filter((o) => o.value !== itemId))
       }
 
-      showToast(t(`${pluralLabel}_autocomplete_delete_success`), 'success')
+      toaster.create({
+        description: t(`${pluralLabel}_autocomplete_delete_success`),
+        type: 'success',
+      })
     } catch (error) {
       console.error(`Error deleting ${pluralLabel.slice(0, -1)}:`, error)
-      showToast(t(`${pluralLabel}_autocomplete_error_deleting`), 'error')
+      toaster.create({
+        description: t(`${pluralLabel}_autocomplete_error_deleting`),
+        type: 'error',
+      })
     } finally {
       setIsDeleting(false)
     }

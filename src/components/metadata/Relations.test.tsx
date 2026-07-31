@@ -11,15 +11,13 @@ addi18n()
 
 describe('Relations', () => {
   it('should not render when relations is null', () => {
-    renderWithProviders(<Relations relations={null} language="english" />)
-
-    expect(screen.queryByText('Relations:')).toBeNull()
+    const { container } = renderWithProviders(<Relations relations={null} language="english" />)
+    expect(container.firstChild).toBeNull()
   })
 
   it('should not render when relations is empty array', () => {
-    renderWithProviders(<Relations relations={[]} language="english" />)
-
-    expect(screen.queryByText('Relations:')).toBeNull()
+    const { container } = renderWithProviders(<Relations relations={[]} language="english" />)
+    expect(container.firstChild).toBeNull()
   })
 
   it('should render relation type and accession id when relations exist', () => {

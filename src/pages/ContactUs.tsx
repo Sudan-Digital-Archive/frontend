@@ -2,17 +2,19 @@ import { Box, Heading, Button, Text, VStack } from '@chakra-ui/react'
 import Layout from '../components/Layout'
 import { Copy } from 'react-feather'
 import { useTranslation } from 'react-i18next'
-import { useToast } from '../context/ToastContext'
+import { toaster } from '../components/ui/toaster'
 
 export default function ContactUs() {
   const { t } = useTranslation()
   const email = 'info@sudandigitalarchive.com'
-  const { showToast } = useToast()
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(email)
-      showToast(t('email_copied'))
+      toaster.create({
+        description: t('email_copied'),
+        type: 'success',
+      })
     } catch (err) {
       console.error('Failed to copy!', err)
     }

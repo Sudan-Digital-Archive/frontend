@@ -2,7 +2,7 @@ import { Button, HStack } from '@chakra-ui/react'
 import { Copy, ExternalLink } from 'react-feather'
 import { useTranslation } from 'react-i18next'
 import { useCallback } from 'react'
-import { useToast } from '../context/ToastContext'
+import { toaster } from '../components/ui/toaster'
 
 interface AccessionButtonsProps {
   onOpen: () => void
@@ -10,12 +10,14 @@ interface AccessionButtonsProps {
 
 const AccessionButtons = ({ onOpen }: AccessionButtonsProps) => {
   const { t } = useTranslation()
-  const { showToast } = useToast()
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(window.location.href)
-    showToast(t('link_copied'), 'success')
-  }, [showToast, t])
+    toaster.create({
+      description: t('link_copied'),
+      type: 'success',
+    })
+  }, [t])
 
   return (
     <HStack gap={2}>

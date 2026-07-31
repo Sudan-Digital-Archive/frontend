@@ -19,12 +19,11 @@ import { Pagination } from '../components/Pagination'
 import { defaultPerPage } from '../constants'
 import { useTranslation } from 'react-i18next'
 import { useUsers } from '../hooks/useUsers'
-import { useToast } from '../context/ToastContext'
+import { toaster } from '../components/ui/toaster'
 import type { User, UserRole } from '../apiTypes/userTypes'
 
 export default function UserManagement() {
   const { t } = useTranslation()
-  const { showToast } = useToast()
   const {
     users,
     isLoading,
@@ -100,9 +99,15 @@ export default function UserManagement() {
         role: state.role,
         is_active: state.isActive,
       })
-      showToast(t('user_management_update_success'), 'success')
+      toaster.create({
+        description: t('user_management_update_success'),
+        type: 'success',
+      })
     } catch {
-      showToast(t('user_management_update_error'), 'error')
+      toaster.create({
+        description: t('user_management_update_error'),
+        type: 'error',
+      })
     }
   }
 
@@ -113,13 +118,19 @@ export default function UserManagement() {
         role: newUserRole,
         is_active: newUserIsActive,
       })
-      showToast(t('user_management_create_success'), 'success')
+      toaster.create({
+        description: t('user_management_create_success'),
+        type: 'success',
+      })
       setIsCreateModalOpen(false)
       setNewUserEmail('')
       setNewUserRole('contributor')
       setNewUserIsActive(true)
     } catch {
-      showToast(t('user_management_create_error'), 'error')
+      toaster.create({
+        description: t('user_management_create_error'),
+        type: 'error',
+      })
     }
   }
 
@@ -127,10 +138,16 @@ export default function UserManagement() {
     if (!deleteUserId) return
     try {
       await deleteUser(deleteUserId)
-      showToast(t('user_management_delete_success'), 'success')
+      toaster.create({
+        description: t('user_management_delete_success'),
+        type: 'success',
+      })
       setDeleteUserId(null)
     } catch {
-      showToast(t('user_management_delete_error'), 'error')
+      toaster.create({
+        description: t('user_management_delete_error'),
+        type: 'error',
+      })
     }
   }
 

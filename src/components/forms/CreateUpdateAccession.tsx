@@ -20,7 +20,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { SubjectsAutocomplete } from '../subjectsAutocomplete/SubjectsAutocomplete'
 import type { SubjectOption } from '../subjectsAutocomplete/types'
 import type { AccessionWithMetadata } from '../../apiTypes/apiResponses'
-import { useToast } from '../../context/ToastContext'
+import { toaster } from '../../components/ui/toaster'
 import { FileUpload } from '@chakra-ui/react'
 import { Upload } from 'react-feather'
 import {
@@ -43,7 +43,6 @@ export function CreateUpdateAccession({
   onSuccess,
 }: CreateUpdateAccessionProps) {
   const { t, i18n } = useTranslation()
-  const { showToast } = useToast()
   const isEditMode = !!accessionToUpdate
 
   const [mode, setMode] = useState<CreateMode>('url')
@@ -403,12 +402,12 @@ export function CreateUpdateAccession({
         })
 
         if (response.status === 201 || response.status === 200) {
-          showToast(
-            isEditMode
+          toaster.create({
+            description: isEditMode
               ? t('update_accession_success_description')
               : t('create_accession_success_description'),
-            'success',
-          )
+            type: 'success',
+          })
 
           if (isEditMode && onSuccess) {
             onSuccess()
@@ -418,12 +417,12 @@ export function CreateUpdateAccession({
         } else {
           const errorText = await response.text()
           console.error(errorText)
-          showToast(
-            isEditMode
+          toaster.create({
+            description: isEditMode
               ? t('update_accession_error_description')
               : t('create_accession_error_toast_description'),
-            'error',
-          )
+            type: 'error',
+          })
         }
       } else {
         setIsUploading(true)
@@ -452,29 +451,28 @@ export function CreateUpdateAccession({
         }
 
         const data = await response.json()
-        const { upload_url, accession_id } = data
+        const { upload_url } = data
 
         await uploadToS3(selectedFile!, upload_url)
 
-        showToast(
-          t('create_accession_upload_success', {
-            url: `/archive/${accession_id}`,
-          }),
-          'success',
-        )
+        toaster.create({
+          description: t('create_accession_upload_success'),
+          type: 'success',
+        })
 
         resetForm()
       }
     } catch (error) {
       console.error(error)
-      showToast(
-        mode === 'file' && isUploading
-          ? t('create_accession_upload_error', { error: String(error) })
-          : isEditMode
-            ? t('update_accession_error_description')
-            : t('create_accession_error_toast_description'),
-        'error',
-      )
+      toaster.create({
+        description:
+          mode === 'file' && isUploading
+            ? t('create_accession_upload_error', { error: String(error) })
+            : isEditMode
+              ? t('update_accession_error_description')
+              : t('create_accession_error_toast_description'),
+        type: 'error',
+      })
     } finally {
       setIsSubmitting(false)
       setIsUploading(false)
@@ -819,7 +817,7 @@ export function CreateUpdateAccession({
 
         {isUploading && (
           <Box>
-            <Progress.Root value={uploadProgress} maxW="300px">
+            <Progress.Root value={uploadProgress}>
               <HStack justify="space-between" mb="1">
                 <Progress.Label>
                   {t('create_accession_upload_progress', {

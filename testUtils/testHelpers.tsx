@@ -8,7 +8,6 @@ import arTranslations from '../src/translations/ar.json'
 import enTranslations from '../src/translations/en.json'
 import { Provider } from '../src/components/ui/provider'
 import { ColorModeProvider } from '../src/components/ui/color-mode'
-import { ToastProvider } from '../src/context/ToastContext'
 import { vi } from 'vitest'
 import { UserContext } from '../src/context/UserContextDefinition'
 import type { UserRole } from '../src/apiTypes/userTypes'
@@ -100,16 +99,14 @@ export const renderWithProviders = (
     <Router {...routerProps}>
       <Provider>
         <ColorModeProvider>
-          <ToastProvider>
-            <I18nextProvider i18n={i18n}>
-              <MockUserProvider
-                isLoggedIn={options.isLoggedIn}
-                role={options.role}
-              >
-                {component}
-              </MockUserProvider>
-            </I18nextProvider>
-          </ToastProvider>
+          <I18nextProvider i18n={i18n}>
+            <MockUserProvider
+              isLoggedIn={options.isLoggedIn}
+              role={options.role}
+            >
+              {component}
+            </MockUserProvider>
+          </I18nextProvider>
         </ColorModeProvider>
       </Provider>
     </Router>,

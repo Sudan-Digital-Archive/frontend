@@ -24,21 +24,17 @@ export function Description({
     ? truncateString(description || '', maxLength)
     : description
 
+  if (!hasDescription) return null
+
   return (
-    <>
-      {hasDescription ? (
-        <Box>
-          <Text
-            fontSize={fontSize}
-            lineClamp={shouldTruncate ? lineClamp : undefined}
-          >
-            <Badge colorPalette="cyan">{t('metadata_description_label')}</Badge>{' '}
-            {displayText}
-          </Text>
-        </Box>
-      ) : (
-        <></>
-      )}
-    </>
+    <Box>
+      <Text
+        fontSize={fontSize}
+        lineClamp={shouldTruncate ? lineClamp : undefined}
+      >
+        <Badge colorPalette="cyan">{t('metadata_description_label')}</Badge>{' '}
+        {displayText}
+      </Text>
+    </Box>
   )
 }
