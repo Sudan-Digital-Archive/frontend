@@ -31,8 +31,10 @@ describe('Subject', () => {
     expect(document.documentElement.dir).toBe('rtl')
   })
 
-  it('should display missing message when no subjects provided', () => {
-    renderWithProviders(<Subject subjects={null} />, { language: 'en' })
-    expect(screen.getByTestId('subject-container')).toBeTruthy()
+  it('should not render when no subjects provided', () => {
+    const { container } = renderWithProviders(<Subject subjects={null} />, {
+      language: 'en',
+    })
+    expect(container.firstChild).toBeNull()
   })
 })

@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router'
 import { UserProvider } from './context/UserContext'
-import { ToastProvider } from './context/ToastContext'
 import { Provider } from './components/ui/provider'
 import { ColorModeProvider } from './components/ui/color-mode'
 import Home from './pages/Home'
@@ -39,28 +38,26 @@ function App() {
         <ColorModeProvider>
           <BrowserRouter>
             <ScrollToTop />
-            <ToastProvider>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/mission" element={<Mission />} />
-                <Route path="/who-are-we" element={<WhoAreWe />} />
-                <Route
-                  path="/why-another-archive"
-                  element={<WhyAnotherArchive />}
-                />
-                <Route path="/tech-stack" element={<TechnicalStack />} />
-                <Route path="/code-of-conduct" element={<CodeofConduct />} />
-                <Route path="/archive/:id" element={<ViewAccession />} />
-                <Route path="/archive" element={<Archive />} />
-                <Route path="/collections/:id" element={<CollectionView />} />
-                <Route path="/collections" element={<Collections />} />
-                <Route path="/contact-us" element={<ContactUs />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/jwt-auth" element={<JWTAuth />} />
-                <Route path="/user-management" element={<UserManagement />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </ToastProvider>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/mission" element={<Mission />} />
+              <Route path="/who-are-we" element={<WhoAreWe />} />
+              <Route
+                path="/why-another-archive"
+                element={<WhyAnotherArchive />}
+              />
+              <Route path="/tech-stack" element={<TechnicalStack />} />
+              <Route path="/code-of-conduct" element={<CodeofConduct />} />
+              <Route path="/archive/:id" element={<ViewAccession />} />
+              <Route path="/archive" element={<Archive />} />
+              <Route path="/collections/:id" element={<CollectionView />} />
+              <Route path="/collections" element={<Collections />} />
+              <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/jwt-auth" element={<JWTAuth />} />
+              <Route path="/user-management" element={<UserManagement />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
           </BrowserRouter>
         </ColorModeProvider>
       </Provider>

@@ -46,7 +46,7 @@ export function MetadataDisplay({
   const hasDescription = description && description.trim().length > 0
 
   return (
-    <Stack gap={0}>
+    <Stack gap={3}>
       <DateMetadata date={date} fontSize={fontSize} />
       {hasDescription && (
         <Description

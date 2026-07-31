@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { Button, Box, Text, VStack, Heading } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { appConfig } from '../../constants'
-import { useToast } from '../../context/ToastContext'
+import { toaster } from '../../components/ui/toaster'
 
 interface DeleteAccessionProps {
   accessionId: string
@@ -18,7 +18,6 @@ export const DeleteAccession: React.FC<DeleteAccessionProps> = ({
   onSuccess,
 }) => {
   const { t } = useTranslation()
-  const { showToast } = useToast()
   const [isDeleting, setIsDeleting] = useState(false)
   const cancelRef = useRef<HTMLButtonElement>(null)
 
@@ -34,15 +33,24 @@ export const DeleteAccession: React.FC<DeleteAccessionProps> = ({
       )
 
       if (response.ok) {
-        showToast(t('delete_accession_success_toast_description'), 'success')
+        toaster.create({
+          description: t('delete_accession_success_toast_description'),
+          type: 'success',
+        })
         onSuccess()
         onClose()
       } else {
-        showToast(t('delete_accession_error_toast_description'), 'error')
+        toaster.create({
+          description: t('delete_accession_error_toast_description'),
+          type: 'error',
+        })
       }
     } catch (error) {
       console.error('Error deleting accession:', error)
-      showToast(t('delete_accession_error_toast_description'), 'error')
+      toaster.create({
+        description: t('delete_accession_error_toast_description'),
+        type: 'error',
+      })
     } finally {
       setIsDeleting(false)
     }

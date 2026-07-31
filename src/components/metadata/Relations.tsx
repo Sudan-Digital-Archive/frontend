@@ -1,4 +1,4 @@
-import { Badge, Box, Em, Link } from '@chakra-ui/react'
+import { Badge, Em, Link } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect, Fragment } from 'react'
 import { ExternalLink } from 'react-feather'
@@ -64,65 +64,62 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
     fetchRelatedTitles()
   }, [hasRelations, relations, isPrivate, language])
 
+  if (!hasRelations) return null
+
   return (
-    <Box my={hasRelations ? 1 : 0}>
-      {hasRelations && (
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          gap={1}
-          alignItems="center"
-          fontSize={fontSize}
-        >
-          <Badge colorPalette="cyan">{t('metadata_relations_label')}</Badge>
-          {relations.map((relation) => {
-            const title =
-              relatedTitles[relation.related_accession_id] ||
-              `Accession ${relation.related_accession_id}`
-            return (
-              <Fragment key={`relation-${relation.id}`}>
-                <Badge colorPalette="teal" fontSize="xs">
-                  <Em>
-                    {getRelationTypeTranslation(relation.relation_type, t)}
-                  </Em>
-                </Badge>
-                <Link
-                  href={buildArchiveUrl(
-                    relation.related_accession_id,
-                    language,
-                    isPrivate,
-                  )}
-                  target="_blank"
-                  textDecoration="none"
-                  _hover={{ textDecoration: 'underline', color: 'pink.400' }}
-                >
-                  <Box
-                    as="span"
-                    display="inline-flex"
-                    alignItems="center"
-                    px={2}
-                    py={0.5}
-                    fontSize="sm"
-                    bg="pink.600"
-                    color="white"
-                    borderRadius="full"
-                    m={0.5}
-                  >
-                    {title}
-                    <ExternalLink
-                      size={10}
-                      style={{
-                        display: 'inline',
-                        marginLeft: '4px',
-                      }}
-                    />
-                  </Box>
-                </Link>
-              </Fragment>
-            )
-          })}
-        </Box>
-      )}
-    </Box>
+    <Badge
+      colorPalette="cyan"
+      display="flex"
+      flexWrap="wrap"
+      gap={1}
+      alignItems="center"
+      fontSize={fontSize}
+    >
+      {t('metadata_relations_label')}
+      {relations.map((relation) => {
+        const title =
+          relatedTitles[relation.related_accession_id] ||
+          `Accession ${relation.related_accession_id}`
+        return (
+          <Fragment key={`relation-${relation.id}`}>
+            <Badge colorPalette="teal" fontSize="xs">
+              <Em>{getRelationTypeTranslation(relation.relation_type, t)}</Em>
+            </Badge>
+            <Link
+              href={buildArchiveUrl(
+                relation.related_accession_id,
+                language,
+                isPrivate,
+              )}
+              target="_blank"
+              textDecoration="none"
+              _hover={{ textDecoration: 'underline', color: 'pink.400' }}
+            >
+              <Badge
+                as="span"
+                display="inline-flex"
+                alignItems="center"
+                px={2}
+                py={0.5}
+                fontSize="sm"
+                bg="pink.600"
+                color="white"
+                borderRadius="full"
+                m={0.5}
+              >
+                {title}
+                <ExternalLink
+                  size={10}
+                  style={{
+                    display: 'inline',
+                    marginLeft: '4px',
+                  }}
+                />
+              </Badge>
+            </Link>
+          </Fragment>
+        )
+      })}
+    </Badge>
   )
 }

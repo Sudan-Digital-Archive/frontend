@@ -10,11 +10,10 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
 import { appConfig } from '../../constants'
-import { useToast } from '../../context/ToastContext'
+import { toaster } from '../../components/ui/toaster'
 
 export function Login() {
   const { t } = useTranslation()
-  const { showToast } = useToast()
 
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
@@ -52,7 +51,10 @@ export function Login() {
 
     if (response.status === 200) {
       setEmail('')
-      showToast(t('login_email_sent'), 'success')
+      toaster.create({
+        description: t('login_email_sent'),
+        type: 'success',
+      })
     } else {
       const responseText = await response.text()
       setIsError(responseText)

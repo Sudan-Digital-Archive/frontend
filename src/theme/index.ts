@@ -82,11 +82,6 @@ const config = defineConfig({
             _dark: 'rgba(236, 72, 153, 0.15)',
           },
         },
-        toast: {
-          bg: { value: { base: 'cyan.300', _dark: 'cyan.900' } },
-          bgError: { value: { base: 'pink.400', _dark: 'pink.600' } },
-          text: { value: { base: '#1a1a1a', _dark: 'white' } },
-        },
         card: {
           bg: { value: { base: '#ffffff', _dark: '#252525' } },
           border: { value: { base: '#e5e5e5', _dark: '#3d3d3d' } },

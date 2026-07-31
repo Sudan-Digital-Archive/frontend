@@ -119,7 +119,7 @@
     "create_accession_contributors_field_label": "Contributors",
     "create_accession_contributor_roles_field_label": "Contributor Roles",
     "create_accession_upload_progress": "Uploading: {{percent}}%",
-    "create_accession_upload_success": "Upload complete! Click to view: {{url}}",
+    "create_accession_upload_success": "Upload complete",
     "create_accession_upload_error": "Upload failed: {{error}}",
     "create_accession_file_required": "File is required",
     "create_accession_invalid_file_type": "Invalid file type. Accepted: .wacz, .mp4, .pdf",

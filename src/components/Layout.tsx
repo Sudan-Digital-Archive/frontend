@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import Menu from './Menu'
 import Footer from './Footer'
-import { Toast } from './ui/Toast'
+import { ToasterComponent } from './ui/toaster'
 
 interface LayoutProps {
   children: ReactNode
@@ -15,7 +15,7 @@ export default function Layout({
   return (
     <>
       <Menu changeLanguageOverride={changeLanguageOverride} />
-      <Toast />
+      <ToasterComponent />
       {children}
       <Footer />
     </>
