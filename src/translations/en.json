@@ -249,6 +249,7 @@
     "english": "English",
     "view_accession_hide_metadata": "Hide metadata",
     "view_accession_show_metadata": "Show metadata",
+    "view_accession_pdf_title": "Archived PDF Document",
     "nav_tech_stack": "Technical Stack",
     "tech_stack_title": "Technical Stack",
     "tech_stack_why_build": "Why build a new archive instead of using ",
