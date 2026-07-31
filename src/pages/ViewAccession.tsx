@@ -18,6 +18,7 @@ import { useUser } from '../hooks/useUser'
 import { useToast } from '../context/ToastContext'
 import Layout from '../components/Layout'
 import { X, Copy, ExternalLink } from 'react-feather'
+import { PDFViewer } from '@embedpdf/react-pdf-viewer'
 
 interface AccessionInfoProps {
   timestamp: string
@@ -101,7 +102,7 @@ export default function ViewAccession() {
   const { isLoggedIn } = useUser()
 
   const format = accession?.accession.dublin_metadata_format || 'wacz'
-  if (format !== 'wacz' && format !== 'mp4') {
+  if (format !== 'wacz' && format !== 'mp4' && format !== 'pdf') {
     throw new Error(`Unsupported format: ${format}`)
   }
 
@@ -194,7 +195,7 @@ export default function ViewAccession() {
       >
         {!accession ||
         (format === 'wacz' && (!replayerState.source || !replayerState.url)) ||
-        (format === 'mp4' && !replayerState.source) ? (
+        ((format === 'mp4' || format === 'pdf') && !replayerState.source) ? (
           <Spinner />
         ) : (
           <>
@@ -338,6 +339,20 @@ export default function ViewAccession() {
                   >
                     Your browser does not support the video tag.
                   </video>
+                </Box>
+              ) : format === 'pdf' ? (
+                <Box
+                  position="absolute"
+                  top="4px"
+                  left={0}
+                  right={0}
+                  bottom={0}
+                >
+                  <PDFViewer
+                    config={{
+                      src: replayerState.source,
+                    }}
+                  />
                 </Box>
               ) : (
                 <replay-web-page
