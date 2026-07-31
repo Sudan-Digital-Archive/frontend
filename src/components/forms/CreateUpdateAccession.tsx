@@ -611,7 +611,7 @@ export function CreateUpdateAccession({
                   {t('create_accession_format_field_label')}
                 </Heading>
                 <NativeSelect.Root maxW="200px">
-                    <NativeSelect.Field
+                  <NativeSelect.Field
                     value={fileFormat}
                     onChange={(e) =>
                       setFileFormat(e.target.value as 'wacz' | 'mp4' | 'pdf')
