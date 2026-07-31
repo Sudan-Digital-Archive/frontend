@@ -11,12 +11,16 @@ addi18n()
 
 describe('Relations', () => {
   it('should not render when relations is null', () => {
-    const { container } = renderWithProviders(<Relations relations={null} language="english" />)
+    const { container } = renderWithProviders(
+      <Relations relations={null} language="english" />,
+    )
     expect(container.firstChild).toBeNull()
   })
 
   it('should not render when relations is empty array', () => {
-    const { container } = renderWithProviders(<Relations relations={[]} language="english" />)
+    const { container } = renderWithProviders(
+      <Relations relations={[]} language="english" />,
+    )
     expect(container.firstChild).toBeNull()
   })
 

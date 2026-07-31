@@ -83,9 +83,7 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
         return (
           <Fragment key={`relation-${relation.id}`}>
             <Badge colorPalette="teal" fontSize="xs">
-              <Em>
-                {getRelationTypeTranslation(relation.relation_type, t)}
-              </Em>
+              <Em>{getRelationTypeTranslation(relation.relation_type, t)}</Em>
             </Badge>
             <Link
               href={buildArchiveUrl(

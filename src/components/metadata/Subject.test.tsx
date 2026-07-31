@@ -32,7 +32,9 @@ describe('Subject', () => {
   })
 
   it('should not render when no subjects provided', () => {
-    const { container } = renderWithProviders(<Subject subjects={null} />, { language: 'en' })
+    const { container } = renderWithProviders(<Subject subjects={null} />, {
+      language: 'en',
+    })
     expect(container.firstChild).toBeNull()
   })
 })
