@@ -18,7 +18,6 @@ import { useUser } from '../hooks/useUser'
 import { toaster } from '../components/ui/toaster'
 import Layout from '../components/Layout'
 import { X, Copy, ExternalLink } from 'react-feather'
-import { PDFViewer } from '@embedpdf/react-pdf-viewer'
 
 interface AccessionInfoProps {
   timestamp: string
@@ -350,10 +349,12 @@ export default function ViewAccession() {
                   right={0}
                   bottom={0}
                 >
-                  <PDFViewer
-                    config={{
-                      src: replayerState.source,
-                    }}
+                  <iframe
+                    src={replayerState.source}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 'none' }}
+                    title={t('view_accession_pdf_title')}
                   />
                 </Box>
               ) : (

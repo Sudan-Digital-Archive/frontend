@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.36.1",
-    "@embedpdf/react-pdf-viewer": "^2.14.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@internationalized/date": "^3.12.2",
