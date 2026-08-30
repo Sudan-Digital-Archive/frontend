@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, HStack, IconButton } from '@chakra-ui/react'
 import { CreatableSelect } from 'chakra-react-select'
@@ -63,6 +63,9 @@ export const GenericAutocomplete = ({
   const [isLoading, setIsLoading] = useState(false)
   const [isCreatingNew, setIsCreatingNew] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [inputValue, setInputValue] = useState('')
+  const [debouncedInput, setDebouncedInput] = useState('')
+  const latestQueryRef = useRef('')
   const [selectedOptions, setSelectedOptions] = useState<AutocompleteOption[]>(
     defaultValues
       ? defaultValues.values.map((val, index) => ({
@@ -71,6 +74,13 @@ export const GenericAutocomplete = ({
         }))
       : [],
   )
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedInput(inputValue)
+    }, 300)
+    return () => clearTimeout(handler)
+  }, [inputValue])
 
   useEffect(() => {
     if (lockedValues && lockedValues.length > 0 && items.length > 0) {
@@ -99,36 +109,46 @@ export const GenericAutocomplete = ({
     label: item[labelKey] as string,
   }))
 
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const collectionIdParam =
-        collectionId !== undefined ? `&in_collection_id=${collectionId}` : ''
-      const response = await fetch(
-        `${appConfig.apiURL}${endpoint}?page=0&per_page=50&lang=${apiLang}${collectionIdParam}`,
-        {
-          headers: {
-            Accept: 'application/json',
+  const fetchItems = useCallback(
+    async (query: string) => {
+      setIsLoading(true)
+      latestQueryRef.current = query
+      try {
+        const collectionIdParam =
+          collectionId !== undefined ? `&in_collection_id=${collectionId}` : ''
+        const queryParam = query
+          ? `&query_term=${encodeURIComponent(query)}`
+          : ''
+        const response = await fetch(
+          `${appConfig.apiURL}${endpoint}?page=0&per_page=50&lang=${apiLang}${collectionIdParam}${queryParam}`,
+          {
+            headers: {
+              Accept: 'application/json',
+            },
           },
-        },
-      )
+        )
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        const data: ApiResponse<Item> = await response.json()
+        if (latestQueryRef.current !== query) {
+          return
+        }
+        setItems(data.items || [])
+      } catch (error) {
+        console.error(`Error fetching ${pluralLabel}:`, error)
+        toaster.create({
+          description: t(`${pluralLabel}_autocomplete_error_fetching`),
+          type: 'error',
+        })
+      } finally {
+        setIsLoading(false)
       }
-
-      const data: ApiResponse<Item> = await response.json()
-      setItems(data.items || [])
-    } catch (error) {
-      console.error(`Error fetching ${pluralLabel}:`, error)
-      toaster.create({
-        description: t(`${pluralLabel}_autocomplete_error_fetching`),
-        type: 'error',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }, [apiLang, t, collectionId, endpoint, pluralLabel])
+    },
+    [apiLang, t, collectionId, endpoint, pluralLabel],
+  )
 
   const createNewItem = async (itemName: string) => {
     setIsCreatingNew(true)
@@ -216,8 +236,8 @@ export const GenericAutocomplete = ({
   }
 
   useEffect(() => {
-    fetchItems()
-  }, [fetchItems, apiLang])
+    void fetchItems(debouncedInput)
+  }, [fetchItems, debouncedInput, apiLang])
 
   useEffect(() => {
     if (value !== undefined && items.length > 0) {
@@ -332,6 +352,11 @@ export const GenericAutocomplete = ({
           value={selectedOptions}
           onChange={handleChange}
           onCreateOption={handleCreateOption}
+          onInputChange={(value, actionMeta) => {
+            if (actionMeta.action === 'input-change') {
+              setInputValue(value)
+            }
+          }}
           chakraStyles={{
             control: (provided) => ({
               ...provided,
@@ -382,6 +407,11 @@ export const GenericAutocomplete = ({
           isDisabled={isLoading || isCreatingNew || isDeleting}
           value={selectedOptions}
           onChange={handleChange}
+          onInputChange={(value, actionMeta) => {
+            if (actionMeta.action === 'input-change') {
+              setInputValue(value)
+            }
+          }}
           chakraStyles={{
             control: (provided) => ({
               ...provided,
