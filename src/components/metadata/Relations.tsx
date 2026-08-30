@@ -1,4 +1,4 @@
-import { Badge, Em, Link } from '@chakra-ui/react'
+import { Badge, Em, Link, Text } from '@chakra-ui/react'
 import { useTranslation } from 'react-i18next'
 import { useState, useEffect, Fragment } from 'react'
 import { ExternalLink } from 'react-feather'
@@ -51,11 +51,11 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
                 ? data.accession.title_en
                 : data.accession.title_ar
             titles[relation.related_accession_id] =
-              title || `Accession ${relation.related_accession_id}`
+              title || relation.related_accession_id.toString()
           }
         } catch {
           titles[relation.related_accession_id] =
-            `Accession ${relation.related_accession_id}`
+            relation.related_accession_id.toString()
         }
       }
       setRelatedTitles(titles)
@@ -67,19 +67,12 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
   if (!hasRelations) return null
 
   return (
-    <Badge
-      colorPalette="cyan"
-      display="flex"
-      flexWrap="wrap"
-      gap={1}
-      alignItems="center"
-      fontSize={fontSize}
-    >
-      {t('metadata_relations_label')}
+    <Text fontSize={fontSize}>
+      <Badge colorPalette="cyan">{t('metadata_relations_label')}</Badge>{' '}
       {relations.map((relation) => {
         const title =
           relatedTitles[relation.related_accession_id] ||
-          `Accession ${relation.related_accession_id}`
+          relation.related_accession_id.toString()
         return (
           <Fragment key={`relation-${relation.id}`}>
             <Badge colorPalette="teal" fontSize="xs">
@@ -120,6 +113,6 @@ export function Relations({ relations, language, isPrivate }: RelationsProps) {
           </Fragment>
         )
       })}
-    </Badge>
+    </Text>
   )
 }
