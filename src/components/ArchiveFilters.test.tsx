@@ -76,7 +76,7 @@ describe('ArchiveFilters Component', () => {
   it('shows subject filters', async () => {
     renderWithProviders(<ArchiveFilters {...defaultProps} />)
     await waitFor(() => {
-      expect(screen.getByText('Search subjects')).toBeTruthy()
+      expect(screen.getByPlaceholderText('Search subjects')).toBeTruthy()
     })
   })
 

@@ -17,8 +17,8 @@ import { ArchiveDatePicker } from '../DatePicker'
 import { useTranslation } from 'react-i18next'
 import { appConfig } from '../../constants'
 import { useState, useEffect, useCallback } from 'react'
-import { SubjectsAutocomplete } from '../subjectsAutocomplete/SubjectsAutocomplete'
-import type { SubjectOption } from '../subjectsAutocomplete/types'
+import { SubjectsAutocomplete } from '../Autocomplete/SubjectsAutocomplete'
+import type { AutocompleteOption } from '../Autocomplete'
 import type { AccessionWithMetadata } from '../../apiTypes/apiResponses'
 import { toaster } from '../../components/ui/toaster'
 import { FileUpload } from '@chakra-ui/react'
@@ -29,7 +29,6 @@ import {
   ContributorsAutocomplete,
   ContributorRolesAutocomplete,
 } from '../Autocomplete'
-import type { AutocompleteOption } from '../Autocomplete'
 
 interface CreateUpdateAccessionProps {
   accessionToUpdate?: AccessionWithMetadata
@@ -53,7 +52,7 @@ export function CreateUpdateAccession({
       ? accessionToUpdate?.title_en
       : accessionToUpdate?.title_ar) || '',
   )
-  const [subjects, setSubjects] = useState<readonly SubjectOption[]>([])
+  const [subjects, setSubjects] = useState<readonly AutocompleteOption[]>([])
   const [description, setDescription] = useState(
     (i18n.language === 'en'
       ? accessionToUpdate?.description_en
@@ -101,7 +100,7 @@ export function CreateUpdateAccession({
         subjectLabels &&
         subjectIds.length === subjectLabels.length
       ) {
-        const initialSubjects: SubjectOption[] = subjectIds.map(
+        const initialSubjects: AutocompleteOption[] = subjectIds.map(
           (id, index) => ({
             value: id,
             label: subjectLabels[index] || '',
@@ -221,7 +220,7 @@ export function CreateUpdateAccession({
     }
   }
 
-  const handleSubjectsChange = (values: readonly SubjectOption[]) => {
+  const handleSubjectsChange = (values: readonly AutocompleteOption[]) => {
     setSubjects(values)
   }
 
