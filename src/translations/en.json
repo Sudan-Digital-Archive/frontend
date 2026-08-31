@@ -160,15 +160,14 @@
     "show_more": "Show more",
     "show_less": "Show less",
     "metadata_archive_link_label": "View archive record",
-    "subjects_autocomplete_error_fetching_subjects": "Error fetching subjects",
-    "subjects_autocomplete_error_creating_subject": "Error creating subject",
+    "subjects_autocomplete_error_fetching": "Error fetching subjects",
+    "subjects_autocomplete_error_creating": "Error creating subject",
     "subjects_autocomplete_search": "Search subjects",
-    "subjects_autocomplete_search_subjects": "Search subjects",
-    "subjects_autocomplete_no_subjects_found": "No subjects found",
+    "subjects_autocomplete_no_found": "No subjects found",
     "subjects_autocomplete_create": "Create",
     "subjects_autocomplete_create_success": "Created new subject {{subject}}",
     "subjects_autocomplete_delete_success": "Subject deleted successfully",
-    "subjects_autocomplete_error_deleting_subject": "Error deleting subject",
+    "subjects_autocomplete_error_deleting": "Error deleting subject",
     "creators_autocomplete_error_fetching": "Error fetching creators",
     "creators_autocomplete_error_creating": "Error creating creator",
     "creators_autocomplete_search": "Search creators",
@@ -306,6 +305,7 @@
     "user_management_create_success": "User created successfully",
     "user_management_create_error": "Error creating user",
     "user_management_current_badge": "Current:",
-    "user_management_change_role": "Change role:"
+    "user_management_change_role": "Change role:",
+    "delete": "Delete"
   }
 }

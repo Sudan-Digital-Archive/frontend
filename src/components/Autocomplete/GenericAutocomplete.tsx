@@ -1,13 +1,22 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Box, HStack, IconButton } from '@chakra-ui/react'
-import { CreatableSelect } from 'chakra-react-select'
-import type { OptionProps } from 'chakra-react-select'
-import { Delete } from 'react-feather'
+import {
+  Box,
+  Combobox,
+  createListCollection,
+  HStack,
+  IconButton,
+  Portal,
+  Spinner,
+  Tag,
+  Wrap,
+} from '@chakra-ui/react'
+import { Delete, X } from 'react-feather'
 import { appConfig } from '../../constants'
 import { useUser } from '../../hooks/useUser'
 import { toaster } from '../../components/ui/toaster'
-import { useColorMode } from '../ui/color-mode'
+
+const CREATE_VALUE = '__create__'
 
 export interface AutocompleteOption {
   label: string
@@ -58,8 +67,11 @@ export const GenericAutocomplete = ({
 }: GenericAutocompleteProps) => {
   const { t, i18n } = useTranslation()
   const { isLoggedIn } = useUser()
-  const { colorMode } = useColorMode()
+  const apiLang = i18n.language === 'en' ? 'english' : 'arabic'
+
   const [items, setItems] = useState<Item[]>([])
+  const [inputValue, setInputValue] = useState('')
+  const [debouncedInput, setDebouncedInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isCreatingNew, setIsCreatingNew] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -71,6 +83,127 @@ export const GenericAutocomplete = ({
         }))
       : [],
   )
+  const latestQueryRef = useRef('')
+
+  const itemsById = useMemo(() => {
+    return new Map(
+      items.map((item) => [(item[idKey] as number) ?? item.id, item]),
+    )
+  }, [items, idKey])
+
+  const itemOptions = useMemo(
+    () =>
+      items.map((item) => ({
+        label: item[labelKey] as string,
+        value: String(item[idKey]),
+      })),
+    [items, idKey, labelKey],
+  )
+
+  const itemValues = useMemo(
+    () => new Set(itemOptions.map((option) => option.value)),
+    [itemOptions],
+  )
+
+  const selectedOptionsForCollection = useMemo(
+    () =>
+      selectedOptions
+        .filter((option) => !itemValues.has(String(option.value)))
+        .map((option) => ({
+          label: option.label,
+          value: String(option.value),
+        })),
+    [selectedOptions, itemValues],
+  )
+
+  const allOptions = useMemo(
+    () => [...selectedOptionsForCollection, ...itemOptions],
+    [itemOptions, selectedOptionsForCollection],
+  )
+
+  const showCreateOption = useMemo(() => {
+    if (!isLoggedIn) return false
+    const trimmed = inputValue.trim()
+    if (!trimmed) return false
+    return !allOptions.some(
+      (option) => option.label.toLowerCase() === trimmed.toLowerCase(),
+    )
+  }, [isLoggedIn, inputValue, allOptions])
+
+  const createOption = useMemo(
+    () => ({
+      label: `${t(`${pluralLabel}_autocomplete_create`)} "${inputValue.trim()}"`,
+      value: CREATE_VALUE,
+    }),
+    [inputValue, pluralLabel, t],
+  )
+
+  const collectionOptions = useMemo(
+    () => (showCreateOption ? [...allOptions, createOption] : allOptions),
+    [allOptions, createOption, showCreateOption],
+  )
+
+  const collection = useMemo(
+    () => createListCollection({ items: collectionOptions }),
+    [collectionOptions],
+  )
+
+  const visibleOptions = useMemo(
+    () => (showCreateOption ? [...itemOptions, createOption] : itemOptions),
+    [itemOptions, createOption, showCreateOption],
+  )
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedInput(inputValue)
+    }, 300)
+    return () => clearTimeout(handler)
+  }, [inputValue])
+
+  const fetchItems = useCallback(
+    async (query: string) => {
+      setIsLoading(true)
+      latestQueryRef.current = query
+      try {
+        const collectionIdParam =
+          collectionId !== undefined ? `&in_collection_id=${collectionId}` : ''
+        const queryParam = query
+          ? `&query_term=${encodeURIComponent(query)}`
+          : ''
+        const response = await fetch(
+          `${appConfig.apiURL}${endpoint}?page=0&per_page=50&lang=${apiLang}${collectionIdParam}${queryParam}`,
+          {
+            headers: {
+              Accept: 'application/json',
+            },
+          },
+        )
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        const data: ApiResponse<Item> = await response.json()
+        if (latestQueryRef.current !== query) {
+          return
+        }
+        setItems(data.items || [])
+      } catch (error) {
+        console.error(`Error fetching ${pluralLabel}:`, error)
+        toaster.create({
+          description: t(`${pluralLabel}_autocomplete_error_fetching`),
+          type: 'error',
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [apiLang, collectionId, endpoint, pluralLabel, t],
+  )
+
+  useEffect(() => {
+    void fetchItems(debouncedInput)
+  }, [fetchItems, debouncedInput])
 
   useEffect(() => {
     if (lockedValues && lockedValues.length > 0 && items.length > 0) {
@@ -87,340 +220,344 @@ export const GenericAutocomplete = ({
         const newLockedOptions = lockedOptions.filter(
           (o) => !existingValues.has(o.value),
         )
+        if (newLockedOptions.length === 0) return prev
         return [...prev, ...newLockedOptions]
       })
     }
   }, [lockedValues, items, idKey, labelKey, t])
 
-  const apiLang = i18n.language === 'en' ? 'english' : 'arabic'
+  useEffect(() => {
+    if (value !== undefined) {
+      setSelectedOptions((prev) =>
+        value.map((v) => {
+          const existing = prev.find((option) => option.value === v.value)
+          const item = itemsById.get(v.value)
+          return {
+            value: v.value,
+            label: item
+              ? (item[labelKey] as string)
+              : existing?.label || v.label || String(v.value),
+          }
+        }),
+      )
+    }
+  }, [value, items, itemsById, labelKey])
 
-  const options: AutocompleteOption[] = items.map((item) => ({
-    value: item[idKey] as number,
-    label: item[labelKey] as string,
-  }))
-
-  const fetchItems = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const collectionIdParam =
-        collectionId !== undefined ? `&in_collection_id=${collectionId}` : ''
-      const response = await fetch(
-        `${appConfig.apiURL}${endpoint}?page=0&per_page=50&lang=${apiLang}${collectionIdParam}`,
-        {
+  const createNewItem = useCallback(
+    async (itemName: string) => {
+      setIsCreatingNew(true)
+      try {
+        const response = await fetch(`${appConfig.apiURL}${endpoint}`, {
+          credentials: 'include',
+          method: 'POST',
           headers: {
+            'Content-Type': 'application/json',
             Accept: 'application/json',
           },
-        },
+          body: JSON.stringify({
+            [createPayloadKey]: itemName,
+            lang: apiLang,
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+        const newItem = (await response.json()) as Item
+
+        setItems((prev) => [...prev, newItem])
+
+        const newOption = {
+          value: newItem[idKey] as number,
+          label: newItem[labelKey] as string,
+        }
+
+        setSelectedOptions((prev) => {
+          if (prev.some((option) => option.value === newOption.value)) {
+            return prev
+          }
+          const next = [...prev, newOption]
+          if (onChange) {
+            onChange(next)
+          }
+          return next
+        })
+
+        setInputValue('')
+
+        toaster.create({
+          description: t(`${pluralLabel}_autocomplete_create_success`, {
+            [labelKey]: newItem[labelKey] as string,
+          }),
+          type: 'success',
+        })
+      } catch (error) {
+        console.error(`Error creating ${pluralLabel.slice(0, -1)}:`, error)
+        toaster.create({
+          description: t(`${pluralLabel}_autocomplete_error_creating`),
+          type: 'error',
+        })
+      } finally {
+        setIsCreatingNew(false)
+      }
+    },
+    [
+      apiLang,
+      createPayloadKey,
+      endpoint,
+      idKey,
+      labelKey,
+      onChange,
+      pluralLabel,
+      t,
+    ],
+  )
+
+  const deleteItem = useCallback(
+    async (itemId: number) => {
+      setIsDeleting(true)
+      try {
+        const response = await fetch(
+          `${appConfig.apiURL}${endpoint}/${itemId}`,
+          {
+            credentials: 'include',
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: JSON.stringify({
+              lang: apiLang,
+            }),
+          },
+        )
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        setItems((prev) => prev.filter((item) => item[idKey] !== itemId))
+        setSelectedOptions((prev) => {
+          const next = prev.filter((option) => option.value !== itemId)
+          if (onChange) {
+            onChange(next)
+          }
+          return next
+        })
+
+        toaster.create({
+          description: t(`${pluralLabel}_autocomplete_delete_success`),
+          type: 'success',
+        })
+      } catch (error) {
+        console.error(`Error deleting ${pluralLabel.slice(0, -1)}:`, error)
+        toaster.create({
+          description: t(`${pluralLabel}_autocomplete_error_deleting`),
+          type: 'error',
+        })
+      } finally {
+        setIsDeleting(false)
+      }
+    },
+    [apiLang, endpoint, idKey, onChange, pluralLabel, t],
+  )
+
+  const buildSelectedOptions = useCallback(
+    (ids: number[]) => {
+      const uniqueIds = Array.from(new Set(ids))
+
+      for (const lockedId of lockedValues || []) {
+        if (!uniqueIds.includes(lockedId)) {
+          uniqueIds.push(lockedId)
+        }
+      }
+
+      return uniqueIds.map((id) => {
+        const existing = selectedOptions.find((o) => o.value === id)
+        const item = itemsById.get(id)
+        return {
+          value: id,
+          label: item
+            ? (item[labelKey] as string)
+            : existing?.label || String(id),
+        }
+      })
+    },
+    [itemsById, labelKey, lockedValues, selectedOptions],
+  )
+
+  const handleValueChange = useCallback(
+    (details: { value: string[] }) => {
+      const trimmedInput = inputValue.trim()
+      const hasCreateSelection = details.value.includes(CREATE_VALUE)
+
+      const realValueStrings = details.value.filter(
+        (valueString) => valueString !== CREATE_VALUE,
       )
+      const realIds = realValueStrings
+        .map((valueString) => Number(valueString))
+        .filter((id) => !Number.isNaN(id))
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-      const data: ApiResponse<Item> = await response.json()
-      setItems(data.items || [])
-    } catch (error) {
-      console.error(`Error fetching ${pluralLabel}:`, error)
-      toaster.create({
-        description: t(`${pluralLabel}_autocomplete_error_fetching`),
-        type: 'error',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }, [apiLang, t, collectionId, endpoint, pluralLabel])
-
-  const createNewItem = async (itemName: string) => {
-    setIsCreatingNew(true)
-    try {
-      const response = await fetch(`${appConfig.apiURL}${endpoint}`, {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          [createPayloadKey]: itemName,
-          lang: apiLang,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-      const newItem = await response.json()
-      setItems((prev) => [...prev, newItem])
-
-      toaster.create({
-        description: t(`${pluralLabel}_autocomplete_create_success`, {
-          [labelKey]: newItem[labelKey] as string,
-        }),
-        type: 'success',
-      })
-
-      return newItem
-    } catch (error) {
-      console.error(`Error creating ${pluralLabel.slice(0, -1)}:`, error)
-      toaster.create({
-        description: t(`${pluralLabel}_autocomplete_error_creating`),
-        type: 'error',
-      })
-      return null
-    } finally {
-      setIsCreatingNew(false)
-    }
-  }
-
-  const deleteItem = async (itemId: number) => {
-    setIsDeleting(true)
-    try {
-      const response = await fetch(`${appConfig.apiURL}${endpoint}/${itemId}`, {
-        credentials: 'include',
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          lang: apiLang,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`)
-      }
-
-      setItems((prev) => prev.filter((item) => item[idKey] !== itemId))
-      setSelectedOptions((prev) =>
-        prev.filter((option) => option.value !== itemId),
-      )
+      const nextOptions = buildSelectedOptions(realIds)
+      setSelectedOptions(nextOptions)
 
       if (onChange) {
-        onChange(selectedOptions.filter((o) => o.value !== itemId))
+        onChange(nextOptions)
       }
 
-      toaster.create({
-        description: t(`${pluralLabel}_autocomplete_delete_success`),
-        type: 'success',
-      })
-    } catch (error) {
-      console.error(`Error deleting ${pluralLabel.slice(0, -1)}:`, error)
-      toaster.create({
-        description: t(`${pluralLabel}_autocomplete_error_deleting`),
-        type: 'error',
-      })
-    } finally {
-      setIsDeleting(false)
-    }
-  }
+      if (hasCreateSelection && trimmedInput) {
+        void createNewItem(trimmedInput)
+      }
+    },
+    [buildSelectedOptions, createNewItem, inputValue, onChange],
+  )
 
-  useEffect(() => {
-    fetchItems()
-  }, [fetchItems, apiLang])
-
-  useEffect(() => {
-    if (value !== undefined && items.length > 0) {
-      const optionsWithLabels = value.map((v) => {
-        const item = items.find((i) => i[idKey] === v.value)
-        return {
-          value: v.value,
-          label: item ? (item[labelKey] as string) : t('translation_missing'),
-        }
-      })
-      setSelectedOptions(optionsWithLabels)
-    }
-  }, [value, items, idKey, labelKey, t])
-
-  const handleChange = (newValue: readonly AutocompleteOption[] | null) => {
-    const safeValue = newValue || []
-    if (lockedValues && lockedValues.length > 0) {
-      const lockedSet = new Set(lockedValues)
-      const hasRemovedLocked = selectedOptions.some(
-        (option) =>
-          lockedSet.has(option.value) &&
-          !safeValue.some((nv) => nv.value === option.value),
-      )
-
-      if (hasRemovedLocked) {
-        const lockedOptions = selectedOptions.filter((option) =>
-          lockedSet.has(option.value),
-        )
-        const combinedValue = [
-          ...safeValue.filter((nv) => !lockedSet.has(nv.value)),
-          ...lockedOptions,
-        ]
-        setSelectedOptions(combinedValue)
-
-        if (onChange) {
-          onChange(combinedValue)
-        }
+  const handleRemove = useCallback(
+    (idToRemove: number) => {
+      if (lockedValues && lockedValues.includes(idToRemove)) {
         return
       }
-    }
-
-    setSelectedOptions(safeValue as AutocompleteOption[])
-
-    if (onChange) {
-      onChange(safeValue)
-    }
-  }
-
-  const handleCreateOption = async (inputValue: string) => {
-    const newItem = await createNewItem(inputValue)
-
-    if (newItem) {
-      const newOption = {
-        value: newItem[idKey] as number,
-        label: newItem[labelKey] as string,
-      }
-      setSelectedOptions((prev) => [...prev, newOption])
-
+      const nextOptions = selectedOptions.filter((o) => o.value !== idToRemove)
+      setSelectedOptions(nextOptions)
       if (onChange) {
-        onChange([...selectedOptions, newOption])
+        onChange(nextOptions)
       }
-    }
-  }
+    },
+    [lockedValues, onChange, selectedOptions],
+  )
 
-  const CustomOption = (props: OptionProps<AutocompleteOption>) => {
-    return (
-      <HStack
-        {...props.innerProps}
-        px={4}
-        py={2}
-        bg={props.isFocused ? 'bg.emphasized' : 'transparent'}
-        justify="space-between"
-        width="100%"
-        cursor="pointer"
-      >
-        <Box>{props.data.label}</Box>
-        {isLoggedIn && (
-          <IconButton
-            aria-label="Delete"
-            size="sm"
-            colorPalette="red"
-            variant="ghost"
-            _active={{ bg: 'red.700', color: 'white' }}
-            loading={isDeleting}
-            onClick={(e) => {
-              e.stopPropagation()
-              deleteItem(props.data.value)
-            }}
-          >
-            <Delete size={14} />
-          </IconButton>
-        )}
-      </HStack>
-    )
-  }
+  const selectedValueStrings = useMemo(
+    () => selectedOptions.map((o) => String(o.value)),
+    [selectedOptions],
+  )
 
   return (
-    <Box width="100%" position="relative">
-      {isLoggedIn ? (
-        <CreatableSelect
-          isMulti
-          name={pluralLabel}
-          options={options}
-          placeholder={t(`${pluralLabel}_autocomplete_search`)}
-          noOptionsMessage={() => t(`${pluralLabel}_autocomplete_no_found`)}
-          formatCreateLabel={(inputValue) =>
-            `${t(`${pluralLabel}_autocomplete_create`)} "${inputValue}"`
-          }
-          menuPlacement={menuPlacement}
-          isLoading={isLoading}
-          isDisabled={isLoading || isCreatingNew || isDeleting}
-          value={selectedOptions}
-          onChange={handleChange}
-          onCreateOption={handleCreateOption}
-          chakraStyles={{
-            control: (provided) => ({
-              ...provided,
-              border: `1px solid ${colorMode === 'dark' ? '#4b5563' : '#9ca3af'}`,
-              borderRadius: '6px',
-              backgroundColor: colorMode === 'dark' ? '#252525' : '#ffffff',
-            }),
-            loadingIndicator: (provided) => ({
-              ...provided,
-              mr: 2,
-            }),
-            dropdownIndicator: (provided) => ({
-              ...provided,
-              bg: 'transparent',
-              px: 2,
-              cursor: 'pointer',
-            }),
-            clearIndicator: (provided) => ({
-              ...provided,
-              bg: 'transparent',
-              px: 2,
-              cursor: 'pointer',
-            }),
-            valueContainer: (provided) => ({
-              ...provided,
-              p: '8px',
-              flexWrap: 'wrap',
-              gap: '4px',
-            }),
+    <Box width="100%">
+      <Combobox.Root
+        multiple
+        collection={collection}
+        value={selectedValueStrings}
+        onValueChange={handleValueChange}
+        inputValue={inputValue}
+        onInputValueChange={(details) => setInputValue(details.inputValue)}
+        closeOnSelect={false}
+        openOnClick
+        disabled={isCreatingNew || isDeleting}
+        positioning={{
+          placement: menuPlacement === 'top' ? 'top-start' : 'bottom-start',
+        }}
+      >
+        <Combobox.Control
+          display="flex"
+          alignItems="center"
+          flexWrap="wrap"
+          gap={2}
+          minH="40px"
+          px={2}
+          py={1}
+          borderWidth="1px"
+          borderColor="input.border"
+          borderRadius="md"
+          bg="input.bg"
+          color="input.text"
+          _focusWithin={{
+            borderColor: 'accent.primary',
           }}
-          components={{
-            Option: CustomOption,
-          }}
-          closeMenuOnSelect={false}
-          size="md"
-          hideSelectedOptions={false}
-          controlShouldRenderValue={true}
-        />
-      ) : (
-        <CreatableSelect
-          isMulti
-          name={pluralLabel}
-          options={options}
-          placeholder={t(`${pluralLabel}_autocomplete_search`)}
-          noOptionsMessage={() => t(`${pluralLabel}_autocomplete_no_found`)}
-          menuPlacement={menuPlacement}
-          isLoading={isLoading}
-          isDisabled={isLoading || isCreatingNew || isDeleting}
-          value={selectedOptions}
-          onChange={handleChange}
-          chakraStyles={{
-            control: (provided) => ({
-              ...provided,
-              border: `1px solid ${colorMode === 'dark' ? '#4b5563' : '#9ca3af'}`,
-              borderRadius: '6px',
-              backgroundColor: colorMode === 'dark' ? '#252525' : '#ffffff',
-            }),
-            loadingIndicator: (provided) => ({
-              ...provided,
-              mr: 2,
-            }),
-            dropdownIndicator: (provided) => ({
-              ...provided,
-              bg: 'transparent',
-              px: 2,
-              cursor: 'pointer',
-            }),
-            clearIndicator: (provided) => ({
-              ...provided,
-              bg: 'transparent',
-              px: 2,
-              cursor: 'pointer',
-            }),
-            valueContainer: (provided) => ({
-              ...provided,
-              p: '8px',
-              flexWrap: 'wrap',
-              gap: '4px',
-            }),
-          }}
-          components={{
-            Option: CustomOption,
-          }}
-          closeMenuOnSelect={false}
-          size="md"
-          hideSelectedOptions={false}
-          controlShouldRenderValue={true}
-        />
-      )}
+        >
+          <Wrap gap={2}>
+            {selectedOptions.map((option) => {
+              const isLocked = lockedValues?.includes(option.value) || false
+              const item = itemsById.get(option.value)
+              const displayLabel = item
+                ? (item[labelKey] as string)
+                : option.label
+              return (
+                <Tag.Root
+                  key={option.value}
+                  size="sm"
+                  colorPalette="cyan"
+                  variant="subtle"
+                >
+                  <Tag.Label>{displayLabel}</Tag.Label>
+                  {!isLocked && (
+                    <Tag.CloseTrigger
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        handleRemove(option.value)
+                      }}
+                    >
+                      <X size={12} />
+                    </Tag.CloseTrigger>
+                  )}
+                </Tag.Root>
+              )
+            })}
+          </Wrap>
+          <Combobox.Input
+            flex={1}
+            minW="120px"
+            bg="transparent"
+            border="none"
+            color="inherit"
+            outline="none"
+            placeholder={t(`${pluralLabel}_autocomplete_search`)}
+          />
+          {isLoading && (
+            <Box px={2}>
+              <Spinner size="sm" />
+            </Box>
+          )}
+        </Combobox.Control>
+        <Portal>
+          <Combobox.Positioner>
+            <Combobox.Content
+              bg="dropdownBg"
+              borderWidth="1px"
+              borderColor="border"
+              borderRadius="md"
+            >
+              <Combobox.Empty px={3} py={2}>
+                {t(`${pluralLabel}_autocomplete_no_found`)}
+              </Combobox.Empty>
+              {visibleOptions.map((item) => (
+                <Combobox.Item
+                  key={item.value}
+                  item={item}
+                  px={3}
+                  py={2}
+                  cursor="pointer"
+                  _hover={{ bg: 'dropdownHover' }}
+                >
+                  {item.value === CREATE_VALUE ? (
+                    <Combobox.ItemText>{item.label}</Combobox.ItemText>
+                  ) : (
+                    <HStack justify="space-between" width="100%">
+                      <Combobox.ItemText>{item.label}</Combobox.ItemText>
+                      {isLoggedIn && (
+                        <IconButton
+                          aria-label={t('delete')}
+                          size="2xs"
+                          colorPalette="red"
+                          variant="ghost"
+                          _active={{ bg: 'red.700', color: 'white' }}
+                          loading={isDeleting}
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            event.preventDefault()
+                            deleteItem(Number(item.value))
+                          }}
+                        >
+                          <Delete size={14} />
+                        </IconButton>
+                      )}
+                    </HStack>
+                  )}
+                </Combobox.Item>
+              ))}
+            </Combobox.Content>
+          </Combobox.Positioner>
+        </Portal>
+      </Combobox.Root>
     </Box>
   )
 }

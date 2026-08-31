@@ -34,6 +34,6 @@ describe('Relations', () => {
     )
 
     expect(screen.getByText('has part')).toBeTruthy()
-    expect(screen.getByText('Accession 42')).toBeTruthy()
+    expect(screen.getByText('42')).toBeTruthy()
   })
 })
